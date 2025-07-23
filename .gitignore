@@ -89,3 +89,6 @@ crashlytics-build.properties
 /Assets/StreamingAssets/google-services-desktop.json.meta
 /Assets/Plugins
 /Assets/Plugins.meta
+/.idea
+/Assets/GeneratedLocalRepo
+/Assets/GeneratedLocalRepo.meta
