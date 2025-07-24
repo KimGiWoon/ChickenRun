@@ -121,7 +121,7 @@ public class SignUpPanel : UIBase
                     // 인증 이메일 전송
                     SendEmailVerification(user);
                     
-                    // 팝업(이메일 전송)
+                    // 팝업 (이메일 전송)
                     PopupManager.Instance.ShowOKPopup("인증 메일이 발송되었습니다.", "OK", () => PopupManager.Instance.HidePopup());
 
                     // 새로고침
@@ -160,7 +160,7 @@ public class SignUpPanel : UIBase
                  }
 
                  else if (task.IsCompletedSuccessfully)
-                 {
+                 { 
                      var providers = task.Result;
                      foreach (string provider in task.Result)
                      {
@@ -171,7 +171,7 @@ public class SignUpPanel : UIBase
                      {
                          Debug.Log("중복된 이메일");
                          
-                         // 팝업
+                         // 팝업 (중복된 이메일)
                          PopupManager.Instance.ShowOKPopup("중복된 이메일입니다.", "OK", () => PopupManager.Instance.HidePopup());
                      }
 
@@ -179,7 +179,7 @@ public class SignUpPanel : UIBase
                      {
                          Debug.Log("사용 가능한 이메일");
 
-                         // 팝업
+                         // 팝업 (사용 가능 이메일)
                          PopupManager.Instance.ShowOKPopup("사용가능한 이메일입니다.", "OK", () => PopupManager.Instance.HidePopup());
                      }
                  }
@@ -212,6 +212,7 @@ public class SignUpPanel : UIBase
     private void NicknameCheck()
     {
         _checkedEmail = _nicknameField.text;
+        
     }
 
     /// <summary>
