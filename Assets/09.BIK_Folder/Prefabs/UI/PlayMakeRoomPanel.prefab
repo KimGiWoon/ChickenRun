@@ -146,7 +146,6 @@ GameObject:
   - component: {fileID: 936440437725485753}
   - component: {fileID: 5504573235083538024}
   - component: {fileID: 7989802174667213892}
-  - component: {fileID: 7872161593263710650}
   m_Layer: 0
   m_Name: PlayMakeRoomPanel
   m_TagString: Untagged
@@ -241,26 +240,6 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
---- !u!114 &7872161593263710650
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 995439160338126302}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eb2fb00236e8c3d48bad79e1f938d985, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _roomNameInput: {fileID: 2171298253094533125}
-  _passwordInput: {fileID: 4802542666808969666}
-  _leftArrowButton: {fileID: 98640344994405938}
-  _rightArrowButton: {fileID: 3130455701849008768}
-  _maxPlayerText: {fileID: 6487733326699541240}
-  _createButton: {fileID: 2068101536762515}
-  _createButtonText: {fileID: 4626973988973089194}
-  _cancelButton: {fileID: 7229542564544883043}
 --- !u!1 &1084746141196232688
 GameObject:
   m_ObjectHideFlags: 0
