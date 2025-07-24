@@ -25,5 +25,4 @@ public class PlayerState : MonoBehaviour
     // Player Jump Y Direction
     [SerializeField] float _jumpYDir = 1f;
     public float JumpYDir { get { return _jumpYDir; } set { _jumpYDir = value; } }
-
 }
