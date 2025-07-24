@@ -8,6 +8,7 @@ namespace Kst
     public class GoldManager : MonoBehaviour
     {
         private int _gold;
+        public int CurrentGold { get { return _gold; } set { _gold = value; } }
         private DatabaseReference _goldRef;
         [SerializeField] TMP_Text _goldtext;
 
@@ -78,7 +79,7 @@ namespace Kst
         }
 
         //골드 감소 로직
-        public void DecreaseGold()
+        public void DecreaseGold(int amount)
         {
             if (!IsUserLogin()) return;
             if (!IsGoldRefInit()) return;
@@ -89,7 +90,7 @@ namespace Kst
                 if (current <= 0)
                     return TransactionResult.Abort();
 
-                current -= 1;
+                current -= amount;
                 mutableData.Value = current;
                 return TransactionResult.Success(mutableData);
             });

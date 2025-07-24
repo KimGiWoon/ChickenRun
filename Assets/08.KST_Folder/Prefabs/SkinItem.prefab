@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5181070347271336525}
   - component: {fileID: 3789190267614492739}
   m_Layer: 5
-  m_Name: Image
+  m_Name: Image_SkinImg
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -89,7 +89,7 @@ GameObject:
   - component: {fileID: 6455482890584450729}
   - component: {fileID: 3265589902348596089}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: Text_SkinName
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -223,7 +223,7 @@ GameObject:
   - component: {fileID: 697879827498223886}
   - component: {fileID: 3702766076515097972}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: Text_Price
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -276,7 +276,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uAD6C\uB9E4\uD558\uAE30"
+  m_text: "\uAC00\uACA9"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 4371ff6a11ec8f24cadf5d788b58f7e0, type: 2}
   m_sharedMaterial: {fileID: -1842743840666109478, guid: 4371ff6a11ec8f24cadf5d788b58f7e0, type: 2}
@@ -358,7 +358,7 @@ GameObject:
   - component: {fileID: 7767776190371349481}
   - component: {fileID: 6318621758971712022}
   m_Layer: 5
-  m_Name: Button
+  m_Name: Btn_Buy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -476,6 +476,8 @@ GameObject:
   m_Component:
   - component: {fileID: 2631999538734985968}
   - component: {fileID: 6837966431465317164}
+  - component: {fileID: 1959149853152927313}
+  - component: {fileID: 7999186151217455898}
   m_Layer: 5
   m_Name: SkinItem
   m_TagString: Untagged
@@ -511,3 +513,31 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5459718257852279044}
   m_CullTransparentMesh: 1
+--- !u!114 &1959149853152927313
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5459718257852279044}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3d72d8957c06c7438568075568f1f09, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _nameText: {fileID: 3265589902348596089}
+  _priceText: {fileID: 3702766076515097972}
+  _skinImage: {fileID: 3789190267614492739}
+  _purchaseBtn: {fileID: 6318621758971712022}
+--- !u!114 &7999186151217455898
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5459718257852279044}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a18c8d28bd845643a2ed466367ab78b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
