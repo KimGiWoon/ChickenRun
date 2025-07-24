@@ -13,13 +13,14 @@ GameObject:
   - component: {fileID: 6084343273845556819}
   - component: {fileID: 6795913888714843621}
   - component: {fileID: 6627340828666729884}
+  - component: {fileID: 2350364969093849445}
   m_Layer: 5
   m_Name: RankPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2375588714315095379
 RectTransform:
   m_ObjectHideFlags: 0
@@ -120,6 +121,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_HorizontalFit: 0
   m_VerticalFit: 0
+--- !u!114 &2350364969093849445
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4156029501545717605}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b73adf5c88fae941a8255114f4b3c85, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _rank: {fileID: 4521216227318001995}
+  _nickname: {fileID: 7082803291299365558}
+  _scoreOrRecord: {fileID: 5783301821411299132}
 --- !u!1 &6841001768752084327
 GameObject:
   m_ObjectHideFlags: 0
