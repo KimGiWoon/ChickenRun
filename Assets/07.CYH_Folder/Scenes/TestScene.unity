@@ -579,7 +579,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 158274787970629352, guid: 7d613d11b1473d447843ea666e449078, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 536444372203375189, guid: 7d613d11b1473d447843ea666e449078, type: 3}
       propertyPath: m_Pivot.x
@@ -659,6 +659,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 536444372203375189, guid: 7d613d11b1473d447843ea666e449078, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 978594735262470332, guid: 7d613d11b1473d447843ea666e449078, type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1139407958571822555, guid: 7d613d11b1473d447843ea666e449078, type: 3}
@@ -2759,6 +2763,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc78dcc1879cf8449a784b7914e722c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _closePopupButton: {fileID: 1609791245}
 --- !u!1 &625859691
 GameObject:
   m_ObjectHideFlags: 0
@@ -4128,8 +4133,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2bea457ffadcc4e42a58918bce360d68, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _socialLoginPanel: {fileID: 568958797}
-  _signUpPanel: {fileID: 1629400106}
   _emailField: {fileID: 894063357}
   _passwordField: {fileID: 834414195}
   _loginButton: {fileID: 1303941915}
@@ -4215,7 +4218,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: -1
   m_TargetDisplay: 0
 --- !u!224 &891471884
 RectTransform:
@@ -5048,8 +5051,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _uiList:
   - {fileID: 890549658}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 568958802}
+  - {fileID: 1629400111}
 --- !u!1 &1059814439
 GameObject:
   m_ObjectHideFlags: 0
@@ -7152,6 +7155,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d5514b8eea799c47b97324bb74afb7f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _nicknameField: {fileID: 6368520}
+  _emailField: {fileID: 741761566}
+  _passwordField: {fileID: 171228110}
+  _passwordConfirmField: {fileID: 451689419}
+  _nicknameCheckButton: {fileID: 1061071508}
+  _emailCheckButton: {fileID: 896117127}
+  _signUpButton: {fileID: 1459260946}
+  _closePopupButton: {fileID: 1540815428}
+  _checkedEmail: 
 --- !u!1 &1634995831
 GameObject:
   m_ObjectHideFlags: 0
@@ -8409,5 +8421,5 @@ SceneRoots:
   - {fileID: 949119140}
   - {fileID: 995789674}
   - {fileID: 891471884}
-  - {fileID: 235768500}
   - {fileID: 131235629}
+  - {fileID: 235768500}

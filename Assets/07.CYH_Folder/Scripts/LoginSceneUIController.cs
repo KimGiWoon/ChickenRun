@@ -12,6 +12,7 @@ public class LoginSceneUIManager : MonoBehaviour
 
     [SerializeField] private List<UIBase> _uiList;
 
+
     private void Start()
     {
         ShowUI(LoginUIType.Login);
@@ -25,11 +26,11 @@ public class LoginSceneUIManager : MonoBehaviour
             }
             else if (ui is SignUpPanel signUpPanel)
             {
-                
+                signUpPanel.OnClickClosePopup = () => HideUI(LoginUIType.SignUpPanel);
             }
             else if (ui is SocialLoginPanel socialPanel)
             {
-                
+                socialPanel.OnClickClosePopup = () => HideUI(LoginUIType.SocialPanel);
             }
         }
     }

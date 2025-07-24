@@ -10,9 +10,6 @@ using Firebase.Extensions;
 /// </summary>
 public class LoginPanel : UIBase
 {
-    [SerializeField] private GameObject _socialLoginPanel;
-    [SerializeField] private GameObject _signUpPanel;
-
     [SerializeField] private TMP_InputField _emailField;
     [SerializeField] private TMP_InputField _passwordField;
 
@@ -23,18 +20,13 @@ public class LoginPanel : UIBase
     public Action OnClickSignup;
     public Action OnClickSocialLogin;
 
+
     private void Start()
     {
         _loginButton.onClick.AddListener(OnClick_Login);
-        _socialLoginButton.onClick.AddListener(() => OnClickSignup?.Invoke());
-        _signupButton.onClick.AddListener(() => OnClickSocialLogin?.Invoke());
+        _socialLoginButton.onClick.AddListener(() => OnClickSocialLogin?.Invoke());
+        _signupButton.onClick.AddListener(() => OnClickSignup?.Invoke());
     }
-
-    //public override void RefreshUI()
-    //{
-    //    _emailField.text = "";
-    //    _passwordField.text = "";
-    //}
 
     /// <summary>
     /// 로그인 버튼 클릭 시 호출되는 메서드
@@ -56,6 +48,9 @@ public class LoginPanel : UIBase
                 if (task.IsFaulted)
                 {
                     Debug.LogError($"로그인 실패 / 원인: {task.Exception}");
+                    
+                    // 팝업 (로그인 실패)
+                    PopupManager.Instance.ShowOKPopup("로그인 실패", "OK", () => PopupManager.Instance.HidePopup());
                     return;
                 }
 
@@ -70,7 +65,13 @@ public class LoginPanel : UIBase
                     Debug.Log($"유저 ID: {user.UserId}");
                     Debug.Log($"이메일 : {user.Email}");
 
-                    //RefreshUI();
+                    if (!user.IsEmailVerified)
+                    {
+                        PopupManager.Instance.ShowOKPopup("이메일 인증을 완료해주세요.", "OK", () => PopupManager.Instance.HidePopup());
+                        CYH_FirebaseManager.Auth.SignOut();
+                        Debug.Log("로그아웃");
+                        return;
+                    }
                 }
             });
     }
