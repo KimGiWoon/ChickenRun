@@ -17,8 +17,8 @@ public class LoginPanel : UIBase
     [SerializeField] private Button _socialLoginButton;
     [SerializeField] private Button _signupButton;
 
-    public Action OnClickSignup;
-    public Action OnClickSocialLogin;
+    public Action OnClickSignup { get; set; }
+    public Action OnClickSocialLogin { get; set; }
 
 
     private void Start()

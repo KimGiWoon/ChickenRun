@@ -24,10 +24,10 @@ public class SignUpPanel : UIBase
     [SerializeField] private string _checkedEmail;
     [SerializeField] private string _checkedNickname;
 
-    public Action OnClickSignup;
-    public Action OnClickClosePopup;
-    public Action OnClickNicknameCheck;
-    public Action OnClickEmailCheck;
+    public Action OnClickSignup { get; set; }
+    public Action OnClickClosePopup { get; set; }
+    public Action OnClickNicknameCheck { get; set; }
+    public Action OnClickEmailCheck { get; set; }
 
 
     private void Start()
