@@ -8,8 +8,7 @@ using UnityEngine.UI;
 
 public class RankUIController: MonoBehaviour
 {
-    #region Type def
-
+    // 랭킹보드 패널 구분을 위한 enum
     private enum PanelType
     {
         Map1,
@@ -17,50 +16,42 @@ public class RankUIController: MonoBehaviour
         Map3,
         Score,
     }
-    #endregion // Type def
-
-    #region serialized fields
     
+    // 랭킹보드 panel만 관리하는 List, RankUI는 따로 관리
     [SerializeField] private List<UIBase> _panelList;
     [SerializeField] private RankUI _rankUI;
-
-    #endregion // serialized fields
-
-    private UIBase _currentUI;
     
-    #region mono funcs
+    private UIBase _currentUI;
 
+    // MVC 패턴을 위한 연동 작업
     private void Awake()
     {
         //ShowUI(PanelType.Map1);
         _rankUI.Initialize(
               onClickMap1Rank: async () =>
               {
-                  ShowUI(PanelType.Map1);
-                  await ShowMapRank("Map1Record");
+                  ShowBoard(PanelType.Map1);
+                  await ShowRank("Map1Record");
               },
               onClickMap2Rank: async () =>
               {
-                  ShowUI(PanelType.Map2);
-                  await ShowMapRank("Map2Record");
+                  ShowBoard(PanelType.Map2);
+                  await ShowRank("Map2Record");
               },
               onClickMap3Rank: async () =>
               {
-                  ShowUI(PanelType.Map3);
-                  await ShowMapRank("Map3Record");
+                  ShowBoard(PanelType.Map3);
+                  await ShowRank("Map3Record");
               },
               onClickScoreRank: async () =>
               {
-                  ShowUI(PanelType.Score);
-                  await ShowMapRank();
+                  ShowBoard(PanelType.Score);
+                  await ShowRank();
               });
     }
 
-    #endregion // mono funcs
-    
-    #region private funcs
-
-    private void ShowUI(PanelType type)
+    // 버튼 클릭에 따른 랭킹보드 panel change 연동
+    private void ShowBoard(PanelType type)
     {
         foreach (var panel in _panelList)
             panel.SetHide();
@@ -69,17 +60,19 @@ public class RankUIController: MonoBehaviour
         _currentUI.SetShow();
     }
 
-    private async Task ShowMapRank(string record)
+    // 유저 개인 랭킹 정보를 Model에서 불러오고 View에 전달하는 메서드
+    // 동기 처리를 위한 async - await
+    private async Task ShowRank(string record)
     {
         Database_RecordManager.UserRankInfo info = await Database_RecordManager.Instance.LoadUserRank(record);
         _rankUI.SetRankText(info.Rank.ToString(), info.Nickname, info.RecordOrScore);
     }
     
-    private async Task ShowMapRank()
+    // 유저 개인 랭킹 정보를 Model에서 불러오고 View에 전달하는 메서드(함수 오버로드)
+    // 동기 처리를 위한 async - await
+    private async Task ShowRank()
     {
         Database_RecordManager.UserRankInfo info = await Database_RecordManager.Instance.LoadUserRank();
         _rankUI.SetRankText(info.Rank.ToString(), info.Nickname, info.RecordOrScore);
     }
-    
-    #endregion // private funcs
 }

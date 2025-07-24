@@ -2,12 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// 랭킹보드의 개인 랭킹을 관리할 오브젝트 풀
 public class GameObjectPool
 {
-    private GameObject _prefab;
     private Queue<GameObject> _pool;
+    private GameObject _prefab;
     private Transform _parent;
 
+    // 오브젝트 풀 생성자, volume은 생성할 때 입력
     public GameObjectPool(GameObject prefab, Transform parent, int volume)
     {
         _pool = new Queue<GameObject>();

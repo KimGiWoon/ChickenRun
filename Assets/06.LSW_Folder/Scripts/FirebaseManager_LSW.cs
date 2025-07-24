@@ -6,6 +6,7 @@ using Firebase.Database;
 using Firebase.Extensions;
 using UnityEngine;
 
+// DB 접근을 위한 임시 FirebaseManager
 public class FirebaseManager_LSW : Singleton<FirebaseManager_LSW>
 {
     private static FirebaseApp _app;
