@@ -5,7 +5,7 @@ public class PopupManager : Singleton<PopupManager>
 {
     #region Singleton
 
-    protected override void Awake()
+    private void Awake()
     {
         base.Awake();
     }
