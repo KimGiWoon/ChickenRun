@@ -221,7 +221,7 @@ GameObject:
   - component: {fileID: 2622030174865264042}
   - component: {fileID: 272335243509608755}
   m_Layer: 0
-  m_Name: Text RoomName (1)
+  m_Name: Text PlayerCount
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -355,6 +355,7 @@ GameObject:
   - component: {fileID: 5870554959543980187}
   - component: {fileID: 7125651470164185416}
   - component: {fileID: 5983217152236065823}
+  - component: {fileID: 7846152181950916993}
   m_Layer: 0
   m_Name: Room Button
   m_TagString: Untagged
@@ -466,3 +467,18 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &7846152181950916993
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4012434598381894397}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8a19c64aacdba2408e6154d8e081dc4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _lockIcon: {fileID: 1367229896742619228}
+  _roomNameText: {fileID: 6845332262009634799}
+  _playerCountText: {fileID: 272335243509608755}
