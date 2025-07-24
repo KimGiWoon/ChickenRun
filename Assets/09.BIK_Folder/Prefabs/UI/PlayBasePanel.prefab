@@ -267,6 +267,7 @@ GameObject:
   - component: {fileID: 936440437725485753}
   - component: {fileID: 5504573235083538024}
   - component: {fileID: 7989802174667213892}
+  - component: {fileID: 1827898029832572780}
   m_Layer: 0
   m_Name: PlayBasePanel
   m_TagString: Untagged
@@ -361,6 +362,22 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &1827898029832572780
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 995439160338126302}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2efefb6682019bb419c2f0645afae04a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _playAloneButton: {fileID: 6832818720148992333}
+  _makeRoomButton: {fileID: 8842331505518915494}
+  _getInButton: {fileID: 1316714862515173100}
+  _quickMatchButton: {fileID: 4207011180300044437}
 --- !u!1 &1465999468873300577
 GameObject:
   m_ObjectHideFlags: 0
