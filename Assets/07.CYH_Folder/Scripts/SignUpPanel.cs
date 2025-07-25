@@ -63,7 +63,7 @@ public class SignUpPanel : UIBase
     /// <param name="message">팝업에 표시할 안내 메세지</param>
     private void ShowPopup(string message)
     {
-        Debug.LogError(message);
+        //Debug.LogError(message);
         PopupManager.Instance.ShowOKPopup(message, "OK", () => PopupManager.Instance.HidePopup());
     }
 
@@ -73,29 +73,22 @@ public class SignUpPanel : UIBase
     /// 가입하기 클릭 시: 중복체크/패스워드 일치 여부 검사 후 인증 이메일 전송
     /// 회원가입 성공: 인증 메일 발송 팝업 활성화
     /// 회원가입 실패: 에러 코드 출력
-    /// 회원가입 실패 팝업: 1.닉네임 미입력 2.닉네임 중복체크 재검사 3. 이메일 미입력 4.이메일 중복 체크 재검사
+    /// 회원가입 실패 팝업: 1.닉네임 미입력 2.닉네임 중복체크 재검사 3.이메일 미입력 
+    ///                    4.이메일 중복 체크 재검사 5.패스워드 미입력 6.패스워드 일치 여부 체크
     /// </summary>
     public void OnClick_SignUp()
     {
         // 닉네임 미입력
-        if (_nicknameField.text == "")
+        if (string.IsNullOrEmpty(_nicknameField.text))
         {
-            Debug.LogError("닉네임 미입력");
-
-            // 팝업 (닉네임 입력 요청)
-            PopupManager.Instance.ShowOKPopup("닉네임을 입력해 주세요.", "OK", () => PopupManager.Instance.HidePopup());
-
+            ShowPopup("닉네임을 입력해 주세요.");
             return;
         }
 
         // 닉네임 중복 체크 재검사
         if (_nicknameField.text != _checkedNickname)
         {
-            Debug.LogError("닉네임 중복 체크 필요");
-
-            // 팝업 (닉네임 중복 체크)
-            PopupManager.Instance.ShowOKPopup("닉네임을 중복체크를 해주세요.", "OK", () => PopupManager.Instance.HidePopup());
-
+            ShowPopup("닉네임 중복체크를 해주세요.");
             return;
         }
 
@@ -104,33 +97,21 @@ public class SignUpPanel : UIBase
         {
             _checkedEmail = "";
 
-            Debug.LogError("이메일 중복 체크 필요");
-
-            // 팝업 (이메일 중복 체크)
-            PopupManager.Instance.ShowOKPopup("이메일 중복체크를 해주세요.", "OK", () => PopupManager.Instance.HidePopup());
-
+            ShowPopup("이메일 중복체크를 해주세요.");
             return;
         }
 
         // 패스워드 미입력
-        if (_passwordField.text == "" || _passwordConfirmField.text == "")
+        if (string.IsNullOrEmpty(_passwordField.text) || string.IsNullOrEmpty(_passwordConfirmField.text))
         {
-            Debug.LogError("패스워드 필드 비어있음");
-
-            // 팝업 (패스워드 입력 요청)
-            PopupManager.Instance.ShowOKPopup("패스워드를 입력해 주세요.", "OK", () => PopupManager.Instance.HidePopup());
-
+            ShowPopup("패스워드를 입력해 주세요.");
             return;
         }
 
         // 패스워드 일치 여부 체크
         if (_passwordField.text != _passwordConfirmField.text)
         {
-            Debug.LogError("패스워드 일치하지 않음");
-
-            // 팝업 (패스워드 불일치)
-            PopupManager.Instance.ShowOKPopup("패스워드가 일치하지 않습니다.", "OK", () => PopupManager.Instance.HidePopup());
-
+            ShowPopup("패스워드가 일치하지 않습니다.");
             return;
         }
 
@@ -146,10 +127,10 @@ public class SignUpPanel : UIBase
 
                 if (task.IsFaulted)
                 {
-                    // 팝업 (회원가입 실패)
-                    PopupManager.Instance.ShowOKPopup("회원가입 실패", "OK", () => PopupManager.Instance.HidePopup());
-
                     Debug.LogError($"가입 실패 / 원인: {task.Exception}");
+
+                    // 팝업 (회원가입 실패)
+                    ShowPopup("회원가입 실패");
                     return;
                 }
 
@@ -165,15 +146,15 @@ public class SignUpPanel : UIBase
                     SendEmailVerification(user);
 
                     // 팝업 (이메일 전송)
-                    PopupManager.Instance.ShowOKPopup("인증 메일이 발송되었습니다.", "OK", () => PopupManager.Instance.HidePopup());
+                    ShowPopup("인증 메일이 발송되었습니다.");
 
                     // 새로고침
                     user.ReloadAsync();
 
                     Debug.Log("이메일 가입 성공");
                     Debug.Log("------유저 정보------");
-                    Debug.Log($"유저 이름 : {user.DisplayName}");
-                    Debug.Log($"유저 ID: {user.UserId}");
+                    Debug.Log($"유저 닉네임 : {user.DisplayName}");
+                    Debug.Log($"유저 ID : {user.UserId}");
                     Debug.Log($"이메일 : {user.Email}");
                 }
             });
@@ -198,16 +179,17 @@ public class SignUpPanel : UIBase
 
                  else if (task.IsFaulted)
                  {
-                     // 팝업 (이메일 형식 확인)
-                     PopupManager.Instance.ShowOKPopup("올바른 이메일 형식이 아닙니다.", "OK", () => PopupManager.Instance.HidePopup());
-
                      Debug.LogError($"이메일 중복 체크 실패 / 원인 : {task.Exception}");
+                     
+                     // 팝업 (이메일 형식 확인)
+                     ShowPopup("올바른 이메일 형식이 아닙니다.");
                      return;
                  }
 
                  else if (task.IsCompletedSuccessfully)
                  {
                      var providers = task.Result;
+
                      foreach (string provider in task.Result)
                      {
                          Debug.Log(provider);
@@ -215,10 +197,8 @@ public class SignUpPanel : UIBase
 
                      if (providers.Any())
                      {
-                         Debug.Log("중복된 이메일");
-
                          // 팝업 (중복된 이메일)
-                         PopupManager.Instance.ShowOKPopup("중복된 이메일입니다.", "OK", () => PopupManager.Instance.HidePopup());
+                         ShowPopup("중복된 이메일입니다.");
                      }
 
                      else
@@ -226,7 +206,7 @@ public class SignUpPanel : UIBase
                          Debug.Log("사용 가능한 이메일입니다.");
 
                          // 팝업 (사용 가능 이메일)
-                         PopupManager.Instance.ShowOKPopup("사용 가능한 이메일입니다.", "OK", () => PopupManager.Instance.HidePopup());
+                         ShowPopup("사용 가능한 이메일입니다.");
                      }
                  }
              });
@@ -278,10 +258,8 @@ public class SignUpPanel : UIBase
             
             if (!snapshot.Exists || snapshot.ChildrenCount == 0)
             {
-                Debug.Log("사용 가능한 닉네임");
-                
                 // 팝업 (사용 가능 닉네임)
-                PopupManager.Instance.ShowOKPopup("사용 가능한 닉네임입니다.", "OK", () => PopupManager.Instance.HidePopup());
+                ShowPopup("사용 가능한 닉네임입니다.");
                 return;
             }
 
@@ -292,7 +270,7 @@ public class SignUpPanel : UIBase
                 Debug.Log($"중복된 닉네임: {nickname}, uid: {uid}");
 
                 // 팝업 (중복된 닉네임)
-                PopupManager.Instance.ShowOKPopup("중복된 닉네임입니다.", "OK", () => PopupManager.Instance.HidePopup());
+                ShowPopup("중복된 닉네임입니다.");
             }
         });
     }
