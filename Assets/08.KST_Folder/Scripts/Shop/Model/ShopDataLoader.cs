@@ -2,43 +2,30 @@ using UnityEngine;
 using Firebase.Database;
 using Firebase.Extensions;
 using System.Collections.Generic;
+using System;
 
 namespace Kst
 {
-    public class ShopController : MonoBehaviour
+    public class ShopDataLoader : MonoBehaviour
     {
-        #region UI 참조
-        [SerializeField] private Transform _contentTransform;
-        [SerializeField] private GameObject _skinItemPrefab;
         [SerializeField] private ShopDataBase _shopDataBase;
-        [SerializeField] private GoldManager _goldManager;
 
-        #endregion
+        public event Action<List<SkinData>> OnSkinDataLoaded; //TODO <김승태> private 선언 후 Init 하는 방식으로 추후 변경 필요.
 
-        private List<SkinItemController> _itemController = new();
-
-        private void Start()
-        {
-            LoadSkinsData();
-        }
-
-        private void LoadSkinsData()
+        public void LoadSkinsData()
         {
             //Firebase 데이터베이스 값 검색 실시
             FirebaseDatabase.DefaultInstance.GetReference("ShopData/SkinData").GetValueAsync()
             .ContinueWithOnMainThread(task =>
             {
                 //실패 혹은 존재하지 않을 시
-                if (task.IsFaulted || !task.Result.Exists) return;
-                DataSnapshot snapshot = task.Result;
-
-                //스크롤뷰 컨텐츠 하위 오브젝트 초기화
-                foreach (Transform child in _contentTransform)
+                if (task.IsFaulted || !task.Result.Exists)
                 {
-                    Destroy(child.gameObject);
+                    OnSkinDataLoaded?.Invoke(null);
+                    return;
                 }
-                _itemController.Clear();
 
+                DataSnapshot snapshot = task.Result;
                 List<SkinData> loadDataList = new();
 
                 //데이터 파싱 및 적용
@@ -73,22 +60,11 @@ namespace Kst
                     //리스트에 데이터 추가.
                     loadDataList.Add(skinData);
                 }
-
-                foreach (SkinData data in loadDataList)
-                {
-                    GameObject go = Instantiate(_skinItemPrefab, _contentTransform);
-
-                    var view = go.GetComponent<SkinItemView>();
-
-                    var controller = go.GetComponent<SkinItemController>();
-                    controller.Init(data, view, _goldManager, _shopDataBase);
-
-                    _itemController.Add(controller);
-                }
-
-                Debug.Log("데이터 로딩 완료");
-
+                OnSkinDataLoaded?.Invoke(loadDataList);
             });
+
         }
+
+
     }
 }

@@ -43,11 +43,5 @@ public class SkinItemView : UIBase
         _priceText.text = $"{_price} 골드";
         _purchaseBtn.interactable = !_isPurchsed;
     }
-
-    public void DebugMsg(string msg)
-    {
-        Debug.Log($"{msg}");
-    }
-
 }
 
