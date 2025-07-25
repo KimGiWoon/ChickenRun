@@ -1,10 +1,10 @@
-using System;
-using System.Linq;
-using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
 using Firebase.Auth;
 using Firebase.Extensions;
+using System;
+using System.Linq;
+using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
 
 /// <summary>
 /// 닉네임/이메일/비밀번호 입력을 통한 회원가입 기능을 담당하는 UI 패널 클래스
@@ -35,9 +35,10 @@ public class SignUpPanel : UIBase
         _nicknameCheckButton.onClick.AddListener(NicknameCheck);
         _emailCheckButton.onClick.AddListener(EmailCheck);
         _closePopupButton.onClick.AddListener(() => OnClickClosePopup?.Invoke());
-        _signUpButton.onClick.AddListener(() => {
-            OnClick_SignUp();           
-            OnClickSignup?.Invoke();    
+        _signUpButton.onClick.AddListener(() =>
+        {
+            OnClick_SignUp();
+            OnClickSignup?.Invoke();
         });
     }
 
@@ -56,16 +57,24 @@ public class SignUpPanel : UIBase
     /// </summary>
     public void OnClick_SignUp()
     {
-        // 이메일 중복 체크 재검사
-        if (_checkedEmail != _emailField.text)
+        // 닉네임 미입력
+        if (_nicknameField.text == "")
         {
-            _checkedEmail = "";
-            
-            Debug.LogError("이메일 중복 체크 필요");
+            Debug.LogError("닉네임 미입력");
 
-            // 팝업 (이메일 중복 체크)
-            PopupManager.Instance.ShowOKPopup("이메일 중복체크를 해주세요.", "OK" , () => PopupManager.Instance.HidePopup());
+            // 팝업 (패스워드 입력 요청)
+            PopupManager.Instance.ShowOKPopup("닉네임을 입력해 주세요.", "OK", () => PopupManager.Instance.HidePopup());
 
+            return;
+        }
+
+        // 닉네임 중복 체크 재검사
+        if (_nicknameField.text != _checkedNickname)
+        {
+            Debug.LogError("닉네임 중복 체크 필요");
+
+            // 팝업 (패스워드 입력 요청)
+            PopupManager.Instance.ShowOKPopup("닉네임을 중복체크를 해주세요.", "OK", () => PopupManager.Instance.HidePopup());
 
             return;
         }
@@ -80,6 +89,16 @@ public class SignUpPanel : UIBase
             // 팝업 (이메일 중복 체크)
             PopupManager.Instance.ShowOKPopup("이메일 중복체크를 해주세요.", "OK", () => PopupManager.Instance.HidePopup());
 
+            return;
+        }
+
+        // 패스워드 미입력
+        if (_passwordField.text == "" || _passwordConfirmField.text == "")
+        {
+            Debug.LogError("패스워드 필드 비어있음");
+
+            // 팝업 (패스워드 입력 요청)
+            PopupManager.Instance.ShowOKPopup("패스워드를 입력해 주세요.", "OK", () => PopupManager.Instance.HidePopup());
 
             return;
         }
@@ -88,9 +107,9 @@ public class SignUpPanel : UIBase
         if (_passwordField.text != _passwordConfirmField.text)
         {
             Debug.LogError("패스워드 일치하지 않음");
-           
+
             // 팝업 (패스워드 불일치)
-            PopupManager.Instance.ShowOKPopup("패스워드가 일치하지 않습니다.", "OK" , () => PopupManager.Instance.HidePopup());
+            PopupManager.Instance.ShowOKPopup("패스워드가 일치하지 않습니다.", "OK", () => PopupManager.Instance.HidePopup());
 
             return;
         }
@@ -107,6 +126,9 @@ public class SignUpPanel : UIBase
 
                 if (task.IsFaulted)
                 {
+                    // 팝업 (회원가입 실패)
+                    PopupManager.Instance.ShowOKPopup("회원가입 실패", "OK", () => PopupManager.Instance.HidePopup());
+
                     Debug.LogError($"가입 실패 / 원인: {task.Exception}");
                     return;
                 }
@@ -120,7 +142,7 @@ public class SignUpPanel : UIBase
 
                     // 인증 이메일 전송
                     SendEmailVerification(user);
-                    
+
                     // 팝업 (이메일 전송)
                     PopupManager.Instance.ShowOKPopup("인증 메일이 발송되었습니다.", "OK", () => PopupManager.Instance.HidePopup());
 
@@ -155,12 +177,15 @@ public class SignUpPanel : UIBase
 
                  else if (task.IsFaulted)
                  {
+                     // 팝업 (이메일 형식 확인)
+                     PopupManager.Instance.ShowOKPopup("올바른 이메일 형식이 아닙니다.", "OK", () => PopupManager.Instance.HidePopup());
+
                      Debug.LogError($"이메일 중복 체크 실패 / 원인 : {task.Exception}");
                      return;
                  }
 
                  else if (task.IsCompletedSuccessfully)
-                 { 
+                 {
                      var providers = task.Result;
                      foreach (string provider in task.Result)
                      {
@@ -170,14 +195,14 @@ public class SignUpPanel : UIBase
                      if (providers.Any())
                      {
                          Debug.Log("중복된 이메일");
-                         
+
                          // 팝업 (중복된 이메일)
                          PopupManager.Instance.ShowOKPopup("중복된 이메일입니다.", "OK", () => PopupManager.Instance.HidePopup());
                      }
 
                      else
                      {
-                         Debug.Log("사용 가능한 이메일");
+                         Debug.Log("사용 가능한 이메일입니다.");
 
                          // 팝업 (사용 가능 이메일)
                          PopupManager.Instance.ShowOKPopup("사용가능한 이메일입니다.", "OK", () => PopupManager.Instance.HidePopup());
@@ -212,7 +237,7 @@ public class SignUpPanel : UIBase
     private void NicknameCheck()
     {
         _checkedEmail = _nicknameField.text;
-        
+
     }
 
     /// <summary>
