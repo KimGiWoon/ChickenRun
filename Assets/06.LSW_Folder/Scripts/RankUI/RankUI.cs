@@ -5,14 +5,19 @@ using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class RankUI : UIBase
 {
-    [SerializeField] private Button _map1RankBtn;
-    [SerializeField] private Button _map2RankBtn;
-    [SerializeField] private Button _map3RankBtn;
-    [SerializeField] private Button _scoreRankBtn;
+    [SerializeField] private Toggle _map1RankToggle;
+    [SerializeField] private Toggle _map2RankToggle;
+    [SerializeField] private Toggle _map3RankToggle;
+    [SerializeField] private Toggle _scoreRankToggle;
+
+    [SerializeField] private Sprite _selectedSprite;
+    [SerializeField] private Sprite _normalSprite;
+    
 
     [SerializeField] private TextMeshProUGUI _rank;
     [SerializeField] private TextMeshProUGUI _nickname;
@@ -25,15 +30,47 @@ public class RankUI : UIBase
     private Func<Task> _onClickScoreRank;
 
     // async와 void를 동시에 사용하는 것은 좋지 않지만 Unity 이벤트 함수의 한계
+    // 버튼을 선택하고 나서 UI 다른 곳을 터치했을 때 sprite가 normal 상태로 돌아가는 문제
+    // 버튼을 토글로 바꾸고 isOn을 매개변수로 받아 이를 토대로 sprite를 코드로 관리하여 해결 
     private async void Start()
     {
-        _map1RankBtn.onClick.AddListener(() => _onClickMap1Rank?.Invoke());
-        _map2RankBtn.onClick.AddListener(() => _onClickMap2Rank?.Invoke());
-        _map3RankBtn.onClick.AddListener(() => _onClickMap3Rank?.Invoke());
-        _scoreRankBtn.onClick.AddListener(() => _onClickScoreRank?.Invoke());
+        _map1RankToggle.onValueChanged.AddListener((isOn) =>
+        {
+            _map1RankToggle.image.sprite = isOn ? _selectedSprite : _normalSprite;
+            if (isOn)
+            {
+                _onClickMap1Rank?.Invoke();
+            }
+        });
+        _map2RankToggle.onValueChanged.AddListener((isOn) => 
+        {
+            _map2RankToggle.image.sprite = isOn ? _selectedSprite : _normalSprite;
+            if (isOn)
+            {
+                _onClickMap2Rank?.Invoke();
+            }
+        });
+        _map3RankToggle.onValueChanged.AddListener((isOn) => 
+        {
+            _map3RankToggle.image.sprite = isOn ? _selectedSprite : _normalSprite;
+            if (isOn)
+            {
+                _onClickMap3Rank?.Invoke();
+            }
+        });
+        _scoreRankToggle.onValueChanged.AddListener((isOn) => 
+        {
+            _scoreRankToggle.image.sprite = isOn ? _selectedSprite : _normalSprite;
+            if (isOn)
+            {
+                _onClickScoreRank?.Invoke();
+            }
+        });
+        // Button일 때 시각적 처리 코드
+        //EventSystem.current.SetSelectedGameObject(_map1RankToggle.gameObject);
         
         // 랭킹보드 UI가 켜질 때 버튼이 선택되어있는 것처럼 보이기 위한 시각적 처리
-        EventSystem.current.SetSelectedGameObject(_map1RankBtn.gameObject);
+        _map1RankToggle.image.sprite = _selectedSprite;
         // 랭킹보드 UI가 켜질 때 Map1 관련 데이터가 업데이트되기 위한 기능적 처리
         await _onClickMap1Rank.Invoke();
     }
