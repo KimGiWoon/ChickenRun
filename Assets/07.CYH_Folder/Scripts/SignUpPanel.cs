@@ -1,10 +1,17 @@
 using Firebase.Auth;
+using Firebase.Database;
 using Firebase.Extensions;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using ParrelSync;
+using static Database_RecordManager;
+using System.ComponentModel.Design.Serialization;
+using JetBrains.Annotations;
 
 /// <summary>
 /// 닉네임/이메일/비밀번호 입력을 통한 회원가입 기능을 담당하는 UI 패널 클래스
@@ -44,8 +51,20 @@ public class SignUpPanel : UIBase
 
     public override void RefreshUI()
     {
+        _nicknameField.text = "";
         _emailField.text = "";
         _passwordField.text = "";
+        _passwordConfirmField.text = "";
+    }
+
+    /// <summary>
+    /// 안내 메세지 팝업을 띄우고 닫는 메서드
+    /// </summary>
+    /// <param name="message">팝업에 표시할 안내 메세지</param>
+    private void ShowPopup(string message)
+    {
+        Debug.LogError(message);
+        PopupManager.Instance.ShowOKPopup(message, "OK", () => PopupManager.Instance.HidePopup());
     }
 
     /// <summary>
@@ -54,6 +73,7 @@ public class SignUpPanel : UIBase
     /// 가입하기 클릭 시: 중복체크/패스워드 일치 여부 검사 후 인증 이메일 전송
     /// 회원가입 성공: 인증 메일 발송 팝업 활성화
     /// 회원가입 실패: 에러 코드 출력
+    /// 회원가입 실패 팝업: 1.닉네임 미입력 2.닉네임 중복체크 재검사 3. 이메일 미입력 4.이메일 중복 체크 재검사
     /// </summary>
     public void OnClick_SignUp()
     {
@@ -62,7 +82,7 @@ public class SignUpPanel : UIBase
         {
             Debug.LogError("닉네임 미입력");
 
-            // 팝업 (패스워드 입력 요청)
+            // 팝업 (닉네임 입력 요청)
             PopupManager.Instance.ShowOKPopup("닉네임을 입력해 주세요.", "OK", () => PopupManager.Instance.HidePopup());
 
             return;
@@ -73,7 +93,7 @@ public class SignUpPanel : UIBase
         {
             Debug.LogError("닉네임 중복 체크 필요");
 
-            // 팝업 (패스워드 입력 요청)
+            // 팝업 (닉네임 중복 체크)
             PopupManager.Instance.ShowOKPopup("닉네임을 중복체크를 해주세요.", "OK", () => PopupManager.Instance.HidePopup());
 
             return;
@@ -132,6 +152,7 @@ public class SignUpPanel : UIBase
                     Debug.LogError($"가입 실패 / 원인: {task.Exception}");
                     return;
                 }
+
                 if (task.IsCompletedSuccessfully)
                 {
                     AuthResult result = task.Result;
@@ -205,16 +226,16 @@ public class SignUpPanel : UIBase
                          Debug.Log("사용 가능한 이메일입니다.");
 
                          // 팝업 (사용 가능 이메일)
-                         PopupManager.Instance.ShowOKPopup("사용가능한 이메일입니다.", "OK", () => PopupManager.Instance.HidePopup());
+                         PopupManager.Instance.ShowOKPopup("사용 가능한 이메일입니다.", "OK", () => PopupManager.Instance.HidePopup());
                      }
                  }
              });
     }
 
     /// <summary>
-    /// 회원가입 인증 이메일을 전송하는 메서드
+    /// 회원가입 인증 메일을 전송하는 메서드
     /// </summary>
-    /// <param name="currentUser">인증 이메일을 보낼 유저</param>
+    /// <param name="currentUser">인증 메일을 보낼 유저</param>
     private void SendEmailVerification(FirebaseUser currentUser)
     {
         currentUser.SendEmailVerificationAsync()
@@ -222,22 +243,58 @@ public class SignUpPanel : UIBase
             {
                 if (task.IsCanceled)
                 {
-                    Debug.Log("인증 이메일 전송 취소");
+                    Debug.Log("인증 메일 전송 취소");
                     return;
                 }
+
                 if (task.IsFaulted)
                 {
-                    Debug.Log($"인증 이메일 전송 실패 / 원인 : {task.Exception}");
+                    Debug.Log($"인증 메일 전송 실패 / 원인 : {task.Exception}");
                     return;
                 }
-                Debug.Log("인증 이메일 전송 완료");
+                Debug.Log("인증 메일 전송 완료");
             });
     }
 
+    /// <summary>
+    /// 회원가입 시 유저 닉네임을 중복 체크하는 메서드
+    /// </summary>
     private void NicknameCheck()
     {
-        _checkedEmail = _nicknameField.text;
+         _checkedNickname = _nicknameField.text;
 
+        //DatabaseReference userData = CYH_FirebaseManager.Database.GetReference("UserData");
+        DatabaseReference userData = CYH_FirebaseManager.Database.RootReference.Child("UserData");
+
+        userData.OrderByChild("Public/Nickname").EqualTo(_nicknameField.text).GetValueAsync().ContinueWithOnMainThread(task=>
+        {
+            if (task.IsFaulted)
+            {
+                Debug.Log("실패: " + task.Exception);
+                return;
+            }
+            
+            DataSnapshot snapshot = task.Result;
+            
+            if (!snapshot.Exists || snapshot.ChildrenCount == 0)
+            {
+                Debug.Log("사용 가능한 닉네임");
+                
+                // 팝업 (사용 가능 닉네임)
+                PopupManager.Instance.ShowOKPopup("사용 가능한 닉네임입니다.", "OK", () => PopupManager.Instance.HidePopup());
+                return;
+            }
+
+            foreach (DataSnapshot user in snapshot.Children)
+            {
+                string uid = user.Key;
+                string nickname = user.Child("Public").Child("Nickname").Value?.ToString();
+                Debug.Log($"중복된 닉네임: {nickname}, uid: {uid}");
+
+                // 팝업 (중복된 닉네임)
+                PopupManager.Instance.ShowOKPopup("중복된 닉네임입니다.", "OK", () => PopupManager.Instance.HidePopup());
+            }
+        });
     }
 
     /// <summary>
@@ -254,16 +311,16 @@ public class SignUpPanel : UIBase
             {
                 if (task.IsCanceled)
                 {
-                    Debug.LogError("닉네임 변경 취소");
+                    Debug.LogError("닉네임 설정 취소");
                     return;
                 }
 
                 if (task.IsFaulted)
                 {
-                    Debug.LogError("닉네임 변경 실패");
+                    Debug.LogError("닉네임 설정 실패");
                     return;
                 }
-                Debug.Log("닉네임 변경 성공");
+                Debug.Log("닉네임 설정 성공");
             });
     }
 }
