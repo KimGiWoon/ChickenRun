@@ -255,12 +255,6 @@ public class Database_RecordManager : Singleton<Database_RecordManager>
     {
         // todo : GameManager 연동
         FirebaseUser user = _auth.CurrentUser;
-        // DB의 최상위 경로
-        //DatabaseReference reference = FirebaseManager_LSW.Database.RootReference;
-        // 최상위 경로의 값을 _text로 변경
-        //reference.SetValueAsync(_text);
-        
-        // Root/UserID/UserData/ 경로
         DatabaseReference userInfo = _reference.Child("RankData").Child(user.UserId);
 
         Dictionary<string, object> dictionary = new Dictionary<string, object>();
