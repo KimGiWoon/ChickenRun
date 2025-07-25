@@ -9,7 +9,7 @@ namespace Kst
         [SerializeField] private Transform _contentTransform;
         [SerializeField] private GameObject _skinItemPrefab;
         #endregion
-
+        
         private List<SkinItemView> _skinViews = new();
 
         public void CleanUpItems()

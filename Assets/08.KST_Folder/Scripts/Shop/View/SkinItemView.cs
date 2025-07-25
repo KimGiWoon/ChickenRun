@@ -8,6 +8,7 @@ public class SkinItemView : UIBase
     [SerializeField] private Image _skinImage;
     public Button _purchaseBtn;
 
+
     private Sprite _sprite;
     private string _name;
     private int _price;

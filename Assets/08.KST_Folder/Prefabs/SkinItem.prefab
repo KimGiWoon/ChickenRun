@@ -476,8 +476,8 @@ GameObject:
   m_Component:
   - component: {fileID: 2631999538734985968}
   - component: {fileID: 6837966431465317164}
-  - component: {fileID: 1959149853152927313}
   - component: {fileID: 7999186151217455898}
+  - component: {fileID: 2351860982445772613}
   m_Layer: 5
   m_Name: SkinItem
   m_TagString: Untagged
@@ -513,7 +513,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5459718257852279044}
   m_CullTransparentMesh: 1
---- !u!114 &1959149853152927313
+--- !u!114 &7999186151217455898
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5459718257852279044}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a18c8d28bd845643a2ed466367ab78b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2351860982445772613
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -529,15 +541,3 @@ MonoBehaviour:
   _priceText: {fileID: 3702766076515097972}
   _skinImage: {fileID: 3789190267614492739}
   _purchaseBtn: {fileID: 6318621758971712022}
---- !u!114 &7999186151217455898
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5459718257852279044}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8a18c8d28bd845643a2ed466367ab78b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 

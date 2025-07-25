@@ -9,7 +9,8 @@ namespace Kst
         [SerializeField] private ShopView _shopView;
         [SerializeField] private ShopDataLoader _shopDataLoader;
         [SerializeField] private ShopDataBase _shopDatabase;
-        [SerializeField] private GoldManager _goldManager;
+        // [SerializeField] private GoldManager _goldManager;
+        [SerializeField] private EggController _goldManager;
         #endregion
         private List<SkinItemController> _itemControllers = new();
 
