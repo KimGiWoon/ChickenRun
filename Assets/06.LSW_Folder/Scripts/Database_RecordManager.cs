@@ -8,16 +8,18 @@ using Firebase.Database;
 using Firebase.Extensions;
 using Photon.Pun.Demo.Cockpit;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 using Debug = UnityEngine.Debug;
 
 public class Database_RecordManager : Singleton<Database_RecordManager>
 {
     // 테스트 용 Btn,Panel -> 연동 이후 삭제
-    [SerializeField] private Button _openBtn;
+    [SerializeField] private Button _rankBtn;
     [SerializeField] private Button _testBtn;
-    [SerializeField] private Button _loadBtn;
+    [SerializeField] private Button _infoBtn;
     [SerializeField] private GameObject _rankPanel;
+    [SerializeField] private GameObject _infoPanel;
     
     private FirebaseAuth _auth;
     private DatabaseReference _reference;
@@ -49,8 +51,9 @@ public class Database_RecordManager : Singleton<Database_RecordManager>
     protected override void Awake()
     {
         base.Awake();
-        _openBtn.onClick.AddListener(Open);
+        _rankBtn.onClick.AddListener(Rank);
         _testBtn.onClick.AddListener(Test);
+        _infoBtn.onClick.AddListener(Info);
     }
     
     // 테스트용 자동 로그인 코드
@@ -80,7 +83,7 @@ public class Database_RecordManager : Singleton<Database_RecordManager>
     // 밀리초(ms)를 사용할거면 차라리 ms를 정수값으로 저장하고
     // 이를 포맷을 바꿔서 UI에 노출시키는게 가장 낫지 않을까
     // 밀리초(int)를 MM:SS:SS 형식으로 바꿔주는 메서드
-    private string FormatData(int ms)
+    public string FormatData(int ms)
     {
         int minute = ms / 60000;
         int second = (ms % 60000) / 1000;
@@ -213,9 +216,9 @@ public class Database_RecordManager : Singleton<Database_RecordManager>
         return info;
     }
     
-    // 플레이어 Info에 쓰이는 메서드로도 활용하려 했지만, 굳이 동기 처리를 해야할까?
+    // PlayerInfoUI, RankUI에 쓰이는 메서드로
     // 유저 개인 랭킹 정보를 불러오는 메서드(동기 처리)
-    private async Task<RankData> LoadRankData()
+    public async Task<RankData> LoadRankData()
     {
         FirebaseUser user = _auth.CurrentUser;
         DatabaseReference userInfo = _reference.Child("RankData").Child(user.UserId);
@@ -271,9 +274,15 @@ public class Database_RecordManager : Singleton<Database_RecordManager>
     }
 
     // MainScene 연동 이전 임시 로그인으로 작성한 코드 -> 연동 이후 삭제
-    private void Open()
+    private void Rank()
     {
-        _rankPanel.SetActive(true);
+        _rankPanel.SetActive(!_rankPanel.activeSelf);
+    }
+
+    // RoomScene 연동 이전 임시 버튼 연동 코드 -> 연동 이후 삭제
+    private void Info()
+    {
+        _infoPanel.SetActive(!_infoPanel.activeSelf);
     }
     
     // 초기 개인 랭킹 표시 메서드
