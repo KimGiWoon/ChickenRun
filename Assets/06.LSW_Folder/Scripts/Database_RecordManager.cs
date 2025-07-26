@@ -25,7 +25,7 @@ public class Database_RecordManager : Singleton<Database_RecordManager>
     private DatabaseReference _reference;
     
     private RankData _rankData;
-
+    
     // DTO (Data Transfer Object) 
     // DB에 저장되는 데이터중 Rank 데이터만 필드로 가지고 있는 클래스
     [System.Serializable]
@@ -76,8 +76,43 @@ public class Database_RecordManager : Singleton<Database_RecordManager>
                 _reference = FirebaseManager_LSW.Database.RootReference;
             }
         });
+        
+        // todo : GameManager 이벤트 메서드 연동
+        //GameManager.OnGameEnd += (data) => SaveUserRecord(data);
     }
 
+    // GameManager 게임 종료 이벤트에 등록할 메서드
+    // 플레이한 맵의 기록을 저장/갱신하고, 1등인 경우 승수를 +1한다.
+    /*private void SaveUserRecord(GameResultData data)
+    {
+        string uid = _auth.CurrentUser.UserId;
+        string key = data.MapType;
+        DatabaseReference recordRef = _reference.Child("RankData").Child(uid).Child(key);
+        
+        // 맵 기록 저장/갱신 Transaction
+        recordRef.RunTransaction(mutableData =>
+        {
+            int currentRecord = mutableData.Value == null ? int.MaxValue : (int)mutableData.Value;
+            if((int)data.Record < currentRecord)
+            {
+                mutableData.Value = data.Record;
+            }
+            return TransactionResult.Success(mutableData);
+        });
+        
+        // 1등했을 때 승수 갱신 Transaction
+        if(data.IsWin)
+        {
+            DatabaseReference scoreRef = _reference.Child("RankData").Child(uid).Child("Score");
+            scoreRef.RunTransaction(mutableData =>
+            {
+                int currentRecord = mutableData.Value == null ? 0 : (int)mutableData.Value;
+                mutableData.Value = currentRecord + 1;
+                return TransactionResult.Success(mutableData);
+            });
+        }
+    }*/
+    
     // 기록을 어떤 방식으로 저장하는 것이 비용이 가장 적게 들어가는가?
     // MM:SS:SS 를 그대로 캐싱하는 것은 아무리 생각해도 비용이 높을 것 같음
     // 밀리초(ms)를 사용할거면 차라리 ms를 정수값으로 저장하고
