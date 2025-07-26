@@ -17,11 +17,14 @@ public class RankUI : UIBase
 
     [SerializeField] private Sprite _selectedSprite;
     [SerializeField] private Sprite _normalSprite;
-    
 
+    [SerializeField] private GameObject _userRankRecord;
+    [SerializeField] private GameObject _userRankEmpty;
+    
     [SerializeField] private TextMeshProUGUI _rank;
     [SerializeField] private TextMeshProUGUI _nickname;
     [SerializeField] private TextMeshProUGUI _recordOrScore;
+    [SerializeField] private TextMeshProUGUI _popup;
     
     // 동기 처리를 위해 Action -> Func<Task>로 변환
     private Func<Task> _onClickMap1Rank;
@@ -78,9 +81,20 @@ public class RankUI : UIBase
     // MVC 패턴 구현을 위한 public 메서드
     public void SetRankText(string rank, string nickname, string recordOrScore)
     {
+        _userRankRecord.SetActive(true);
+        _userRankEmpty.SetActive(false);
         _rank.text = rank;
         _nickname.text = nickname;
         _recordOrScore.text = recordOrScore;
+    }
+    
+    // 기록이 없는 경우 플레이 안내 팝업 텍스트 출력 메서드
+    // 예외 처리 로직은 Controller 내에서 수행
+    public void SetPopupText()
+    {
+        _userRankRecord.SetActive(false);
+        _userRankEmpty.SetActive(true);
+        _popup.text = "플레이하여 기록을 세워보세요!";
     }
     
     // MVC 패턴 구현을 위한 public 메서드 (이벤트 처리)
