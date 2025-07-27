@@ -16,7 +16,7 @@ public class PlayerProperty : MonoBehaviour
         MinJumpPower = 1f;
         MaxJumpPower = 7f;
         MaxTouchTime = 1.5f;
-        MoveLeftDir = new Vector2(-0.3f, 1f);
-        MoveRightDir = new Vector2(0.3f, 1f);
+        MoveLeftDir = new Vector2(-0.5f, 1f);
+        MoveRightDir = new Vector2(0.5f, 1f);
     }
 }

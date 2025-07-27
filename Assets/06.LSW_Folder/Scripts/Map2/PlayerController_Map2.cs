@@ -67,7 +67,6 @@ public class PlayerController_Map2 : MonoBehaviourPun
         if(((1 << collision.gameObject.layer) & _groundLayer) != 0)
         {
             _isGround = true;
-            _rigid.velocity = Vector2.zero;
         }
     }
 
@@ -218,5 +217,11 @@ public class PlayerController_Map2 : MonoBehaviourPun
             _isOnTouch = false;
             _isOffTouch = false;
         }
+    }
+    
+    public void Bounce(float power)
+    {
+        _rigid.velocity = new Vector2(_rigid.velocity.x, 0);
+        _rigid.AddForce(Vector2.up * power, ForceMode2D.Impulse);
     }
 }
