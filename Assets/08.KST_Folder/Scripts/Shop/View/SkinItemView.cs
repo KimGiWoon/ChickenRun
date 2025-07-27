@@ -41,8 +41,13 @@ public class SkinItemView : UIBase
     {
         _skinImage.sprite = _sprite;
         _nameText.text = _name;
-        _priceText.text = $"{_price} 골드";
-        _purchaseBtn.interactable = !_isPurchsed;
+        if (!_isPurchsed)
+            _priceText.text = $"{_price} 골드";
+        else
+        {
+            _priceText.text = "이미 구매함.";
+            _purchaseBtn.interactable = !_isPurchsed;
+        }
     }
 }
 

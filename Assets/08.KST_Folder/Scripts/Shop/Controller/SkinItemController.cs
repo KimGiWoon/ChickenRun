@@ -1,3 +1,7 @@
+using System;
+using System.Collections.Generic;
+using Firebase.Database;
+using Firebase.Extensions;
 using Kst;
 using UnityEngine;
 
@@ -54,14 +58,37 @@ public class SkinItemController : MonoBehaviour
     {
         if (_goldManager.GetCurrentEgg() >= _data.Price)
         {
-            _goldManager.UseEgg(_data.Price);
-            _data.IsPurchased = true;
-            PopupManager.Instance.ShowOKPopup("구매완료");
+            string uid = FirebaseManager.Auth.CurrentUser?.UserId;
+            if (!string.IsNullOrEmpty(uid))
+            {
+                _goldManager.UseEgg(_data.Price);
+                _data.IsPurchased = true;
 
-            Debug.Log("구매 성공");
+                var skinRef = FirebaseDatabase.DefaultInstance
+                .GetReference("UserData").Child(uid).Child("SkinData").Child(_data.SkinName);
 
-            //구매 여부 갱신
-            _view.RefreshPurchase(true);
+                Dictionary<string, object> skinData = new()
+                {
+                    {"IsPurchased", true},
+                    {"PurchaseTime", DateTime.UtcNow.ToString("yy-MM-ddTHH:mm:ss")},
+                    {"Price", _data.Price}
+                };
+
+                skinRef.UpdateChildrenAsync(skinData).ContinueWithOnMainThread(task =>
+                {
+                    if (task.IsCompletedSuccessfully)
+                    {
+                        _view.RefreshPurchase(true);
+                        PopupManager.Instance.ShowOKPopup("구매완료");
+                        Debug.Log("구매 성공");
+                        _view.RefreshUI();
+                    }
+                });
+            }
+            else
+            {
+                Debug.LogError("로그인 유저 정보 없음");
+            }
         }
         else
         {
