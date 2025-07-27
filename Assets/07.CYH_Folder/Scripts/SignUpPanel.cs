@@ -67,6 +67,8 @@ public class SignUpPanel : UIBase
         PopupManager.Instance.ShowOKPopup(message, "OK", () => PopupManager.Instance.HidePopup());
     }
 
+    #region signup
+
     /// <summary>
     /// 회원가입 패널의 가입하기 버튼 클릭 시 호출되는 메서드
     /// 입력한 이메일/비밀번호로 Firebase 가입 시도
@@ -160,6 +162,10 @@ public class SignUpPanel : UIBase
             });
     }
 
+    #endregion
+
+    #region email
+
     /// <summary>
     /// 회원가입 시 이메일 중복 체크하는 메서드
     /// </summary>
@@ -203,8 +209,6 @@ public class SignUpPanel : UIBase
 
                      else
                      {
-                         Debug.Log("사용 가능한 이메일입니다.");
-
                          // 팝업 (사용 가능 이메일)
                          ShowPopup("사용 가능한 이메일입니다.");
                      }
@@ -235,6 +239,10 @@ public class SignUpPanel : UIBase
                 Debug.Log("인증 메일 전송 완료");
             });
     }
+
+    #endregion
+
+    #region nickname
 
     /// <summary>
     /// 회원가입 시 유저 닉네임을 중복 체크하는 메서드
@@ -302,3 +310,5 @@ public class SignUpPanel : UIBase
             });
     }
 }
+
+#endregion

@@ -21,11 +21,20 @@ public class CYH_FirebaseManager : MonoBehaviour
 
     private void Start()
     {
+        InitFirebase();
+    }
+
+    /// <summary>
+    /// Firebase 초기화하는 메서드
+    /// </summary>
+    private void InitFirebase()
+    {
         //Firebase 의존성 상태를 검사하고 초기화
         Firebase.FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(task =>
         {
             // 필요한 의존성 충족 검사
             Firebase.DependencyStatus dependencyStatus = task.Result;
+
             if (dependencyStatus == Firebase.DependencyStatus.Available)
             {
                 Debug.Log("Firbase 사용 가능");
@@ -34,6 +43,7 @@ public class CYH_FirebaseManager : MonoBehaviour
                 auth = FirebaseAuth.DefaultInstance;
                 database = FirebaseDatabase.DefaultInstance;
             }
+
             else
             {
                 Debug.LogError($"설정이 충족되지 않아 실패 / 원인: {dependencyStatus}");
