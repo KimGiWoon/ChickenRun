@@ -4,16 +4,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 
-public class PlayerController_Map2 : MonoBehaviour
+public class PlayerController_Map2 : MonoBehaviourPun
 {
     [SerializeField] private LayerMask _groundLayer;
     
     private Rigidbody2D _rigid;
     private PlayerProperty _player;
+    private DistanceJoint2D _joint;
     private Vector2 _moveDir;
     
     private bool _isGround;
-    private bool _jumpPressed;
     private bool _isOnTouch;
     private bool _isOffTouch;
 
@@ -24,23 +24,41 @@ public class PlayerController_Map2 : MonoBehaviour
     {
         _rigid = GetComponent<Rigidbody2D>();
         _player = GetComponent<PlayerProperty>();
+        _joint = GetComponent<DistanceJoint2D>();
+        _joint.enabled = false;
     }
 
+    private void Start()
+    {
+        if (photonView.IsMine)
+        {
+            Camera.main.GetComponent<CameraController_Map2>().SetTarget(transform);
+            GameManager_Map2.Instance.OnStartGame += () => SetJoint();
+        }
+    }
+    
     // 마우스, 터치 입력은 Update에서 처리
     // 마우스 입력은 전처리기를 통해 Editor 상에서만 사용하고 빌드 시 포함x
     private void Update()
     {
-    #if UNITY_EDITOR
-        TouchInput_Test();
-    #endif
-        TouchInput();
+        if (photonView.IsMine)
+        {
+#if UNITY_EDITOR
+            TouchInput_Test();
+#endif
+            TouchInput();
+        }
+    
     }
 
     // Rigidbody2D의 속성을 변경하는 경우 FixedUpdate에서 처리
     private void FixedUpdate()
     {
-        SetGravity();
-        PlayerJump();
+        if (photonView.IsMine)
+        {
+            SetGravity();
+            PlayerJump();
+        }
     }
     
     // GroundLayer에 2개 이상의 layer가 포함될 수 있어 비트 연산으로 코드 수정
@@ -60,18 +78,35 @@ public class PlayerController_Map2 : MonoBehaviour
         if (collision.gameObject.layer == LayerMask.NameToLayer("Egg"))
         {
             // 게임매니저의 알 개수 증가
-            GameManager.Instance.GetEgg(1);
+            GameManager_Map2.Instance.GetEgg();
             Destroy(collision.gameObject);
         }
         
         if(collision.gameObject.layer == LayerMask.NameToLayer("Goal"))
         {
-            // 플레이 시간 정지
-            GameManager.Instance.StopPlayTime();
+            GameManager_Map2.Instance.ReachGoalPoint();
+        }
+    }
+
+    private void SetJoint()
+    {
+        Debug.Log("진입");
+        foreach (var player in GameObject.FindGameObjectsWithTag("Player"))
+        {
+            if(player == gameObject) continue;
+
+            Rigidbody2D target = player.GetComponent<Rigidbody2D>();
+
+            if (target != null)
+            {
+                _joint.connectedBody = target;
+                _joint.enabled = true;
+                break;
+            }
         }
         
     }
-
+    
     // 떨어질 때 중력값 보정
     private void SetGravity()
     {
@@ -155,6 +190,7 @@ public class PlayerController_Map2 : MonoBehaviour
         
         if (Input.GetMouseButtonUp(0) && _isGround && _isOnTouch)
         {
+            _touchEndTime = Time.time;
             _isOffTouch = true;
         }
     }

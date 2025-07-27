@@ -19,6 +19,7 @@ public class GameManager_Map2 : Singleton<GameManager_Map2>
     
     // 달걀 획득에 대한 이벤트 (UI 적용)
     // TODO: UI에서 Start와 OnDestroy에 이벤트 구독과 취소 설정 필요
+    public event Action OnStartGame;
     public event Action<int> OnGetEgg;
     public event Action<Map2Data> OnEndGame;
     public event Action OnTimeUp;
@@ -52,6 +53,7 @@ public class GameManager_Map2 : Singleton<GameManager_Map2>
     
     public void StartGame()
     {
+        OnStartGame?.Invoke();
         _stopwatch.Start();
     }
     

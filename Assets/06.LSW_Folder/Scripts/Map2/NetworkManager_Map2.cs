@@ -7,11 +7,15 @@ using UnityEngine;
 public class NetworkManager_Map2 : MonoBehaviourPunCallbacks
 {
     private int _currentPlayer;
+
+    private void Awake()
+    {
+        // 서버 접속
+        PhotonNetwork.ConnectUsingSettings();
+    }
     
     private void Start()
     {   
-        // 서버 접속
-        PhotonNetwork.ConnectUsingSettings();
         GameManager_Map2.Instance.OnTimeUp += () => PhotonNetwork.LeaveRoom();
     }
 
@@ -40,7 +44,7 @@ public class NetworkManager_Map2 : MonoBehaviourPunCallbacks
     private void PlayerSpawn()
     {
         Vector2 spawnPos = new Vector2(0, 0);
-        PhotonNetwork.Instantiate($"BasicPlayer", spawnPos, Quaternion.identity);
+        PhotonNetwork.Instantiate($"Player_Map2", spawnPos, Quaternion.identity);
     }
 
     [PunRPC]
@@ -56,6 +60,7 @@ public class NetworkManager_Map2 : MonoBehaviourPunCallbacks
     [PunRPC]
     private void StartGame()
     {
+        Debug.Log("게임 시작");
         GameManager_Map2.Instance.StartGame();
     }
 }
