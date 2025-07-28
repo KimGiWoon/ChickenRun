@@ -150,7 +150,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         UnityEngine.Debug.Log("모든 플레이어가 방을 나갑니다.");
 
         // 현재의 방을 나가기
-        //PhotonNetwork.LeaveRoom(this);
+        PhotonNetwork.LeaveRoom(this);
 
         // 로비 씬이 있으면 추가해서 씬 이동
         //PhotonNetwork.LoadLevel("로비씬");

@@ -34,7 +34,7 @@ public class PlayerEmoticonController : MonoBehaviourPun
         }
     }
 
-    // 이모티콘 플레이
+    // 자신을 제외한 플레이어에게 이모티콘 표시
     [PunRPC]
     public void EmoticonPlay(int index)
     {        
