@@ -86,9 +86,13 @@ crashlytics-build.properties
 /Assets/Firebase.meta
 /Assets/StreamingAssets.meta
 /Assets/StreamingAssets/google-services-desktop.json
+/Assets/StreamingAssets/google-services.json
+/Assets/StreamingAssets/google-services.json.meta
 /Assets/StreamingAssets/google-services-desktop.json.meta
 /Assets/Plugins
 /Assets/Plugins.meta
 /Assets/GeneratedLocalRepo
 /Assets/GeneratedLocalRepo.meta
 /.idea/.idea.ChickenRun/.idea
+/Assets/GoogleSignIn
+Assets/GoogleSignIn.meta
