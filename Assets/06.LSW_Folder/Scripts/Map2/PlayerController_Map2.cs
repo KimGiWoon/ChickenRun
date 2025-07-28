@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
+using Unity.VisualScripting;
 
 public class PlayerController_Map2 : MonoBehaviourPun
 {
@@ -16,6 +17,7 @@ public class PlayerController_Map2 : MonoBehaviourPun
     private bool _isGround;
     private bool _isOnTouch;
     private bool _isOffTouch;
+    private bool _isLinked;
 
     private float _touchStartTime;
     private float _touchEndTime;
@@ -35,6 +37,8 @@ public class PlayerController_Map2 : MonoBehaviourPun
             Camera.main.GetComponent<CameraController_Map2>().SetTarget(transform);
             GameManager_Map2.Instance.OnStartGame += () => SetJoint();
         }
+        // 만약 다른 사람인데 팀까지 다르면
+        // 그때는 투명도를 조금 올리자
     }
     
     // 마우스, 터치 입력은 Update에서 처리
@@ -87,24 +91,35 @@ public class PlayerController_Map2 : MonoBehaviourPun
         }
     }
 
-    // 두 플레이어를 줄로 묶는 메서드
-    // 추후 3명 이상 입장할 경우 조건 변경
+    // 같은 팀의 두 플레이어를 줄로 묶는 메서드
     private void SetJoint()
     {
+        if (_isLinked) return;
+        
+        string myTeam = PhotonNetwork.LocalPlayer.CustomProperties["Team"] as string;
+        
         foreach (var player in GameObject.FindGameObjectsWithTag("Player"))
         {
             if(player == gameObject) continue;
-
-            Rigidbody2D target = player.GetComponent<Rigidbody2D>();
-
-            if (target != null)
+            PhotonView otherPlayer = player.GetComponent<PhotonView>();
+            if (otherPlayer == null) continue;
+            
+            string team = otherPlayer.Owner.CustomProperties["Team"] as string;
+            if (team == myTeam)
             {
-                _joint.connectedBody = target;
-                _joint.enabled = true;
-                break;
-            }
+                Rigidbody2D target = player.GetComponent<Rigidbody2D>();
+
+                if (target != null)
+                {
+                    _joint.connectedBody = target;
+                    _joint.autoConfigureDistance = false;
+                    _joint.distance = 1f;
+                    _joint.enabled = true;
+                    _isLinked = true;
+                    break;
+                } 
+            } 
         }
-        
     }
     
     // 떨어질 때 중력값 보정
