@@ -19,6 +19,7 @@ public class PopupManager : Singleton<PopupManager>
     #region serialized Fields
 
     [SerializeField] private PopupPanel _popupPanel;
+    [SerializeField] private PlayerInfoUI PlayerInfoUI;
 
     #endregion // serialized Fields
 
@@ -69,6 +70,11 @@ public class PopupManager : Singleton<PopupManager>
     public void HidePopup()
     {
         _popupPanel?.SetHide();
+    }
+
+    public void ShowPlayerInfo(string uid)
+    {
+        // TODO백인권 : uid로 플레이어 정보를 가져와서 PlayerInfoUI에 표시합니다.
     }
 
     #endregion // public funcs

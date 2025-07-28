@@ -47,6 +47,7 @@ public class PlayLobbyPanel : UIBase, IInRoomCallbacks
     private System.Action _onBack;
     private System.Action _onOpenRoomSetting;
     private MapType _currentMap = MapType.Map1;
+    private ColorType _currentColor = ColorType.White;
 
     #endregion // private fields
 
@@ -274,7 +275,15 @@ public class PlayLobbyPanel : UIBase, IInRoomCallbacks
 
     private void ChangeColor(int dir)
     {
-        // TODO백인권 : 플레이어 색상 변경 로직 구현
+        int count = System.Enum.GetValues(typeof(ColorType)).Length;
+        int nextIndex = ((int)_currentColor + dir + count) % count;
+        _currentColor = (ColorType)nextIndex;
+
+        // Photon에 커스텀 프로퍼티로 저장
+        Hashtable props = new Hashtable {
+        { "Color", _currentColor.ToString() }};
+
+        PhotonNetwork.LocalPlayer.SetCustomProperties(props);
     }
 
     private void RefreshMapDisplay()
@@ -296,7 +305,28 @@ public class PlayLobbyPanel : UIBase, IInRoomCallbacks
 
     private void RefreshColorDisplay()
     {
-        _currentColorImage.color = Color.green; // TODO백인권 : 현재 플레이어의 색상으로 교체
+        if (PhotonNetwork.LocalPlayer.CustomProperties.TryGetValue("Color", out var value)) {
+            if (System.Enum.TryParse(value.ToString(), out ColorType parsedColor)) {
+                _currentColor = parsedColor;
+                _currentColorImage.color = ConvertColorTypeToUnityColor(_currentColor);
+            }
+        }
+    }
+
+    private Color ConvertColorTypeToUnityColor(ColorType type)
+    {
+        return type switch {
+            ColorType.White => Color.white,
+            ColorType.Red => Color.red,
+            ColorType.Blue => Color.blue,
+            ColorType.Green => Color.green,
+            ColorType.Yellow => Color.yellow,
+            ColorType.Purple => new Color(0.5f, 0f, 0.5f),
+            ColorType.Orange => new Color(1f, 0.5f, 0f),
+            ColorType.Pink => new Color(1f, 0.4f, 0.7f),
+            ColorType.Cyan => Color.cyan,
+            _ => Color.white,
+        };
     }
 
     #endregion // private funcs

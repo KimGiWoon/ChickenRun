@@ -26,4 +26,17 @@ public enum MapType
     Map3,
 }
 
+public enum ColorType
+{
+    White = 0,
+    Red,
+    Blue,
+    Green,
+    Yellow,
+    Purple,
+    Orange,
+    Pink,
+    Cyan,
+}
+
 #endregion // Type Def
