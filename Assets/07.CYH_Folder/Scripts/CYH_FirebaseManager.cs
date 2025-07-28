@@ -2,55 +2,125 @@ using Firebase;
 using Firebase.Auth;
 using Firebase.Database;
 using Firebase.Extensions;
+using Google;
+using System.Threading.Tasks;
+using TMPro;
 using UnityEngine;
 
 public class CYH_FirebaseManager : Singleton<CYH_FirebaseManager>
 {
-    // 앱 전체 설정과 상태 관리
     private static FirebaseApp app;
     public static FirebaseApp App { get { return app; } }
 
-    // 인증 
     private static FirebaseAuth auth;
     public static FirebaseAuth Auth { get { return auth; } }
 
-    // 데이터베이스
+    private static FirebaseUser user;
+    public static FirebaseUser User { get { return user; } }
+
     private static FirebaseDatabase database;
     public static FirebaseDatabase Database { get { return database; } }
 
+    [SerializeField] private string googleWebAPI = "1912177127-go83if3uk9pelsa2186ti52hu74qhv5g.apps.googleusercontent.com";
+    private GoogleSignInConfiguration _configuration;
+
+    [SerializeField] private TMP_Text _userNickname;
+    [SerializeField] private TMP_Text _userEmail;
+    [SerializeField] private TMP_Text _error;
+    //[SerializeField] private Image userImage;
+
+    private void Awake()
+    {
+        _configuration = new GoogleSignInConfiguration
+        {
+            WebClientId = googleWebAPI,
+            RequestIdToken = true
+        };
+    }
 
     private void Start()
     {
         InitFirebase();
     }
 
-    /// <summary>
-    /// Firebase 초기화하는 메서드
-    /// </summary>
     private void InitFirebase()
     {
-        //Firebase 의존성 상태를 검사하고 초기화
         Firebase.FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(task =>
         {
-            // 필요한 의존성 충족 검사
             Firebase.DependencyStatus dependencyStatus = task.Result;
-
             if (dependencyStatus == Firebase.DependencyStatus.Available)
             {
-                Debug.Log("Firbase 사용 가능");
-                // 앱을 사용할 수 있게 초기화
                 app = FirebaseApp.DefaultInstance;
                 auth = FirebaseAuth.DefaultInstance;
                 database = FirebaseDatabase.DefaultInstance;
             }
-
             else
             {
-                Debug.LogError($"설정이 충족되지 않아 실패 / 원인: {dependencyStatus}");
                 app = null;
                 auth = null;
                 database = null;
             }
+        });
+    }
+
+    public void OnGoolgeSignInClicked()
+    {
+        GoogleSignIn.Configuration = _configuration;
+        GoogleSignIn.Configuration.UseGameSignIn = false;
+        GoogleSignIn.Configuration.RequestIdToken = true;
+        GoogleSignIn.Configuration.RequestEmail = true;
+
+        GoogleSignIn.DefaultInstance.SignIn().ContinueWithOnMainThread(OnGoogleAuthenticatedFinished);
+    }
+
+    private void OnGoogleAuthenticatedFinished(Task<GoogleSignInUser> task)
+    {
+        if (task.IsCanceled)
+        {
+            Debug.Log("Login Cancel");
+        }
+
+        if (task.IsFaulted)
+        {
+            Debug.Log("Faulted");
+        }
+
+        else
+        {
+            GoogleLogin(task);
+        }
+    }
+
+    private void GoogleLogin(Task<GoogleSignInUser> userTask)
+    {
+        Firebase.Auth.Credential credential =
+        Firebase.Auth.GoogleAuthProvider.GetCredential(userTask.Result.IdToken, null);
+        auth.SignInAndRetrieveDataWithCredentialAsync(credential).ContinueWithOnMainThread(task =>
+        {
+            if (task.IsCanceled)
+            {
+                Debug.LogError("SignInAndRetrieveDataWithCredentialAsync was canceled.");
+                _error.text = "구글 로그인 취소";
+                return;
+            }
+
+            if (task.IsFaulted)
+            {
+                Debug.LogError("SignInAndRetrieveDataWithCredentialAsync encountered an error: " + task.Exception);
+                _error.text = "구글 로그인 실패";
+                return;
+            }
+
+            Firebase.Auth.AuthResult result = task.Result;
+            Debug.LogFormat("User signed in successfully: {0} ({1})",
+                result.User.DisplayName, result.User.UserId);
+
+            _error.text = "구글 로그인 성공";
+            user = auth.CurrentUser;
+
+            _userNickname.text = user.DisplayName;
+            _userEmail.text = user.Email;
+
         });
     }
 }
