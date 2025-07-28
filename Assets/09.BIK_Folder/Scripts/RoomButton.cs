@@ -53,7 +53,7 @@ public class RoomButton : MonoBehaviour
         if (string.IsNullOrEmpty(_password)) { // 비밀번호가 없는 경우 바로 방에 입장
             PhotonManager.Instance.JoinRoom(_roomName);
         }
-        else { // 비밀번호가 있는 경우 비밀번호 입력 팝업 표시 TODO : 비밀번호 팝업
+        else { // 비밀번호가 있는 경우 비밀번호 입력 팝업 표시 TODO백인권 : 비밀번호 팝업
             // 비밀번호 입력 팝업 요청
             //PopupManager.Instance.ShowPasswordPopup("비밀번호를 입력해주세요.", _password, () => {
             //    PhotonManager.Instance.JoinRoom(_roomName);

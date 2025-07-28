@@ -21,7 +21,9 @@ public enum UIType
 
 public enum MapType
 {
-    Normal = 0,
+    Map1 = 0,
+    Map2,
+    Map3,
 }
 
 #endregion // Type Def

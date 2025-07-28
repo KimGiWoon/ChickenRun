@@ -55,7 +55,7 @@ public class PlayerSlot : MonoBehaviour
     // 나중에 클릭 시 정보창 표시할 경우 사용
     public void OnClick()
     {
-        // TODO: PlayerInfoPopup.Instance.Show(_player);
+        // TODO백인권: PlayerInfoPopup.Instance.Show(_player);
     }
 
     #endregion // public funcs

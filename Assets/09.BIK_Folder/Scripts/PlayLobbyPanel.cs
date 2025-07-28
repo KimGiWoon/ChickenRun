@@ -46,6 +46,7 @@ public class PlayLobbyPanel : UIBase, IInRoomCallbacks
 
     private System.Action _onBack;
     private System.Action _onOpenRoomSetting;
+    private MapType _currentMap = MapType.Map1;
 
     #endregion // private fields
 
@@ -189,49 +190,113 @@ public class PlayLobbyPanel : UIBase, IInRoomCallbacks
             _startOrReadyButton.interactable = allReady;
         }
         else {
-            _startOrReadyText.text = "준비"; // TODO : 준비 상태에 따라 텍스트 변경
+            bool isReady = PhotonNetwork.LocalPlayer.CustomProperties.TryGetValue("IsReady", out var value)
+                && value is bool b && b;
+
+            _startOrReadyText.text = isReady ? "준비 완료" : "준비";
             _startOrReadyButton.interactable = true;
         }
     }
 
     private bool CheckAllPlayersReady()
     {
-        return true; // TODO : 모든 플레이어의 준비 상태를 확인하는 로직 구현
+        foreach (var player in PhotonNetwork.PlayerList) {
+            if (!player.CustomProperties.TryGetValue("IsReady", out var value) || !(value is bool b) || !b)
+                return false;
+        }
+
+        return true;
     }
 
     private void OnClickStartOrReady()
     {
         if (PhotonNetwork.IsMasterClient) {
-            PhotonNetwork.LoadLevel("GameScene"); // TODO : 게임 씬 로드 로직 구현
+            // 현재 맵 타입 가져오기
+            string mapString = PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue("Map", out var value)
+                ? value.ToString()
+                : MapType.Map1.ToString(); // 기본값 Map1
+
+            if (System.Enum.TryParse(mapString, out MapType selectedMap)) {
+                Debug.Log($"[Photon] 게임 시작 - 선택된 맵: {selectedMap}");
+
+                // 선택된 맵 타입에 맞는 씬 이름으로 변경
+                switch (selectedMap) {
+                    case MapType.Map1:
+                        PhotonNetwork.LoadLevel("GameScene_Map1"); // TODO백인권 : 맵 씬 이름 변경 시 수정
+                        break;
+                    case MapType.Map2:
+                        PhotonNetwork.LoadLevel("GameScene_Map2");
+                        break;
+                    case MapType.Map3:
+                        PhotonNetwork.LoadLevel("GameScene_Map3");
+                        break;
+                    default:
+                        PhotonNetwork.LoadLevel("GameScene_Map1");
+                        break;
+                }
+            }
+            else {
+                // 맵 타입 파싱 실패 시 기본 맵 로드
+                PhotonNetwork.LoadLevel("GameScene_Map1");
+            }
         }
         else {
-            // TODO : 개별 플레이어 준비 상태 토글
+            // 현재 상태 가져오기
+            bool isReady = PhotonNetwork.LocalPlayer.CustomProperties.TryGetValue("IsReady", out var value) && value is bool b && b;
+
+            // 반대 상태로 전환
+            Hashtable props = new Hashtable {
+                { "IsReady", !isReady }};
+
+            PhotonNetwork.LocalPlayer.SetCustomProperties(props);
         }
     }
 
     private void ChangeMap(int dir)
     {
-        // TODO : 맵 변경 로직 구현
+        if (!PhotonNetwork.IsMasterClient)
+            return;
+
+        int mapCount = System.Enum.GetValues(typeof(MapType)).Length;
+        int newIndex = ((int)_currentMap + dir + mapCount) % mapCount;
+        _currentMap = (MapType)newIndex;
+
+        Hashtable props = new() {
+        { "Map", _currentMap.ToString() }};
+
+        PhotonNetwork.CurrentRoom.SetCustomProperties(props);
     }
 
     private void ChangeSkin()
     {
-        // TODO : 플레이어 스킨 선택 UI 표시
+        // TODO백인권 : 플레이어 스킨 선택 UI 표시
     }
 
     private void ChangeColor(int dir)
     {
-        // TODO : 플레이어 색상 변경 로직 구현
+        // TODO백인권 : 플레이어 색상 변경 로직 구현
     }
 
     private void RefreshMapDisplay()
     {
-        _mapNameText.text = "맵"; // TODO : 맵 이미지로 교체
+        if (PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue("Map", out var value)) {
+            if (System.Enum.TryParse(value.ToString(), out MapType parsedMap)) {
+                _currentMap = parsedMap;
+                _mapNameText.text = _currentMap.ToString();
+            }
+            else {
+                _mapNameText.text = "Unknown Map";
+            }
+        }
+        else {
+            _mapNameText.text = "Map1";
+            _currentMap = MapType.Map1;
+        }
     }
 
     private void RefreshColorDisplay()
     {
-        _currentColorImage.color = Color.green; // TODO : 현재 플레이어의 색상으로 교체
+        _currentColorImage.color = Color.green; // TODO백인권 : 현재 플레이어의 색상으로 교체
     }
 
     #endregion // private funcs

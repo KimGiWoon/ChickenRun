@@ -94,7 +94,8 @@ public class PlayMakeRoomPanel : UIBase
             // 방 안에 있으면 커스텀 속성만 갱신
             ExitGames.Client.Photon.Hashtable newProps = new() {
             { "RoomName", roomName },
-            { "Password", password }
+            { "Password", password },
+            { "Map", "DefaultMap" },
         };
 
             Photon.Pun.PhotonNetwork.CurrentRoom.SetCustomProperties(newProps);
@@ -109,9 +110,10 @@ public class PlayMakeRoomPanel : UIBase
                 IsOpen = true,
                 CustomRoomProperties = new ExitGames.Client.Photon.Hashtable {
                 { "RoomName", roomName },
-                { "Password", password }
+                { "Password", password },
+                { "Map", "DefaultMap" },
             },
-                CustomRoomPropertiesForLobby = new[] { "RoomName", "Password" }
+                CustomRoomPropertiesForLobby = new[] { "RoomName", "Password", "Map" }
             };
 
             Photon.Pun.PhotonNetwork.CreateRoom(internalRoomName, options);
