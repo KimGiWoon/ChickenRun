@@ -1,3 +1,7 @@
+using System;
+using System.Collections.Generic;
+using Firebase.Database;
+using Firebase.Extensions;
 using Kst;
 using UnityEngine;
 
@@ -5,7 +9,7 @@ public class SkinItemController : MonoBehaviour
 {
     private SkinData _data;
     private SkinItemView _view;
-    private GoldManager _goldManager;
+    private EggController _goldManager;
     private ShopDataBase _database;
 
     /// <summary>
@@ -17,7 +21,8 @@ public class SkinItemController : MonoBehaviour
     /// <param name="view">해당 스킨에 대응하는 UI</param>
     /// <param name="goldManager">플레이어 골드 관리 매니저</param>
     /// <param name="shopDataBase">스킨 이미지 리소스 및 일부 정보를 갖고 있는 데이터베이스</param>
-    public void Init(SkinData data, SkinItemView view, GoldManager goldManager, ShopDataBase shopDataBase)
+    // public void Init(SkinData data, SkinItemView view, GoldManager goldManager, ShopDataBase shopDataBase)
+    public void Init(SkinData data, SkinItemView view, EggController goldManager, ShopDataBase shopDataBase)
     {
         _data = data;
         _view = view;
@@ -51,16 +56,39 @@ public class SkinItemController : MonoBehaviour
     /// </summary>
     private void TryBuy()
     {
-        if (_goldManager.CurrentGold >= _data.Price)
+        if (_goldManager.GetCurrentEgg() >= _data.Price)
         {
-            _goldManager.DecreaseGold(_data.Price);
-            _data.IsPurchased = true;
-            PopupManager.Instance.ShowOKPopup("구매완료");
+            string uid = FirebaseManager.Auth.CurrentUser?.UserId;
+            if (!string.IsNullOrEmpty(uid))
+            {
+                _goldManager.UseEgg(_data.Price);
+                _data.IsPurchased = true;
 
-            Debug.Log("구매 성공");
+                var skinRef = FirebaseDatabase.DefaultInstance
+                .GetReference("UserData").Child(uid).Child("SkinData").Child(_data.SkinName);
 
-            //구매 여부 갱신
-            _view.RefreshPurchase(true);
+                Dictionary<string, object> skinData = new()
+                {
+                    {"IsPurchased", true},
+                    {"PurchaseTime", DateTime.UtcNow.ToString("yy-MM-ddTHH:mm:ss")},
+                    {"Price", _data.Price}
+                };
+
+                skinRef.UpdateChildrenAsync(skinData).ContinueWithOnMainThread(task =>
+                {
+                    if (task.IsCompletedSuccessfully)
+                    {
+                        _view.RefreshPurchase(true);
+                        PopupManager.Instance.ShowOKPopup("구매완료");
+                        Debug.Log("구매 성공");
+                        _view.RefreshUI();
+                    }
+                });
+            }
+            else
+            {
+                Debug.LogError("로그인 유저 정보 없음");
+            }
         }
         else
         {

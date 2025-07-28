@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: ShopDataBase
   m_EditorClassIdentifier: 
   SkinInfoList:
-  - SkinImage: {fileID: 21300000, guid: e917a01ab40168b488405a805c915131, type: 3}
+  - SkinImage: {fileID: 21300000, guid: 81b22f2b5393bce4fad630bdc11e24ae, type: 3}
     SkinName: first
-  - SkinImage: {fileID: 21300000, guid: dc817adb1d28c974dba537800ab692d1, type: 3}
+  - SkinImage: {fileID: 21300000, guid: 3e079bdf61757dc49ac81d51d6d1221a, type: 3}
     SkinName: second
-  - SkinImage: {fileID: 21300000, guid: 3e5961aa59c31774595a38dfb2dc1208, type: 3}
+  - SkinImage: {fileID: 21300000, guid: d1705510b6da814418040a272b875d86, type: 3}
     SkinName: third
