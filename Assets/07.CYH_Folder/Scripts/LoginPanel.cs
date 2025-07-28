@@ -17,8 +17,8 @@ public class LoginPanel : UIBase
     [SerializeField] private Button _socialLoginButton;
     [SerializeField] private Button _signupButton;
 
-    public Action OnClickSignup;
-    public Action OnClickSocialLogin;
+    public Action OnClickSignup { get; set; }
+    public Action OnClickSocialLogin { get; set; }
 
 
     private void Start()
@@ -32,7 +32,7 @@ public class LoginPanel : UIBase
     /// 로그인 버튼 클릭 시 호출되는 메서드
     /// 입력한 이메일/비밀번호로 Firebase 인증 시도
     /// 로그인 성공: 유저 정보를 출력하고 로그인 패널 비활성화
-    /// 로그인 실패: 에러 코드 출력
+    /// 로그인 실패: 로그인 실패 안내 팝업 활성화
     /// </summary>
     public void OnClick_Login()
     {
@@ -67,6 +67,7 @@ public class LoginPanel : UIBase
 
                     if (!user.IsEmailVerified)
                     {
+                        // 팝업 (이메일 인증 요청)
                         PopupManager.Instance.ShowOKPopup("이메일 인증을 완료해주세요.", "OK", () => PopupManager.Instance.HidePopup());
                         CYH_FirebaseManager.Auth.SignOut();
                         Debug.Log("로그아웃");
