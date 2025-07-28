@@ -92,3 +92,5 @@ crashlytics-build.properties
 /Assets/GeneratedLocalRepo
 /Assets/GeneratedLocalRepo.meta
 /.idea/.idea.ChickenRun/.idea
+/Assets/GoogleSignIn
+Assets/GoogleSignIn.meta
