@@ -19,9 +19,20 @@ public class PopupManager : Singleton<PopupManager>
     #region serialized Fields
 
     [SerializeField] private PopupPanel _popupPanel;
-    [SerializeField] private PlayerInfoUI PlayerInfoUI;
+    [SerializeField] private PlayerInfoUI _playerInfoUI;
+    [SerializeField] private PopupPassword _popupPassword;
 
     #endregion // serialized Fields
+
+
+
+
+
+    #region properties
+
+    public string CurrentPassword { get; set; } = string.Empty;
+
+    #endregion // properties
 
 
 
@@ -75,6 +86,18 @@ public class PopupManager : Singleton<PopupManager>
     public void ShowPlayerInfo(string uid)
     {
         // TODO백인권 : uid로 플레이어 정보를 가져와서 PlayerInfoUI에 표시합니다.
+    }
+
+    /// <summary>
+    /// 비밀번호 입력 팝업을 보여줍니다.
+    /// </summary>
+    /// <param name="onPasswordEntered">비밀번호 입력 확인 시 실행할 함수</param>
+    public void ShowPasswordPopup(Action onPasswordEntered)
+    {
+        if (_popupPassword == null) {
+            return;
+        }
+        _popupPassword.SetShow(onPasswordEntered);
     }
 
     #endregion // public funcs
