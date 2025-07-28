@@ -78,7 +78,7 @@ public class Database_RecordManager : Singleton<Database_RecordManager>
         });
         
         // todo : GameManager 이벤트 메서드 연동
-        //GameManager.OnGameEnd += (data) => SaveUserRecord(data);
+        //GameManager.Instance.OnEndGame += (data) => SaveUserRecord(data);
     }
 
     // GameManager 게임 종료 이벤트에 등록할 메서드
