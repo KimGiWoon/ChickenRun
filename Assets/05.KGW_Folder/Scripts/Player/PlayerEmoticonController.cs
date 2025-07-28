@@ -25,7 +25,7 @@ public class PlayerEmoticonController : MonoBehaviourPun
         // 자신의 이모티콘 컨트롤러 전달
         if (photonView.IsMine)
         {
-            Stage1UIManager uiManager = FindObjectOfType<Stage1UIManager>();
+            UIManager_Map1 uiManager = FindObjectOfType<UIManager_Map1>();
 
             if (uiManager != null)
             {

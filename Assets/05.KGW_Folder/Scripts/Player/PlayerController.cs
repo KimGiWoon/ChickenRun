@@ -14,7 +14,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     [Header("Correction Setting")]
     [SerializeField] float _correctionValue = 15f;
 
-    Stage1UIManager _gameUIManager;
+    UIManager_Map1 _gameUIManager;
     Rigidbody2D _playerRigid;
     Vector2 _jumpDir;
     Vector3 _currentPosition;
@@ -51,14 +51,14 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     private void Start()
     {
         // 플레이어 시작위치 저장
-        GameManager.Instance.StartPosSave(transform);
+        GameManager_Map1.Instance.StartPosSave(transform);
 
         // 자기 자신의 카메라 설정
         if (photonView.IsMine)
         {
             Camera.main.GetComponent<CameraController>().SetTarget(transform);
-            GameManager.Instance._gameUIManager.SetPlayerPosition(transform);
-            _gameUIManager = GameManager.Instance._gameUIManager;
+            GameManager_Map1.Instance._gameUIManager.SetPlayerPosition(transform);
+            _gameUIManager = GameManager_Map1.Instance._gameUIManager;
         }
     }
 
@@ -98,7 +98,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
             if (_gameUIManager._isEmoticonPanelOpen) return;
 
             // 결승점 통과 시 움직임 금지
-            if (GameManager.Instance._isGoal) return;
+            if (GameManager_Map1.Instance._isGoal) return;
 
             _touchStartTime = Time.time;
             _isTouch = true;
@@ -174,7 +174,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
             {
                 SoundManager.Instance.PlaySFX(SoundManager.Sfxs.SFX_GetEgg);
                 // 게임매니저의 알 개수 증가
-                GameManager.Instance.GetEgg(1);
+                GameManager_Map1.Instance.GetEgg(1);
                 Destroy(collision.gameObject);
             }
         }
@@ -186,7 +186,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
             Debug.Log("물에 접촉");
             // 게임의 처음 위치로 이동
             _playerRigid.velocity = Vector2.zero;
-            gameObject.transform.position = GameManager.Instance._startPos;
+            gameObject.transform.position = GameManager_Map1.Instance._startPos;
         }
 
         // 체크 포인트 접촉
@@ -195,7 +195,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
             // 자신의 리스폰 위치 변경
             if (photonView.IsMine)
             {
-                GameManager.Instance._startPos = collision.transform.position;
+                GameManager_Map1.Instance._startPos = collision.transform.position;
             }
         }
 
@@ -203,7 +203,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         if(collision.gameObject.layer == LayerMask.NameToLayer("Goal"))
         {
             // 골을 했으면 넘어가기
-            if (GameManager.Instance._isGoal) return;
+            if (GameManager_Map1.Instance._isGoal) return;
 
             // 내 플레이어만 처리
             if (photonView.IsMine)
@@ -215,7 +215,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
                 photonView.RPC(nameof(ArrivePlayer), RpcTarget.AllViaServer, playerNickname);
                 Debug.Log("결승선 도착");
                 
-                GameManager.Instance.StopStopWatch();
+                GameManager_Map1.Instance.StopStopWatch();
             }
         }
 
@@ -226,7 +226,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     public void ArrivePlayer(string playerNickname)
     {
         Debug.Log($"{playerNickname}께서 결승점에 도착했습니다.");
-        GameManager.Instance.PlayerReachedGoal(playerNickname);
+        GameManager_Map1.Instance.PlayerReachedGoal(playerNickname);
     }
 
     // 플레이어 포톤 뷰 동기화

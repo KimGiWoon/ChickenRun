@@ -44,3 +44,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba0436e62a667034885411dbe4bc7ebb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _gameUIManager: {fileID: 0}
+  _GamePlayTime: 300
+  _totalPlayerCount: 0
+  _isGoal: 0
+  _isFirstPlayer: 0
+  _goalPlayerCount: 0
+  _startPos: {x: 0, y: 0, z: 0}
+  _currentMapType: 
+  _totalPlayTime: 0
