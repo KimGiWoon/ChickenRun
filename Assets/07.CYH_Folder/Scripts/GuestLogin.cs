@@ -1,9 +1,7 @@
-using System;
-using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
 using Firebase.Auth;
 using Firebase.Extensions;
+using UnityEngine;
+using UnityEngine.UI;
 
 public class GuestLogin : MonoBehaviour
 {
@@ -14,9 +12,29 @@ public class GuestLogin : MonoBehaviour
         _guestLoginButton.onClick.AddListener(OnClick_GuestLogin);
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.S))
+        {
+            if(CYH_FirebaseManager.Auth.CurrentUser != null)
+            {
+                CYH_FirebaseManager.Auth.SignOut();
+                Debug.Log("로그아웃");
+            }
+        }
+    }
+
     private void OnClick_GuestLogin()
     {
-        CYH_FirebaseManager.Auth.SignInAnonymouslyAsync().ContinueWithOnMainThread(task => {
+        // 게스트 로그인 가능 여부 체크
+        if(CYH_FirebaseManager.Auth.CurrentUser != null)
+        {
+            PopupManager.Instance.ShowOKPopup("게스트 로그인 불가", "OK", () => PopupManager.Instance.HidePopup());
+            return;
+        }
+
+        CYH_FirebaseManager.Auth.SignInAnonymouslyAsync().ContinueWithOnMainThread(task =>
+        {
             if (task.IsCanceled)
             {
                 Debug.LogError("게스트 로그인 취소");
@@ -29,17 +47,15 @@ public class GuestLogin : MonoBehaviour
             }
 
             Firebase.Auth.AuthResult result = task.Result;
-            Debug.LogFormat("User signed in successfully: {0} ({1})",
-                result.User.DisplayName, result.User.UserId);
 
-           FirebaseUser user = CYH_FirebaseManager.Auth.CurrentUser;
+            FirebaseUser user = CYH_FirebaseManager.Auth.CurrentUser;
 
-            Debug.Log("게스트 로그인 성공");
+            PopupManager.Instance.ShowOKPopup("게스트 로그인 성공", "OK", () => PopupManager.Instance.HidePopup());
+
             Debug.Log("------유저 정보------");
             Debug.Log($"유저 닉네임 : {user.DisplayName}");
             Debug.Log($"유저 ID : {user.UserId}");
             Debug.Log($"이메일 : {user.Email}");
-
         });
     }
 }

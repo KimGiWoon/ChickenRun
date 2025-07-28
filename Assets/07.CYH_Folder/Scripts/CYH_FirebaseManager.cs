@@ -21,9 +21,13 @@ public class CYH_FirebaseManager : Singleton<CYH_FirebaseManager>
     private static FirebaseDatabase database;
     public static FirebaseDatabase Database { get { return database; } }
 
+    // 구글
     [SerializeField] private string googleWebAPI = "1912177127-go83if3uk9pelsa2186ti52hu74qhv5g.apps.googleusercontent.com";
+    
     private GoogleSignInConfiguration _configuration;
+    public GoogleSignInConfiguration Configuration { get { return _configuration; } } 
 
+    
     [SerializeField] private TMP_Text _userNickname;
     [SerializeField] private TMP_Text _userEmail;
     [SerializeField] private TMP_Text _error;

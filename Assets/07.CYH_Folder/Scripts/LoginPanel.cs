@@ -17,8 +17,14 @@ public class LoginPanel : UIBase
     [SerializeField] private Button _socialLoginButton;
     [SerializeField] private Button _signupButton;
 
+    // 계정 전환 테스트용
+    [SerializeField] private Button _linkAccountButton;
+
     public Action OnClickSignup { get; set; }
     public Action OnClickSocialLogin { get; set; }
+    
+    // 계정 전환 테스트용
+    public Action OnClickLinkAccount { get; set; }
 
 
     private void Start()
@@ -26,6 +32,9 @@ public class LoginPanel : UIBase
         _loginButton.onClick.AddListener(OnClick_Login);
         _socialLoginButton.onClick.AddListener(() => OnClickSocialLogin?.Invoke());
         _signupButton.onClick.AddListener(() => OnClickSignup?.Invoke());
+
+        // 계정 전환 테스트용
+        _linkAccountButton.onClick.AddListener(() => OnClickLinkAccount?.Invoke());
     }
 
     /// <summary>
