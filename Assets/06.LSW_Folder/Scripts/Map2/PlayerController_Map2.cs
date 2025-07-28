@@ -63,7 +63,7 @@ public class PlayerController_Map2 : MonoBehaviour
         if(collision.gameObject.layer == LayerMask.NameToLayer("Goal"))
         {
             // 플레이 시간 정지
-            GameManager.Instance.StopPlayTime();
+            GameManager.Instance.StopStopWatch();
         }
         
     }
