@@ -156,9 +156,12 @@ public class Database_RecordManager : Singleton<Database_RecordManager>
                             break;
                     }
 
-                    GameObject board = boardPool.GetPool();
-                    board.GetComponent<UserPersonalRecord>().SetRecordText(rank,rankData.Nickname,FormatData(recordValue));
-                    rank++;
+                    if (recordValue != 0)
+                    {
+                        GameObject board = boardPool.GetPool();
+                        board.GetComponent<UserPersonalRecord>().SetRecordText(rank,rankData.Nickname,FormatData(recordValue));
+                        rank++;
+                    }
                 }
             });
     }
