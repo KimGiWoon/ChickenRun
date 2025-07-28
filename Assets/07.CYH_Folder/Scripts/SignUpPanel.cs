@@ -3,15 +3,9 @@ using Firebase.Database;
 using Firebase.Extensions;
 using System;
 using System.Linq;
-using System.Threading.Tasks;
-using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using ParrelSync;
-using static Database_RecordManager;
-using System.ComponentModel.Design.Serialization;
-using JetBrains.Annotations;
 
 /// <summary>
 /// 닉네임/이메일/비밀번호 입력을 통한 회원가입 기능을 담당하는 UI 패널 클래스

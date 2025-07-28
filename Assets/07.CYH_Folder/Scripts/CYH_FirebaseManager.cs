@@ -4,7 +4,7 @@ using Firebase.Database;
 using Firebase.Extensions;
 using UnityEngine;
 
-public class CYH_FirebaseManager : MonoBehaviour
+public class CYH_FirebaseManager : Singleton<CYH_FirebaseManager>
 {
     // 앱 전체 설정과 상태 관리
     private static FirebaseApp app;
