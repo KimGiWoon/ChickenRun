@@ -5,20 +5,22 @@ using System.Diagnostics;
 using Photon.Pun;
 using UnityEngine;
 
-public class GameManager : MonoBehaviourPunCallbacks
+public class GameManager_Map1 : MonoBehaviourPunCallbacks
 {
-    [Header("Stage1 Ui Manager Reference")]
-    [SerializeField] public Stage1UIManager _gameUIManager;
+    [Header("Map1 Ui Manager Reference")]
+    [SerializeField] public UIManager_Map1 _gameUIManager;
 
-    [Header("Stage1 Setting")]
+    [Header("Map1 Setting")]
     [SerializeField] public float _GamePlayTime;
+    [SerializeField] public int _totalPlayerCount;
 
-    static GameManager instance;
+    static GameManager_Map1 instance;
     
     int _totalEggCount = 0;
+    Map1Data _data;
     public bool _isGoal = false;
+    public bool _isFirstPlayer = false;
     public int _goalPlayerCount = 0;
-    public int _totalPlayerCount;
     public Vector3 _startPos;
     public Stopwatch _stopwatch;
     public string _currentMapType;
@@ -26,17 +28,31 @@ public class GameManager : MonoBehaviourPunCallbacks
     
     // 달걀 획득에 대한 이벤트 (UI 적용)
     public event Action<int> OnEggCountChange;
+    public event Action<Map1Data> OnEndGame;
 
-    public static GameManager Instance
+    public static GameManager_Map1 Instance
     {
         get
         {
             if(instance == null)    // 게임매니저가 하이어라키창에 없으면 게임매니저 생성
             {
-                GameObject gameObject = new GameObject("GameManager");
-                instance = gameObject.AddComponent<GameManager>();
+                GameObject gameObject = new GameObject("GameManager_Map1");
+                instance = gameObject.AddComponent<GameManager_Map1>();
             }
             return instance;
+        }
+    }
+
+    // 데이터 베이스에 전달할 맵1 데이터 저장
+    public class Map1Data
+    {
+        public string MapType;
+        public long Record;
+        public int EggCount;
+
+        public Map1Data(string type)
+        {
+            MapType = type;
         }
     }
 
@@ -45,6 +61,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         // 게임매니저 생성
         CreateGameManager();
         _stopwatch = new Stopwatch();
+        _data = new Map1Data("Map1Record");
     }
 
     private void Start()
@@ -54,6 +71,12 @@ public class GameManager : MonoBehaviourPunCallbacks
 
         _totalPlayerCount = 2;
 
+    }
+
+    private void Update()
+    {
+        // 플레이 타임 오버 체크
+        PlayTimeOverCheck();
     }
 
     // 게임매니저가 생성한게 있으면 생성하지 않고 중복으로 생성 시 삭제
@@ -80,7 +103,11 @@ public class GameManager : MonoBehaviourPunCallbacks
     public void StartStopWatch()
     {
         // 스탑워치 리셋
-        _stopwatch.Reset();
+        if(_stopwatch != null)
+        {
+            _stopwatch.Reset();
+        }
+        
         // 스탑워치 시작
         _stopwatch.Start();
     }
@@ -90,15 +117,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         _stopwatch.Stop();
         _isGoal = true;
-
-        // 데이터 베이스에 넘겨줄 데이터 저장
-        GameResultDate gameResultDate = new GameResultDate
-        {
-            MapType = _currentMapType,
-            Record = (long)_stopwatch.Elapsed.TotalMilliseconds,
-            IsWin = _isGoal,
-            NormalEgg = _totalEggCount
-        };
+        _data.Record = _stopwatch.ElapsedMilliseconds;
     }
 
     // 플레이 타임 UI 업데이트
@@ -125,6 +144,8 @@ public class GameManager : MonoBehaviourPunCallbacks
     public void PlayerReachedGoal(string playerNickname)
     {
         _goalPlayerCount++;
+        _data.EggCount = _totalEggCount;
+        OnEndGame?.Invoke(_data);
         UnityEngine.Debug.Log($"현재 결승점에 도착한 플레이어 : {_goalPlayerCount}/{_totalPlayerCount}");
 
         // 모든 플레이어 결승점 도착
@@ -135,10 +156,21 @@ public class GameManager : MonoBehaviourPunCallbacks
         }
     }
 
+    // 게임 플레이 시간 오버 체크
+    private void PlayTimeOverCheck()
+    {
+        if (_totalPlayTime > _GamePlayTime)
+        {
+            GamePlayTimeOver();
+        }
+    }
+
     // 게임 시간 초과
     public void GamePlayTimeOver()
     {
         _stopwatch.Stop();
+        _data.EggCount = _totalEggCount;
+        OnEndGame?.Invoke(_data);
         UnityEngine.Debug.Log("게임 플레이 시간이 지났습니다.");
         photonView.RPC(nameof(GameClearLeaveRoom), RpcTarget.AllViaServer);
     }
@@ -148,22 +180,14 @@ public class GameManager : MonoBehaviourPunCallbacks
     public void GameClearLeaveRoom()
     {
         UnityEngine.Debug.Log("모든 플레이어가 방을 나갑니다.");
+        _stopwatch?.Reset();
 
         // 현재의 방을 나가기
-        //PhotonNetwork.LeaveRoom(this);
+        PhotonNetwork.LeaveRoom();
 
         // 로비 씬이 있으면 추가해서 씬 이동
         //PhotonNetwork.LoadLevel("로비씬");
     }
 }
 
-// 파이어 베이스에 넘겨줄 데이터
-[Serializable]
-public class GameResultDate
-{
-    public string MapType;
-    public long Record;
-    public bool IsWin;
-    public int NormalEgg;
-}
 
