@@ -12,6 +12,7 @@ public class PlayerController_Map2 : MonoBehaviourPun
     private Rigidbody2D _rigid;
     private PlayerProperty _player;
     private DistanceJoint2D _joint;
+    private SpriteRenderer _playerRenderer;
     private Vector2 _moveDir;
     
     private bool _isGround;
@@ -37,8 +38,10 @@ public class PlayerController_Map2 : MonoBehaviourPun
             Camera.main.GetComponent<CameraController_Map2>().SetTarget(transform);
             GameManager_Map2.Instance.OnStartGame += () => SetJoint();
         }
-        // 만약 다른 사람인데 팀까지 다르면
-        // 그때는 투명도를 조금 올리자
+        else
+        {
+            SetAlpha(0.5f);
+        }
     }
     
     // 마우스, 터치 입력은 Update에서 처리
@@ -91,6 +94,20 @@ public class PlayerController_Map2 : MonoBehaviourPun
         }
     }
 
+    private void ResetAlpha(GameObject player)
+    {
+        Color color = player.GetComponent<SpriteRenderer>().color;
+        color.a = 1f;
+        player.GetComponent<SpriteRenderer>().color = color;
+    }
+    
+    private void SetAlpha(float value)
+    {
+        Color color = _playerRenderer.color;
+        color.a = value;
+        _playerRenderer.color = color;
+    }
+    
     // 같은 팀의 두 플레이어를 줄로 묶는 메서드
     private void SetJoint()
     {
@@ -116,6 +133,7 @@ public class PlayerController_Map2 : MonoBehaviourPun
                     _joint.distance = 1f;
                     _joint.enabled = true;
                     _isLinked = true;
+                    ResetAlpha(player);
                     break;
                 } 
             } 
