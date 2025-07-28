@@ -32,8 +32,8 @@ public class PopupPanel : UIBase
         _leftButtonText.text = leftText;
         _leftButton.onClick.RemoveAllListeners();
         _leftButton.onClick.AddListener(() => {
-            onLeftClick?.Invoke();
             SetHide();
+            onLeftClick?.Invoke();
         });
 
         _rightButton.gameObject.SetActive(true);
@@ -55,8 +55,8 @@ public class PopupPanel : UIBase
         _leftButtonText.text = leftText;
         _leftButton.onClick.RemoveAllListeners();
         _leftButton.onClick.AddListener(() => {
-            onLeftClick?.Invoke();
             SetHide();
+            onLeftClick?.Invoke();
         });
 
         _rightButton.gameObject.SetActive(false);
