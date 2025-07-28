@@ -41,15 +41,11 @@ MonoBehaviour:
   - RespawnSpaceship
   - NotifyPlayer
   - StartGame
-  DisableAutoOpenWizard: 1
-  ShowSettings: 1
   - ArrivePlayer
-  - StartGame
-  - startGameRoutine
+  - EmoticonPlay
   - ExitPlayer
   - GameClearLeaveRoom
   - StartGameRoutine
-  - EmoticonPlay
   DisableAutoOpenWizard: 1
-  ShowSettings: 0
+  ShowSettings: 1
   DevRegionSetOnce: 1

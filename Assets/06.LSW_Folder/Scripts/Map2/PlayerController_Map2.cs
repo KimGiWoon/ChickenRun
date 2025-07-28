@@ -87,9 +87,10 @@ public class PlayerController_Map2 : MonoBehaviourPun
         }
     }
 
+    // 두 플레이어를 줄로 묶는 메서드
+    // 추후 3명 이상 입장할 경우 조건 변경
     private void SetJoint()
     {
-        Debug.Log("진입");
         foreach (var player in GameObject.FindGameObjectsWithTag("Player"))
         {
             if(player == gameObject) continue;
@@ -219,6 +220,7 @@ public class PlayerController_Map2 : MonoBehaviourPun
         }
     }
     
+    // Bounce Tile을 밟았을 때 호출되는 메서드
     public void Bounce(float power)
     {
         _rigid.velocity = new Vector2(_rigid.velocity.x, 0);
