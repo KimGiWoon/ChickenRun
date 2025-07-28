@@ -45,12 +45,14 @@ public class GameManager_Map2 : Singleton<GameManager_Map2>
 
     private void Update()
     {
+        // 3분이 지나면 게임 종료
         if (_stopwatch.ElapsedMilliseconds >= 180000)
         {
             StartCoroutine(EndGame());
         }
     }
     
+    // 게임 시작
     public void StartGame()
     {
         OnStartGame?.Invoke();
@@ -65,6 +67,7 @@ public class GameManager_Map2 : Singleton<GameManager_Map2>
         _data.Record = _stopwatch.ElapsedMilliseconds;
     }
 
+    // 게임이 종료될 때 호출되는 메서드
     public IEnumerator EndGame()
     {
         _stopwatch.Stop();

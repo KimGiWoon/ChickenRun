@@ -33,11 +33,13 @@ public class PlayerController_Map2 : MonoBehaviourPun
 
     private void Start()
     {
+        // 자신인 경우
         if (photonView.IsMine)
         {
             Camera.main.GetComponent<CameraController_Map2>().SetTarget(transform);
             GameManager_Map2.Instance.OnStartGame += () => SetJoint();
         }
+        // 자신이 아닌 경우 투명도 낮추기
         else
         {
             SetAlpha(0.5f);
@@ -94,6 +96,7 @@ public class PlayerController_Map2 : MonoBehaviourPun
         }
     }
 
+    // player의 투명도를 다시 1로 리셋하는 메서드
     private void ResetAlpha(GameObject player)
     {
         Color color = player.GetComponent<SpriteRenderer>().color;
@@ -101,6 +104,7 @@ public class PlayerController_Map2 : MonoBehaviourPun
         player.GetComponent<SpriteRenderer>().color = color;
     }
     
+    // 투명도 조절 메서드
     private void SetAlpha(float value)
     {
         Color color = _playerRenderer.color;
@@ -113,19 +117,29 @@ public class PlayerController_Map2 : MonoBehaviourPun
     {
         if (_isLinked) return;
         
+        // 네트워크에 저장된 커스텀 프로퍼티의 내 팀
         string myTeam = PhotonNetwork.LocalPlayer.CustomProperties["Team"] as string;
         
         foreach (var player in GameObject.FindGameObjectsWithTag("Player"))
         {
+            // 자신인 경우 스킵
             if(player == gameObject) continue;
+            
+            // 플레이어의 PhotonView를 가져오기
             PhotonView otherPlayer = player.GetComponent<PhotonView>();
+            
+            // PhotonView가 없으면 스킵
             if (otherPlayer == null) continue;
             
+            // 네트워크에 저장된 커스텀 프로퍼티의 다른 플레이어의 팀
             string team = otherPlayer.Owner.CustomProperties["Team"] as string;
+            
+            // 해당 팀이 내 팀과 같은 경우
             if (team == myTeam)
             {
                 Rigidbody2D target = player.GetComponent<Rigidbody2D>();
 
+                // Distance-Joint 연결, 투명도 리셋
                 if (target != null)
                 {
                     _joint.connectedBody = target;

@@ -19,6 +19,7 @@ public class PlayerInfoUIController : MonoBehaviour
         });
     }
 
+    // 외부 메서드 이벤트 연결은 Start 처리
     private void Start()
     {
         UserPersonalRecord.OnClickPlayerInfo += async (uid) => await ShowInfo(uid);
@@ -26,7 +27,7 @@ public class PlayerInfoUIController : MonoBehaviour
         _infoUI.SetHide();
     }
 
-    // 플레이어 정보를 model(DatabaseManager)에서 읽어와 view(_infoUI)에 전달
+    // uid에 해당하는 플레이어 정보를 model(DatabaseManager)에서 읽어와 view(_infoUI)에 전달
     private async Task ShowInfo(string uid)
     {
         _infoUI.gameObject.SetActive(true);

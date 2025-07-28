@@ -256,8 +256,8 @@ public class Database_RecordManager : Singleton<Database_RecordManager>
         return info;
     }
     
-    // PlayerInfoUI, RankUI에 쓰이는 메서드로
-    // 유저 개인 랭킹 정보를 불러오는 메서드(동기 처리)
+    // RankUI에 쓰이는 메서드
+    // 유저 개인 랭킹 정보를 불러오는 메서드
     public async Task<RankData> LoadRankData()
     {
         FirebaseUser user = _auth.CurrentUser;
@@ -273,6 +273,8 @@ public class Database_RecordManager : Singleton<Database_RecordManager>
         return rankData;
     }
 
+    // PlayerInfoUI에 쓰이는 메서드
+    // uid에 해당하는 플레이어의 랭킹 정보를 불러오는 메서드
     public async Task<RankData> LoadRankData(string uid)
     {
         DatabaseReference userInfo = _reference.Child("RankData").Child(uid);
