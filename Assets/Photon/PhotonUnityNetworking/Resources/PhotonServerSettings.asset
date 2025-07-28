@@ -43,4 +43,13 @@ MonoBehaviour:
   - StartGame
   DisableAutoOpenWizard: 1
   ShowSettings: 1
+  - ArrivePlayer
+  - StartGame
+  - startGameRoutine
+  - ExitPlayer
+  - GameClearLeaveRoom
+  - StartGameRoutine
+  - EmoticonPlay
+  DisableAutoOpenWizard: 1
+  ShowSettings: 0
   DevRegionSetOnce: 1
