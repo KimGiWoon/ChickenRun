@@ -62,6 +62,12 @@ public class InGameNetworkManager : MonoBehaviourPunCallbacks
         PhotonNetwork.Instantiate($"BasicPlayer", spawnPos, Quaternion.identity);
     }
 
+    // 방을 나가기
+    public override void OnLeftRoom()
+    {
+        UnityEngine.Debug.Log("방을 나감");
+    }
+
     // 입장 플레이어 체크
     private void CheckRoomPlayer()
     {
