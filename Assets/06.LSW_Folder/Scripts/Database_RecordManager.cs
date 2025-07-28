@@ -8,22 +8,24 @@ using Firebase.Database;
 using Firebase.Extensions;
 using Photon.Pun.Demo.Cockpit;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 using Debug = UnityEngine.Debug;
 
 public class Database_RecordManager : Singleton<Database_RecordManager>
 {
     // 테스트 용 Btn,Panel -> 연동 이후 삭제
-    [SerializeField] private Button _openBtn;
+    [SerializeField] private Button _rankBtn;
     [SerializeField] private Button _testBtn;
-    [SerializeField] private Button _loadBtn;
+    [SerializeField] private Button _infoBtn;
     [SerializeField] private GameObject _rankPanel;
+    [SerializeField] private GameObject _infoPanel;
     
     private FirebaseAuth _auth;
     private DatabaseReference _reference;
     
     private RankData _rankData;
-
+    
     // DTO (Data Transfer Object) 
     // DB에 저장되는 데이터중 Rank 데이터만 필드로 가지고 있는 클래스
     [System.Serializable]
@@ -49,8 +51,9 @@ public class Database_RecordManager : Singleton<Database_RecordManager>
     protected override void Awake()
     {
         base.Awake();
-        _openBtn.onClick.AddListener(Open);
+        _rankBtn.onClick.AddListener(Rank);
         _testBtn.onClick.AddListener(Test);
+        _infoBtn.onClick.AddListener(Info);
     }
     
     // 테스트용 자동 로그인 코드
@@ -73,14 +76,49 @@ public class Database_RecordManager : Singleton<Database_RecordManager>
                 _reference = FirebaseManager_LSW.Database.RootReference;
             }
         });
+        
+        // todo : GameManager 이벤트 메서드 연동
+        //GameManager.OnGameEnd += (data) => SaveUserRecord(data);
     }
 
+    // GameManager 게임 종료 이벤트에 등록할 메서드
+    // 플레이한 맵의 기록을 저장/갱신하고, 1등인 경우 승수를 +1한다.
+    /*private void SaveUserRecord(GameResultData data)
+    {
+        string uid = _auth.CurrentUser.UserId;
+        string key = data.MapType;
+        DatabaseReference recordRef = _reference.Child("RankData").Child(uid).Child(key);
+        
+        // 맵 기록 저장/갱신 Transaction
+        recordRef.RunTransaction(mutableData =>
+        {
+            int currentRecord = mutableData.Value == null ? int.MaxValue : (int)mutableData.Value;
+            if((int)data.Record < currentRecord)
+            {
+                mutableData.Value = data.Record;
+            }
+            return TransactionResult.Success(mutableData);
+        });
+        
+        // 1등했을 때 승수 갱신 Transaction
+        if(data.IsWin)
+        {
+            DatabaseReference scoreRef = _reference.Child("RankData").Child(uid).Child("Score");
+            scoreRef.RunTransaction(mutableData =>
+            {
+                int currentRecord = mutableData.Value == null ? 0 : (int)mutableData.Value;
+                mutableData.Value = currentRecord + 1;
+                return TransactionResult.Success(mutableData);
+            });
+        }
+    }*/
+    
     // 기록을 어떤 방식으로 저장하는 것이 비용이 가장 적게 들어가는가?
     // MM:SS:SS 를 그대로 캐싱하는 것은 아무리 생각해도 비용이 높을 것 같음
     // 밀리초(ms)를 사용할거면 차라리 ms를 정수값으로 저장하고
     // 이를 포맷을 바꿔서 UI에 노출시키는게 가장 낫지 않을까
     // 밀리초(int)를 MM:SS:SS 형식으로 바꿔주는 메서드
-    private string FormatData(int ms)
+    public string FormatData(int ms)
     {
         int minute = ms / 60000;
         int second = (ms % 60000) / 1000;
@@ -213,9 +251,9 @@ public class Database_RecordManager : Singleton<Database_RecordManager>
         return info;
     }
     
-    // 플레이어 Info에 쓰이는 메서드로도 활용하려 했지만, 굳이 동기 처리를 해야할까?
+    // PlayerInfoUI, RankUI에 쓰이는 메서드로
     // 유저 개인 랭킹 정보를 불러오는 메서드(동기 처리)
-    private async Task<RankData> LoadRankData()
+    public async Task<RankData> LoadRankData()
     {
         FirebaseUser user = _auth.CurrentUser;
         DatabaseReference userInfo = _reference.Child("RankData").Child(user.UserId);
@@ -255,12 +293,6 @@ public class Database_RecordManager : Singleton<Database_RecordManager>
     {
         // todo : GameManager 연동
         FirebaseUser user = _auth.CurrentUser;
-        // DB의 최상위 경로
-        //DatabaseReference reference = FirebaseManager_LSW.Database.RootReference;
-        // 최상위 경로의 값을 _text로 변경
-        //reference.SetValueAsync(_text);
-        
-        // Root/UserID/UserData/ 경로
         DatabaseReference userInfo = _reference.Child("RankData").Child(user.UserId);
 
         Dictionary<string, object> dictionary = new Dictionary<string, object>();
@@ -277,9 +309,15 @@ public class Database_RecordManager : Singleton<Database_RecordManager>
     }
 
     // MainScene 연동 이전 임시 로그인으로 작성한 코드 -> 연동 이후 삭제
-    private void Open()
+    private void Rank()
     {
-        _rankPanel.SetActive(true);
+        _rankPanel.SetActive(!_rankPanel.activeSelf);
+    }
+
+    // RoomScene 연동 이전 임시 버튼 연동 코드 -> 연동 이후 삭제
+    private void Info()
+    {
+        _infoPanel.SetActive(!_infoPanel.activeSelf);
     }
     
     // 초기 개인 랭킹 표시 메서드

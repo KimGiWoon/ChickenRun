@@ -9,7 +9,7 @@ public class SocialLoginPanel : UIBase
 {
     [SerializeField] private Button _closePopupButton;
 
-    public Action OnClickClosePopup;
+    public Action OnClickClosePopup { get; set; }
 
     private void Start()
     {

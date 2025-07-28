@@ -4,14 +4,14 @@ using Photon.Pun;
 using UnityEngine;
 using static UnityEngine.GraphicsBuffer;
 
-public class CameraController : MonoBehaviourPun
+public class CameraController : MonoBehaviour
 {
     [Header("Camera Setting Reference")]
     [SerializeField] float _followSpeed;
-    [SerializeField] bool _isDelayMove;
+    [SerializeField] public bool _isDelayMove;
 
     Transform _followTarget;
-    Vector3 _offset = new Vector3(0, 0, -10f);
+    Vector3 _offset = new Vector3(0, 2f, -10f);
 
     // 플레이어가 움직이고 난 후 카메라 이동
     private void LateUpdate()

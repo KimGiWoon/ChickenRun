@@ -35,11 +35,19 @@ public class LoginSceneUIManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 팝업을 여는 메서드
+    /// </summary>
+    /// <param name="type"></param>
     private void ShowUI(LoginUIType type)
     {
         _uiList[(int)type].SetShow();
     }
 
+    /// <summary>
+    /// 팝업을 숨기는 메서드
+    /// </summary>
+    /// <param name="type"></param>
     private void HideUI(LoginUIType type)
     {
         _uiList[(int)type].SetHide();
