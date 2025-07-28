@@ -59,7 +59,7 @@ public class Stage1UIManager : MonoBehaviourPun
     // 맵타입 설정
     private void OnEnable()
     {
-        GameManager.Instance._currentMapType = "Stage1";
+        GameManager.Instance._currentMapType = "Map1";
     }
 
     private void Start()
@@ -198,6 +198,7 @@ public class Stage1UIManager : MonoBehaviourPun
         PhotonView playerView = PhotonView.Get(_playerPosition.gameObject);
         if (playerView != null && playerView.IsMine)
         {
+            // 자신을 제외한 플레이어에게 이모티콘 표시
             playerView.RPC(nameof(_playerEmoticonController.EmoticonPlay), RpcTarget.Others, index);
         }
     }
@@ -207,17 +208,21 @@ public class Stage1UIManager : MonoBehaviourPun
     {
         string exitPlayer = PhotonNetwork.LocalPlayer.NickName;
 
-        // Scnen체인지 하여 밖으로 나가기
-
         // 나감을 알림
         photonView.RPC(nameof(ExitPlayer), RpcTarget.AllViaServer, exitPlayer);
     }
 
-    // 나간 플레이어
+    // 방 나가기
     [PunRPC]
     private void ExitPlayer(string PlayerNickname)
     {
         Debug.Log($"{PlayerNickname}께서 나갔습니다.");
+
+        // 현재의 방을 나가기
+        PhotonNetwork.LeaveRoom(this);
+
+        // 로비 씬이 있으면 추가해서 씬 이동
+        //PhotonNetwork.LoadLevel("로비씬");
     }
 
     // 출발지점과 도착지점 위치 확인
