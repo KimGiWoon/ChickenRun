@@ -28,6 +28,15 @@ public class PlayerInfoUI : UIBase
     {
         _onClickExitBtn = onClickExitBtn;
     }
+
+    public void ResetText()
+    {
+        _nickname.text = "";
+        _map1Record.text = "";
+        _map2Record.text = "";
+        _map3Record.text = "";
+        _score.text = "";
+    }
     
     // Controller에서 받은 정보로 UI(Text) 업데이트 메서드
     public void SetInfoText(Database_RecordManager.RankData data)

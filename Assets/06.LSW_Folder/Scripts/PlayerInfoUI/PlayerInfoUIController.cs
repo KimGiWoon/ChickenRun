@@ -14,20 +14,23 @@ public class PlayerInfoUIController : MonoBehaviour
     {
         _infoUI.Initialize(onClickExitBtn: () =>
         {
+            _infoUI.ResetText();
             _infoUI.SetHide();
         });
     }
-    
-    // 플레이어 정보창이 켜지면 자동 업데이트
-    private async void OnEnable()
+
+    private void Start()
     {
-        await ShowInfo();
+        UserPersonalRecord.OnClickPlayerInfo += async (uid) => await ShowInfo(uid);
+        _infoUI.ResetText();
+        _infoUI.SetHide();
     }
 
     // 플레이어 정보를 model(DatabaseManager)에서 읽어와 view(_infoUI)에 전달
-    private async Task ShowInfo()
+    private async Task ShowInfo(string uid)
     {
-        var info = await Database_RecordManager.Instance.LoadRankData();
+        _infoUI.gameObject.SetActive(true);
+        var info = await Database_RecordManager.Instance.LoadRankData(uid);
         _infoUI.SetInfoText(info);
     }
 }

@@ -159,7 +159,8 @@ public class Database_RecordManager : Singleton<Database_RecordManager>
                     if (recordValue != 0)
                     {
                         GameObject board = boardPool.GetPool();
-                        board.GetComponent<UserPersonalRecord>().SetRecordText(rank,rankData.Nickname,FormatData(recordValue));
+                        board.GetComponent<UserPersonalRecord>()
+                            .SetRecordText(rank,rankData.Nickname,FormatData(recordValue), snapshot.Key);
                         rank++;
                     }
                 }
@@ -184,7 +185,8 @@ public class Database_RecordManager : Singleton<Database_RecordManager>
                 {
                     RankData rankData = JsonUtility.FromJson<RankData>(snapshot.GetRawJsonValue());
                     GameObject board = boardList.GetPool();
-                    board.GetComponent<UserPersonalRecord>().SetScoreText(rank,rankData.Nickname,rankData.Score);
+                    board.GetComponent<UserPersonalRecord>()
+                        .SetScoreText(rank,rankData.Nickname,rankData.Score, snapshot.Key);
                     rank++;
                 }
             });
@@ -270,6 +272,20 @@ public class Database_RecordManager : Singleton<Database_RecordManager>
         
         return rankData;
     }
+
+    public async Task<RankData> LoadRankData(string uid)
+    {
+        DatabaseReference userInfo = _reference.Child("RankData").Child(uid);
+        RankData rankData = new RankData();
+
+        DataSnapshot snapshot = await userInfo.GetValueAsync();
+        if (snapshot.Exists)
+        {
+            rankData = JsonUtility.FromJson<RankData>(snapshot.GetRawJsonValue());
+        }
+        
+        return rankData;
+    }
     
     #region TestCode
 
@@ -321,6 +337,7 @@ public class Database_RecordManager : Singleton<Database_RecordManager>
     private void Info()
     {
         _infoPanel.SetActive(!_infoPanel.activeSelf);
+        //_infoPanel.GetComponent<PlayerInfoUIController>().ShowInfo();
     }
     
     // 초기 개인 랭킹 표시 메서드

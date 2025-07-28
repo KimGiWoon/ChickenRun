@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class PopupManager : Singleton<PopupManager>
@@ -19,6 +20,7 @@ public class PopupManager : Singleton<PopupManager>
     #region serialized Fields
 
     [SerializeField] private PopupPanel _popupPanel;
+    [SerializeField] private PlayerInfoUI _infoUI;
 
     #endregion // serialized Fields
 
@@ -71,5 +73,12 @@ public class PopupManager : Singleton<PopupManager>
         _popupPanel?.SetHide();
     }
 
+    public async Task ShowPlayerInfo(string uid)
+    {
+        _infoUI.gameObject.SetActive(true);
+        var info = await Database_RecordManager.Instance.LoadRankData(uid);
+        _infoUI.SetInfoText(info);
+    }
+    
     #endregion // public funcs
 }
