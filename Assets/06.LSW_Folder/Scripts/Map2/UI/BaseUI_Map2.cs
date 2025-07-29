@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Photon.Pun;
@@ -23,6 +24,7 @@ public class BaseUI_Map2 : MonoBehaviourPun
     [SerializeField] Slider _playerPosSlider;
     
     private bool _isEmoticonPanelOpen;
+    private bool _isSettingPanelOpen;
 
     private void Start()
     {
@@ -47,8 +49,8 @@ public class BaseUI_Map2 : MonoBehaviourPun
         // 달걀 획득 UI 이벤트 해제
         if (Application.isPlaying)
         {
-            GameManager_Map2.Instance.OnGetEgg -= UpdateEggText;
-            GameManager_Map2.Instance.GameProgress.OnChanged -= UpdateSlider;
+            //GameManager_Map2.Instance.OnGetEgg -= UpdateEggText;
+            //GameManager_Map2.Instance.GameProgress.OnChanged -= UpdateSlider;
         
             _optionButton.onClick.RemoveListener(OnOptionPanel);
             _emoticonButton.onClick.RemoveListener(OnEmoticonPanel);
@@ -64,7 +66,17 @@ public class BaseUI_Map2 : MonoBehaviourPun
     // 옵션 패널 오픈
     private void OnOptionPanel()
     {
-        _optionPanel.SetActive(true);
+        if (!_isSettingPanelOpen)
+        {
+            _optionPanel.SetActive(true);
+            _isSettingPanelOpen = true;
+        }
+        else
+        {
+            _optionPanel.SetActive(false);
+            _isSettingPanelOpen = false;
+        }
+        GameManager_Map2.Instance.OpenPanel(_isSettingPanelOpen);
     }
     
     // 이모티콘 패널 오픈
@@ -80,6 +92,7 @@ public class BaseUI_Map2 : MonoBehaviourPun
             _emoticonPanel.SetActive(false);
             _isEmoticonPanelOpen = false;
         }
+        GameManager_Map2.Instance.OpenPanel(_isEmoticonPanelOpen);
     }
     
     // 플레이어 위치 업데이트

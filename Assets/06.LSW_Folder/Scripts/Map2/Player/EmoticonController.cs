@@ -35,8 +35,10 @@ public class EmoticonController : MonoBehaviourPun
 
     private void Start()
     {
-        if(photonView.Owner.CustomProperties.TryGetValue("Nickname", out object nickname));
-        _playerNickname.text = nickname?.ToString();
+        if (photonView.Owner.CustomProperties.TryGetValue("Nickname", out object nickname))
+        {
+            _playerNickname.text = nickname?.ToString();
+        }
     }
     
     private void OnEmoticon(int index)

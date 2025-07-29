@@ -18,6 +18,7 @@ public class PlayerController_Map2 : MonoBehaviourPun
     private bool _isOnTouch;
     private bool _isOffTouch;
     private bool _isLinked;
+    private bool _isInputBlocked;
 
     private float _touchStartTime;
     private float _touchEndTime;
@@ -38,6 +39,7 @@ public class PlayerController_Map2 : MonoBehaviourPun
             Camera.main.GetComponent<CameraController_Map2>().SetTarget(transform);
             GameManager_Map2.Instance.OnReadyGame += () => SetJoint();
             GameManager_Map2.Instance.SetPlayer(transform);
+            GameManager_Map2.Instance.OnPanelOpened += SetInputBlocked;
         }
         // 자신이 아닌 경우 투명도 낮추기
         else
@@ -50,7 +52,7 @@ public class PlayerController_Map2 : MonoBehaviourPun
     // 마우스 입력은 전처리기를 통해 Editor 상에서만 사용하고 빌드 시 포함x
     private void Update()
     {
-        if (photonView.IsMine)
+        if (photonView.IsMine && !_isInputBlocked)
         {
 #if UNITY_EDITOR
             TouchInput_Test();
@@ -110,6 +112,11 @@ public class PlayerController_Map2 : MonoBehaviourPun
         Color color = _playerRenderer.color;
         color.a = value;
         _playerRenderer.color = color;
+    }
+
+    private void SetInputBlocked(bool isOpen)
+    {
+        _isInputBlocked = isOpen;
     }
     
     // 같은 팀의 두 플레이어를 줄로 묶는 메서드
@@ -182,6 +189,7 @@ public class PlayerController_Map2 : MonoBehaviourPun
                 // 터치가 시작되는 시점
                 if (touch.phase == TouchPhase.Began)
                 {
+                    if (touch.position.y < Screen.height / 10) return;
                     // 터치가 된 시각 캐싱
                     _touchStartTime = Time.time;
                     _isOnTouch = true;
@@ -220,10 +228,12 @@ public class PlayerController_Map2 : MonoBehaviourPun
         // 화면 터치 시 터치 타임 측정
         if (Input.GetMouseButtonDown(0))
         {
+            Vector3 mousePos = Input.mousePosition;
+            if (mousePos.y < Screen.height / 10) return;
+            
             _touchStartTime = Time.time;
             _isOnTouch = true;
-
-            Vector3 mousePos = Input.mousePosition;
+            
             int centerOfScreen = Screen.width / 2;
             if (mousePos.x < centerOfScreen)
             {

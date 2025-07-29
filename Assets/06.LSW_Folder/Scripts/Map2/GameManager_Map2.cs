@@ -24,6 +24,7 @@ public class GameManager_Map2 : Singleton<GameManager_Map2>
     public event Action<int> OnGetEgg;
     public event Action<Map2Data> OnEndGame;
     public event Action OnTimeUp;
+    public event Action<bool> OnPanelOpened;
     
     public class Map2Data
     {
@@ -58,6 +59,11 @@ public class GameManager_Map2 : Singleton<GameManager_Map2>
         }
     }
 
+    public void OpenPanel(bool isOpen)
+    {
+        OnPanelOpened?.Invoke(isOpen);
+    }
+    
     public string PlayTimeUpdate()
     {
         float arrivalTime = (float)_stopwatch.Elapsed.TotalSeconds;
@@ -113,6 +119,7 @@ public class GameManager_Map2 : Singleton<GameManager_Map2>
     // 플레이어의 위치와 거리 업데이트
     private void PlayerPosUpdate()
     {
+        if (_player == null) return;
         float distanceToGoal = Vector2.Distance(_player.position, _goalPos.position);
         GameProgress.Value = Mathf.Clamp01(1 - (distanceToGoal / _totalDistance));
     }

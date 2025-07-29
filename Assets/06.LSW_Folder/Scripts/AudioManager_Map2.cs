@@ -42,9 +42,11 @@ public class AudioManager_Map2 : Singleton<AudioManager_Map2>
     protected override void OnDestroy()
     {
         base.OnDestroy();
-        
-        SettingManager.Instance.BGM.OnChanged -= BgmUpdate;
-        SettingManager.Instance.SFX.OnChanged -= SfxUpdate;
+        if (Application.isPlaying)
+        {
+            SettingManager.Instance.BGM.OnChanged -= BgmUpdate;
+            SettingManager.Instance.SFX.OnChanged -= SfxUpdate;
+        }
     }
 
     // BGM 플레이
