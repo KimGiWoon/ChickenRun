@@ -41,6 +41,21 @@ public class NetworkManager_Map2 : MonoBehaviourPunCallbacks
     public override void OnLeftRoom()
     {
         //SceneManager.LoadScene("Room")
+        Debug.Log("게임을 나갑니다");
+    }
+    
+    public override void OnPlayerLeftRoom(Player otherPlayer)
+    {
+        string team = otherPlayer.CustomProperties["Team"] as string;
+        if (PhotonNetwork.LocalPlayer.CustomProperties.TryGetValue("Team", out object myTeamObj))
+        {
+            string myTeam = myTeamObj.ToString();
+            if (myTeam == team)
+            {
+                // todo 팝업을 띄워도 될 듯? (3초 뒤에 나가집니다)
+                PhotonNetwork.LeaveRoom();
+            }
+        }
     }
     
     // 플레이어 생성
