@@ -53,14 +53,14 @@ public class NetworkManager_Map2 : MonoBehaviourPunCallbacks
         _currentPlayer++;
         if (PhotonNetwork.IsMasterClient && _currentPlayer == 2)
         {
-            photonView.RPC(nameof(StartGame), RpcTarget.All);
+            photonView.RPC(nameof(ReadyGame), RpcTarget.All);
         }
     }
 
     [PunRPC]
-    private void StartGame()
+    private void ReadyGame()
     {
-        Debug.Log("게임 시작");
-        GameManager_Map2.Instance.StartGame();
+        Debug.Log("게임 준비 완료");
+        GameManager_Map2.Instance.ReadyGame();
     }
 }
