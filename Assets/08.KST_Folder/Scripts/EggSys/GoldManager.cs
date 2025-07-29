@@ -14,11 +14,11 @@ namespace Kst
 
         void OnEnable()
         {
-            FirebaseManager.Instance.OnLogin += InitGold;
+            // FirebaseManager.Instance.OnLogin += InitGold;
         }
         void OnDisable()
         {
-            FirebaseManager.Instance.OnLogin -= InitGold;
+            // FirebaseManager.Instance.OnLogin -= InitGold;
             if (_goldRef != null) _goldRef.ValueChanged -= OnGoldValueChanged;
         }
 

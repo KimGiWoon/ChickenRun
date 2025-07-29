@@ -16,6 +16,10 @@ namespace Kst
         {
             _eggModel.OnEggChanged -= onEggChanged;
         }
+        void Start()
+        {
+            EggManager.Instance.Init(_eggModel);
+        }
 
         void onEggChanged(int value)
         {
