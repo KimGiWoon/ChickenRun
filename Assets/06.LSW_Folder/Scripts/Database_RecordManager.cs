@@ -6,11 +6,8 @@ using System.Threading.Tasks;
 using Firebase.Auth;
 using Firebase.Database;
 using Firebase.Extensions;
-using Photon.Pun.Demo.Cockpit;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
-using Debug = UnityEngine.Debug;
 
 public class Database_RecordManager : Singleton<Database_RecordManager>
 {
