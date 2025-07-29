@@ -689,6 +689,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _dontDestroyOnLoad: 1
   _popupPanel: {fileID: 0}
+  PlayerInfoUI: {fileID: 0}
 --- !u!114 &964421065
 MonoBehaviour:
   m_ObjectHideFlags: 0

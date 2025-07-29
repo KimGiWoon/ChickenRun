@@ -138,6 +138,7 @@ public class PhotonManager : Singleton<PhotonManager>, ILobbyCallbacks, IMatchma
     public void OnJoinedLobby()
     {
         Debug.Log("[Photon] 로비 입장 완료");
+        SetUserUIDToPhoton();
     }
 
     public void OnLeftLobby()
@@ -209,4 +210,29 @@ public class PhotonManager : Singleton<PhotonManager>, ILobbyCallbacks, IMatchma
     }
 
     #endregion // Photon callbacks
+
+
+
+
+
+    #region private funcs
+
+    private void SetUserUIDToPhoton()
+    {
+        if (CYH_FirebaseManager.User != null) {
+            string uid = CYH_FirebaseManager.User.UserId;
+            ExitGames.Client.Photon.Hashtable props = new()
+            {
+            { "UID", uid }
+        };
+
+            PhotonNetwork.LocalPlayer.SetCustomProperties(props);
+            Debug.Log($"[Photon] UID 등록 완료: {uid}");
+        }
+        else {
+            Debug.LogWarning("[Photon] Firebase 로그인 정보가 없어 UID 등록 실패");
+        }
+    }
+
+    #endregion // private funcs
 }

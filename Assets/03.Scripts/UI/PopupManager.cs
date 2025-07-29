@@ -20,9 +20,20 @@ public class PopupManager : Singleton<PopupManager>
     #region serialized Fields
 
     [SerializeField] private PopupPanel _popupPanel;
-    [SerializeField] private PlayerInfoUI _infoUI;
+    [SerializeField] private PlayerInfoUI _playerInfoUI;
+    [SerializeField] private PopupPassword _popupPassword;
 
     #endregion // serialized Fields
+
+
+
+
+
+    #region properties
+
+    public string CurrentPassword { get; set; } = string.Empty;
+
+    #endregion // properties
 
 
 
@@ -75,10 +86,22 @@ public class PopupManager : Singleton<PopupManager>
 
     public async Task ShowPlayerInfo(string uid)
     {
-        _infoUI.gameObject.SetActive(true);
+        _playerInfoUI.gameObject.SetActive(true);
         var info = await Database_RecordManager.Instance.LoadRankData(uid);
-        _infoUI.SetInfoText(info);
+        _playerInfoUI.SetInfoText(info);
     }
-    
+
+    /// <summary>
+    /// 비밀번호 입력 팝업을 보여줍니다.
+    /// </summary>
+    /// <param name="onPasswordEntered">비밀번호 입력 확인 시 실행할 함수</param>
+    public void ShowPasswordPopup(Action onPasswordEntered)
+    {
+        if (_popupPassword == null) {
+            return;
+        }
+        _popupPassword.SetShow(onPasswordEntered);
+    }
+
     #endregion // public funcs
 }
