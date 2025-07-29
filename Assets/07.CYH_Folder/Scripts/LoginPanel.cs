@@ -19,12 +19,17 @@ public class LoginPanel : UIBase
 
     // 계정 전환 테스트용
     [SerializeField] private Button _linkAccountButton;
+    //유저 정보 변경 테스트용
+    [SerializeField] private Button _changeAccountInfoButton;
 
     public Action OnClickSignup { get; set; }
     public Action OnClickSocialLogin { get; set; }
     
     // 계정 전환 테스트용
     public Action OnClickLinkAccount { get; set; }
+
+    // 유저 정보 변경 테스트용
+    public Action OnClickChangeAccountInfo { get; set; }
 
 
     private void Start()
@@ -35,6 +40,9 @@ public class LoginPanel : UIBase
 
         // 계정 전환 테스트용
         _linkAccountButton.onClick.AddListener(() => OnClickLinkAccount?.Invoke());
+
+        // 유저 정보 변경 테스트용
+        _changeAccountInfoButton.onClick.AddListener(() => OnClickChangeAccountInfo?.Invoke());
     }
 
     /// <summary>
@@ -68,7 +76,8 @@ public class LoginPanel : UIBase
                     AuthResult result = task.Result;
                     FirebaseUser user = result.User;
 
-                    Debug.Log("로그인 성공");
+                    PopupManager.Instance.ShowOKPopup("로그인 성공", "OK", () => PopupManager.Instance.HidePopup());
+
                     Debug.Log("------유저 정보------");
                     Debug.Log($"유저 이름 : {user.DisplayName}");
                     Debug.Log($"유저 ID: {user.UserId}");

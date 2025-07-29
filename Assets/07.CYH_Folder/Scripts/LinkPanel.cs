@@ -100,9 +100,9 @@ public class LinkPanel : UIBase
     private void OnClick_LinkWithGoogle()
     {
         // 계정 전환 가능 여부 체크
-        //FirebaseUser user = CYH_FirebaseManager.Auth.CurrentUser;
+        FirebaseUser user = CYH_FirebaseManager.Auth.CurrentUser;
 
-        if (CYH_FirebaseManager.Auth.CurrentUser == null || !CYH_FirebaseManager.Auth.CurrentUser.IsAnonymous)
+        if (user == null || !user.IsAnonymous)
         {
             PopupManager.Instance.ShowOKPopup("게스트가 아님. 계정 전환 불가", "OK", () => PopupManager.Instance.HidePopup());
             return;
@@ -136,7 +136,7 @@ public class LinkPanel : UIBase
                 {
                     Debug.LogError($"구글 계정으로 전환 실패 / 원인: {linkTask.Exception}");
 
-                    //_errorText.text = CYH_FirebaseManager.Auth.CurrentUser.UserId;
+                    _errorText.text = CYH_FirebaseManager.Auth.CurrentUser.UserId;
                     PopupManager.Instance.ShowOKPopup("구글 계정으로 전환 실패", "OK", () => PopupManager.Instance.HidePopup());
                     return;
                 }

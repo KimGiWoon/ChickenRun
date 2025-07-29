@@ -8,7 +8,8 @@ public class LoginSceneUIManager : MonoBehaviour
         Login,
         SocialPanel,
         SignUpPanel,
-        LinkPanel
+        LinkPanel,
+        AccountPanel
     }
 
     [SerializeField] private List<UIBase> _uiList;
@@ -27,6 +28,9 @@ public class LoginSceneUIManager : MonoBehaviour
 
                 // 계정 전환 테스트용
                 loginPanel.OnClickLinkAccount = () => ShowUI(LoginUIType.LinkPanel);
+
+                // 유저 정보 변경 테스트용
+                loginPanel.OnClickChangeAccountInfo = () => ShowUI(LoginUIType.AccountPanel);
             }
 
             else if (ui is SignUpPanel signUpPanel)
@@ -42,6 +46,11 @@ public class LoginSceneUIManager : MonoBehaviour
             else if (ui is LinkPanel linkPanel)
             {
                 linkPanel.OnClickClosePopup = () => HideUI(LoginUIType.LinkPanel);
+            }
+
+            else if (ui is AccountPanel accountPanel)
+            {
+                accountPanel.OnClickClosePopup = () => HideUI(LoginUIType.AccountPanel);
             }
         }
     }
