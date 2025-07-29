@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerState : MonoBehaviour
+public class PlayerState_Map4 : MonoBehaviour
 {
     [Header("Player State")]
 
@@ -16,11 +16,11 @@ public class PlayerState : MonoBehaviour
 
     // Touch Max Jump Time
     [SerializeField] float _maxTouchTime = 2f;
-    public float MaxTouchTime {  get { return _maxTouchTime; } set { _maxTouchTime = value; }}
+    public float MaxTouchTime { get { return _maxTouchTime; } set { _maxTouchTime = value; } }
 
     // Player Jump X Direction
     [SerializeField] float _jumpXDir = 0.2f;
-    public float JumpXDir { get { return _jumpXDir; } set { _jumpXDir = value; }}
+    public float JumpXDir { get { return _jumpXDir; } set { _jumpXDir = value; } }
 
     // Player Jump Y Direction
     [SerializeField] float _jumpYDir = 1f;
