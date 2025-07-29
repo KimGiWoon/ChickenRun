@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
+using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 public class NetworkManager_Map2 : MonoBehaviourPunCallbacks
 {
@@ -28,9 +29,11 @@ public class NetworkManager_Map2 : MonoBehaviourPunCallbacks
     // 인게임 진입 시 호출되는 이벤트 
     public override void OnJoinedRoom()
     {
-        Debug.Log("입장 완료");
-        // TODO : 플레이어 닉네임 확인용
         PhotonNetwork.LocalPlayer.NickName = $"Player{PhotonNetwork.LocalPlayer.ActorNumber}";
+        string nickname = PhotonNetwork.LocalPlayer.NickName;
+        Hashtable table = new Hashtable{ { "Nickname", nickname } };
+        PhotonNetwork.LocalPlayer.SetCustomProperties(table);
+        
         PlayerSpawn();
         photonView.RPC(nameof(NotifyPlayer), RpcTarget.MasterClient);
     }
@@ -38,6 +41,21 @@ public class NetworkManager_Map2 : MonoBehaviourPunCallbacks
     public override void OnLeftRoom()
     {
         //SceneManager.LoadScene("Room")
+        Debug.Log("게임을 나갑니다");
+    }
+    
+    public override void OnPlayerLeftRoom(Player otherPlayer)
+    {
+        string team = otherPlayer.CustomProperties["Team"] as string;
+        if (PhotonNetwork.LocalPlayer.CustomProperties.TryGetValue("Team", out object myTeamObj))
+        {
+            string myTeam = myTeamObj.ToString();
+            if (myTeam == team)
+            {
+                // todo 팝업을 띄워도 될 듯? (3초 뒤에 나가집니다)
+                PhotonNetwork.LeaveRoom();
+            }
+        }
     }
     
     // 플레이어 생성
@@ -53,14 +71,14 @@ public class NetworkManager_Map2 : MonoBehaviourPunCallbacks
         _currentPlayer++;
         if (PhotonNetwork.IsMasterClient && _currentPlayer == 2)
         {
-            photonView.RPC(nameof(StartGame), RpcTarget.All);
+            photonView.RPC(nameof(ReadyGame), RpcTarget.All);
         }
     }
 
     [PunRPC]
-    private void StartGame()
+    private void ReadyGame()
     {
-        Debug.Log("게임 시작");
-        GameManager_Map2.Instance.StartGame();
+        Debug.Log("게임 준비 완료");
+        GameManager_Map2.Instance.ReadyGame();
     }
 }
