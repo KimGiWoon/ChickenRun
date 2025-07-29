@@ -313,6 +313,26 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 980753664563449948, guid: fd30e0fe42efb9e4299f72990e926521, type: 3}
+      propertyPath: m_Pivot.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 980753664563449948, guid: fd30e0fe42efb9e4299f72990e926521, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 980753664563449948, guid: fd30e0fe42efb9e4299f72990e926521, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 980753664563449948, guid: fd30e0fe42efb9e4299f72990e926521, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 980753664563449948, guid: fd30e0fe42efb9e4299f72990e926521, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1149566240675306051, guid: fd30e0fe42efb9e4299f72990e926521, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -689,7 +709,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _dontDestroyOnLoad: 1
   _popupPanel: {fileID: 0}
-  PlayerInfoUI: {fileID: 0}
+  _playerInfoUI: {fileID: 0}
+  _popupPassword: {fileID: 0}
 --- !u!114 &964421065
 MonoBehaviour:
   m_ObjectHideFlags: 0
