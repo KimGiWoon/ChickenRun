@@ -4,10 +4,10 @@ using Photon.Pun;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviourPun, IPunObservable
+public class PlayerController_Map1 : MonoBehaviourPun, IPunObservable
 {
     [Header("Player Setting Reference")]
-    [SerializeField] PlayerState _playerstate;
+    [SerializeField] PlayerState_Map1 _playerstate;
     [SerializeField] SpriteRenderer _playerRenderer;
     [SerializeField] Animator _playerAni;
     
