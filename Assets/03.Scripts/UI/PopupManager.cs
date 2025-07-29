@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class PopupManager : Singleton<PopupManager>
@@ -83,9 +84,11 @@ public class PopupManager : Singleton<PopupManager>
         _popupPanel?.SetHide();
     }
 
-    public void ShowPlayerInfo(string uid)
+    public async Task ShowPlayerInfo(string uid)
     {
-        // TODO백인권 : uid로 플레이어 정보를 가져와서 PlayerInfoUI에 표시합니다.
+        _playerInfoUI.gameObject.SetActive(true);
+        var info = await Database_RecordManager.Instance.LoadRankData(uid);
+        _playerInfoUI.SetInfoText(info);
     }
 
     /// <summary>

@@ -33,8 +33,9 @@ public class CYH_FirebaseManager : Singleton<CYH_FirebaseManager>
     [SerializeField] private TMP_Text _error;
     //[SerializeField] private Image userImage;
 
-    private void Awake()
+    protected override void Awake()
     {
+        base.Awake();
         _configuration = new GoogleSignInConfiguration {
             WebClientId = googleWebAPI,
             RequestIdToken = true
