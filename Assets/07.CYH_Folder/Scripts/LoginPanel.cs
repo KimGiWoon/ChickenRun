@@ -1,9 +1,10 @@
-using System;
-using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
 using Firebase.Auth;
 using Firebase.Extensions;
+using System;
+using TMPro;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 /// <summary>
 /// 이메일/비밀번호 입력을 통한 로그인 기능을 담당하는 UI 패널 클래스
@@ -37,25 +38,21 @@ public class LoginPanel : UIBase
     public void OnClick_Login()
     {
         CYH_FirebaseManager.Auth.SignInWithEmailAndPasswordAsync(_emailField.text, _passwordField.text)
-            .ContinueWithOnMainThread(task =>
-            {
-                if (task.IsCanceled)
-                {
+            .ContinueWithOnMainThread(task => {
+                if (task.IsCanceled) {
                     Debug.LogError("로그인 취소");
                     return;
                 }
 
-                if (task.IsFaulted)
-                {
+                if (task.IsFaulted) {
                     Debug.LogError($"로그인 실패 / 원인: {task.Exception}");
-                    
+
                     // 팝업 (로그인 실패)
                     PopupManager.Instance.ShowOKPopup("로그인 실패", "OK", () => PopupManager.Instance.HidePopup());
                     return;
                 }
 
-                if (task.IsCompletedSuccessfully)
-                {
+                if (task.IsCompletedSuccessfully) {
                     AuthResult result = task.Result;
                     FirebaseUser user = result.User;
 
@@ -65,14 +62,15 @@ public class LoginPanel : UIBase
                     Debug.Log($"유저 ID: {user.UserId}");
                     Debug.Log($"이메일 : {user.Email}");
 
-                    if (!user.IsEmailVerified)
-                    {
+                    if (!user.IsEmailVerified) {
                         // 팝업 (이메일 인증 요청)
                         PopupManager.Instance.ShowOKPopup("이메일 인증을 완료해주세요.", "OK", () => PopupManager.Instance.HidePopup());
                         CYH_FirebaseManager.Auth.SignOut();
                         Debug.Log("로그아웃");
                         return;
                     }
+
+                    SceneManager.LoadScene("MainScene");
                 }
             });
     }
