@@ -37,7 +37,7 @@ public class PlayerController_Map2 : MonoBehaviourPun
         if (photonView.IsMine)
         {
             Camera.main.GetComponent<CameraController_Map2>().SetTarget(transform);
-            GameManager_Map2.Instance.OnStartGame += () => SetJoint();
+            GameManager_Map2.Instance.OnReadyGame += () => SetJoint();
         }
         // 자신이 아닌 경우 투명도 낮추기
         else
