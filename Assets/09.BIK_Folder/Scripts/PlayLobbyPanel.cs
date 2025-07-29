@@ -25,6 +25,7 @@ public class PlayLobbyPanel : UIBase, IInRoomCallbacks
 
     [Header("Skin")]
     [SerializeField] private Button _skinSelectButton;
+    [SerializeField] private SkinSelectPanel _skinSelectPanel;
 
     [Header("Color Select")]
     [SerializeField] private Button _leftColorButton;
@@ -270,7 +271,7 @@ public class PlayLobbyPanel : UIBase, IInRoomCallbacks
 
     private void ChangeSkin()
     {
-        // TODO백인권 : 플레이어 스킨 선택 UI 표시
+        _skinSelectPanel.SetShow();
     }
 
     private void ChangeColor(int dir)
