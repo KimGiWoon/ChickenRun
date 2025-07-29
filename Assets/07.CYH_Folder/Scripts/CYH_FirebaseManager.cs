@@ -1,12 +1,12 @@
+using System.Collections;
+using System.Threading.Tasks;
+using UnityEngine;
+using UnityEngine.UI;
 using Firebase;
 using Firebase.Auth;
 using Firebase.Database;
 using Firebase.Extensions;
 using Google;
-using System.Threading.Tasks;
-using TMPro;
-using UnityEngine;
-using UnityEngine.UI;
 
 public class CYH_FirebaseManager : Singleton<CYH_FirebaseManager>
 {
@@ -22,27 +22,26 @@ public class CYH_FirebaseManager : Singleton<CYH_FirebaseManager>
     private static FirebaseDatabase database;
     public static FirebaseDatabase Database { get { return database; } }
 
-    private static DatabaseReference dataReference; 
+    private static DatabaseReference dataReference;
     public static DatabaseReference DataReference { get { return dataReference; } }
-    
+
     // 닉네임
     public static string CurrentUserNickname => Auth?.CurrentUser?.DisplayName ?? "게스트";
 
     // 구글
     [SerializeField] private string googleWebAPI = "1912177127-go83if3uk9pelsa2186ti52hu74qhv5g.apps.googleusercontent.com";
-    
+
     private GoogleSignInConfiguration _configuration;
-    public GoogleSignInConfiguration Configuration { get { return _configuration; } } 
-    
-    // 구글 테스트
+    public GoogleSignInConfiguration Configuration { get { return _configuration; } }
+
+    // 테스트용 구글 로그인 버튼
     [SerializeField] private Button _GoogleButton;
 
 
     protected override void Awake()
     {
-        InitFirebase();
-
-        _configuration = new GoogleSignInConfiguration {
+        _configuration = new GoogleSignInConfiguration
+        {
             WebClientId = googleWebAPI,
             RequestIdToken = true
         };
@@ -56,25 +55,32 @@ public class CYH_FirebaseManager : Singleton<CYH_FirebaseManager>
 
     private void Start()
     {
+        // firebase 초기화
+        StartCoroutine(InitFirebaseCoroutine());
+
         _GoogleButton.onClick.AddListener(OnGoolgeSignInClicked);
     }
 
-    //코루틴으로 수정 예정
-    private void InitFirebase()
+    private IEnumerator InitFirebaseCoroutine()
     {
-        Firebase.FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(task => {
-            Firebase.DependencyStatus dependencyStatus = task.Result;
-            if (dependencyStatus == Firebase.DependencyStatus.Available) {
-                app = FirebaseApp.DefaultInstance;
-                auth = FirebaseAuth.DefaultInstance;
-                database = FirebaseDatabase.DefaultInstance;
-            }
-            else {
-                app = null;
-                auth = null;
-                database = null;
-            }
-        });
+        Task<Firebase.DependencyStatus> task = Firebase.FirebaseApp.CheckAndFixDependenciesAsync();
+
+        yield return new WaitUntil(() => task.IsCompleted);
+
+        Firebase.DependencyStatus dependencyStatus = task.Result;
+        if (dependencyStatus == Firebase.DependencyStatus.Available)
+        {
+            app = FirebaseApp.DefaultInstance;
+            auth = FirebaseAuth.DefaultInstance;
+            database = FirebaseDatabase.DefaultInstance;
+        }
+
+        else
+        {
+            app = null;
+            auth = null;
+            database = null;
+        }
     }
 
     public void OnGoolgeSignInClicked()
@@ -92,15 +98,18 @@ public class CYH_FirebaseManager : Singleton<CYH_FirebaseManager>
 
     private void OnGoogleAuthenticatedFinished(Task<GoogleSignInUser> task)
     {
-        if (task.IsCanceled) {
+        if (task.IsCanceled)
+        {
             Debug.Log("Login Cancel");
         }
 
-        if (task.IsFaulted) {
+        if (task.IsFaulted)
+        {
             Debug.Log("Faulted");
         }
 
-        else {
+        else
+        {
             GoogleLogin(task);
         }
     }
@@ -109,15 +118,18 @@ public class CYH_FirebaseManager : Singleton<CYH_FirebaseManager>
     {
         Firebase.Auth.Credential credential =
         Firebase.Auth.GoogleAuthProvider.GetCredential(userTask.Result.IdToken, null);
-        auth.SignInAndRetrieveDataWithCredentialAsync(credential).ContinueWithOnMainThread(task => {
-            if (task.IsCanceled) {
+        auth.SignInAndRetrieveDataWithCredentialAsync(credential).ContinueWithOnMainThread(task =>
+        {
+            if (task.IsCanceled)
+            {
                 Debug.LogError("SignInAndRetrieveDataWithCredentialAsync was canceled.");
 
                 PopupManager.Instance.ShowOKPopup("구글 로그인 취소", "OK", () => PopupManager.Instance.HidePopup());
                 return;
             }
 
-            if (task.IsFaulted) {
+            if (task.IsFaulted)
+            {
                 Debug.LogError("SignInAndRetrieveDataWithCredentialAsync encountered an error: " + task.Exception);
 
                 PopupManager.Instance.ShowOKPopup("구글 로그인 실패", "OK", () => PopupManager.Instance.HidePopup());
