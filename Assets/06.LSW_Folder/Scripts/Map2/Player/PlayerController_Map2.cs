@@ -11,11 +11,14 @@ public class PlayerController_Map2 : MonoBehaviourPun
     private Rigidbody2D _rigid;
     private PlayerProperty _player;
     private DistanceJoint2D _joint;
+    private SpriteRenderer _playerRenderer;
     private Vector2 _moveDir;
     
     private bool _isGround;
     private bool _isOnTouch;
     private bool _isOffTouch;
+    private bool _isLinked;
+    private bool _isInputBlocked;
 
     private float _touchStartTime;
     private float _touchEndTime;
@@ -30,10 +33,18 @@ public class PlayerController_Map2 : MonoBehaviourPun
 
     private void Start()
     {
+        // 자신인 경우
         if (photonView.IsMine)
         {
             Camera.main.GetComponent<CameraController_Map2>().SetTarget(transform);
-            GameManager_Map2.Instance.OnStartGame += () => SetJoint();
+            GameManager_Map2.Instance.OnReadyGame += () => SetJoint();
+            GameManager_Map2.Instance.SetPlayer(transform);
+            GameManager_Map2.Instance.OnPanelOpened += SetInputBlocked;
+        }
+        // 자신이 아닌 경우 투명도 낮추기
+        else
+        {
+            SetAlpha(0.5f);
         }
     }
     
@@ -41,7 +52,7 @@ public class PlayerController_Map2 : MonoBehaviourPun
     // 마우스 입력은 전처리기를 통해 Editor 상에서만 사용하고 빌드 시 포함x
     private void Update()
     {
-        if (photonView.IsMine)
+        if (photonView.IsMine && !_isInputBlocked)
         {
 #if UNITY_EDITOR
             TouchInput_Test();
@@ -87,24 +98,67 @@ public class PlayerController_Map2 : MonoBehaviourPun
         }
     }
 
-    // 두 플레이어를 줄로 묶는 메서드
-    // 추후 3명 이상 입장할 경우 조건 변경
+    // player의 투명도를 다시 1로 리셋하는 메서드
+    private void ResetAlpha(GameObject player)
+    {
+        Color color = player.GetComponent<SpriteRenderer>().color;
+        color.a = 1f;
+        player.GetComponent<SpriteRenderer>().color = color;
+    }
+    
+    // 투명도 조절 메서드
+    private void SetAlpha(float value)
+    {
+        Color color = _playerRenderer.color;
+        color.a = value;
+        _playerRenderer.color = color;
+    }
+
+    private void SetInputBlocked(bool isOpen)
+    {
+        _isInputBlocked = isOpen;
+    }
+    
+    // 같은 팀의 두 플레이어를 줄로 묶는 메서드
     private void SetJoint()
     {
+        if (_isLinked) return;
+        
+        // 네트워크에 저장된 커스텀 프로퍼티의 내 팀
+        string myTeam = PhotonNetwork.LocalPlayer.CustomProperties["Team"] as string;
+        
         foreach (var player in GameObject.FindGameObjectsWithTag("Player"))
         {
+            // 자신인 경우 스킵
             if(player == gameObject) continue;
-
-            Rigidbody2D target = player.GetComponent<Rigidbody2D>();
-
-            if (target != null)
+            
+            // 플레이어의 PhotonView를 가져오기
+            PhotonView otherPlayer = player.GetComponent<PhotonView>();
+            
+            // PhotonView가 없으면 스킵
+            if (otherPlayer == null) continue;
+            
+            // 네트워크에 저장된 커스텀 프로퍼티의 다른 플레이어의 팀
+            string team = otherPlayer.Owner.CustomProperties["Team"] as string;
+            
+            // 해당 팀이 내 팀과 같은 경우
+            if (team == myTeam)
             {
-                _joint.connectedBody = target;
-                _joint.enabled = true;
-                break;
-            }
+                Rigidbody2D target = player.GetComponent<Rigidbody2D>();
+
+                // Distance-Joint 연결, 투명도 리셋
+                if (target != null)
+                {
+                    _joint.connectedBody = target;
+                    _joint.autoConfigureDistance = false;
+                    _joint.distance = 1f;
+                    _joint.enabled = true;
+                    _isLinked = true;
+                    ResetAlpha(player);
+                    break;
+                } 
+            } 
         }
-        
     }
     
     // 떨어질 때 중력값 보정
@@ -135,6 +189,7 @@ public class PlayerController_Map2 : MonoBehaviourPun
                 // 터치가 시작되는 시점
                 if (touch.phase == TouchPhase.Began)
                 {
+                    if (touch.position.y < Screen.height / 10) return;
                     // 터치가 된 시각 캐싱
                     _touchStartTime = Time.time;
                     _isOnTouch = true;
@@ -173,10 +228,12 @@ public class PlayerController_Map2 : MonoBehaviourPun
         // 화면 터치 시 터치 타임 측정
         if (Input.GetMouseButtonDown(0))
         {
+            Vector3 mousePos = Input.mousePosition;
+            if (mousePos.y < Screen.height / 10) return;
+            
             _touchStartTime = Time.time;
             _isOnTouch = true;
-
-            Vector3 mousePos = Input.mousePosition;
+            
             int centerOfScreen = Screen.width / 2;
             if (mousePos.x < centerOfScreen)
             {

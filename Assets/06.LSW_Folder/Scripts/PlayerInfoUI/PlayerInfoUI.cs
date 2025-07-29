@@ -28,14 +28,44 @@ public class PlayerInfoUI : UIBase
     {
         _onClickExitBtn = onClickExitBtn;
     }
+
+    public void ResetText()
+    {
+        _nickname.text = "";
+        _map1Record.text = "";
+        _map2Record.text = "";
+        _map3Record.text = "";
+        _score.text = "";
+    }
     
     // Controller에서 받은 정보로 UI(Text) 업데이트 메서드
     public void SetInfoText(Database_RecordManager.RankData data)
     {
         _nickname.text = data.Nickname;
-        _map1Record.text = $"Map1 : {Database_RecordManager.Instance.FormatData((int)data.Map1Record)}";
-        _map2Record.text = $"Map2 : {Database_RecordManager.Instance.FormatData((int)data.Map2Record)}";
-        _map3Record.text = $"Map3 : {Database_RecordManager.Instance.FormatData((int)data.Map3Record)}";
+        if (data.Map1Record != 0)
+        {
+            _map1Record.text = $"Map1 : {Database_RecordManager.Instance.FormatData((int)data.Map1Record)}";
+        }
+        else
+        {
+            _map1Record.text = "Map1 : 기록 없음";
+        }
+        if (data.Map2Record != 0)
+        {
+            _map2Record.text = $"Map2 : {Database_RecordManager.Instance.FormatData((int)data.Map2Record)}";
+        }
+        else
+        {
+            _map1Record.text = "Map2 : 기록 없음";
+        }
+        if (data.Map3Record != 0)
+        {
+            _map3Record.text = $"Map3 : {Database_RecordManager.Instance.FormatData((int)data.Map3Record)}";
+        }
+        else
+        {
+            _map3Record.text = "Map3 : 기록 없음";
+        }
         _score.text = $"Score : {data.Score.ToString()}";
     }
 }
