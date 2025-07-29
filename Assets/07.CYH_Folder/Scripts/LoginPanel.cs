@@ -19,7 +19,7 @@ public class LoginPanel : UIBase
 
     // 계정 전환 테스트용
     [SerializeField] private Button _linkAccountButton;
-    //유저 정보 변경 테스트용
+    // 유저 정보 변경 테스트용
     [SerializeField] private Button _changeAccountInfoButton;
 
     public Action OnClickSignup { get; set; }
@@ -30,6 +30,9 @@ public class LoginPanel : UIBase
 
     // 유저 정보 변경 테스트용
     public Action OnClickChangeAccountInfo { get; set; }
+
+    // 로그아웃 테스트용
+    [SerializeField] private Button _signOutButton;
 
 
     private void Start()
@@ -43,6 +46,9 @@ public class LoginPanel : UIBase
 
         // 유저 정보 변경 테스트용
         _changeAccountInfoButton.onClick.AddListener(() => OnClickChangeAccountInfo?.Invoke());
+
+        // 로그아웃 테스트용
+        _signOutButton.onClick.AddListener(() => CYH_FirebaseManager.Auth.SignOut());
     }
 
     /// <summary>

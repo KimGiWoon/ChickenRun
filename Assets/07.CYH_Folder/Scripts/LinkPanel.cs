@@ -16,7 +16,7 @@ public class LinkPanel : UIBase
     [SerializeField] private Button _googleButton;
     [SerializeField] private Button _emailButton;
     [SerializeField] private Button _closeButton;
-    
+
     [SerializeField] private TMP_Text _errorText;
 
     public Action OnClickLinkWithEmail { get; set; }
@@ -25,9 +25,9 @@ public class LinkPanel : UIBase
 
     private void Start()
     {
-        _closeButton.onClick.AddListener(() => OnClickClosePopup?.Invoke());
         _googleButton.onClick.AddListener(OnClick_LinkWithGoogle);
         _emailButton.onClick.AddListener(() => OnClickLinkWithEmail?.Invoke());
+        _closeButton.onClick.AddListener(() => OnClickClosePopup?.Invoke());
     }
 
     /// <summary>
@@ -38,12 +38,8 @@ public class LinkPanel : UIBase
         FirebaseUser user = CYH_FirebaseManager.Auth.CurrentUser;
         if (user == null || !user.IsAnonymous)
         {
-            Debug.LogWarning("익명 로그인 유저 아님");
+            Debug.LogWarning("익명 로그인 유저x");
             return;
-        }
-        else
-        {
-
         }
     }
 
@@ -55,11 +51,11 @@ public class LinkPanel : UIBase
     //    string email = _emailField.text;
     //    string password = _passwordField.text;
 
-    //    // 익명 로그인 유저인지 체크
+    //    // 익명 로그인 유저 체크
     //    FirebaseUser user = CYH_FirebaseManager.Auth.CurrentUser;
     //    if (user == null || !user.IsAnonymous)
     //    {
-    //        Debug.LogWarning("익명 로그인 유저 아님");
+    //        Debug.LogWarning("익명 로그인 유저x");
     //        return;
     //    }
 
@@ -104,7 +100,7 @@ public class LinkPanel : UIBase
 
         if (user == null || !user.IsAnonymous)
         {
-            PopupManager.Instance.ShowOKPopup("게스트가 아님. 계정 전환 불가", "OK", () => PopupManager.Instance.HidePopup());
+            PopupManager.Instance.ShowOKPopup("게스트x. 계정 전환 불가", "OK", () => PopupManager.Instance.HidePopup());
             return;
         }
 
@@ -113,7 +109,8 @@ public class LinkPanel : UIBase
             if (task.IsCanceled || task.IsFaulted)
             {
                 Debug.LogError($"구글 로그인 실패 / 원인: {task.Exception}");
-                _errorText.text = task.Exception.ToString();
+                
+                PopupManager.Instance.ShowOKPopup("구글 로그인 실패", "OK", () => PopupManager.Instance.HidePopup());
                 return;
             }
 
@@ -126,28 +123,56 @@ public class LinkPanel : UIBase
             {
                 if (linkTask.IsCanceled)
                 {
-                    Debug.LogError($"구글 계정으로 전환 취소");
-                    
                     PopupManager.Instance.ShowOKPopup("구글 계정으로 전환 취소", "OK", () => PopupManager.Instance.HidePopup());
                     return;
                 }
 
                 if (linkTask.IsFaulted)
                 {
-                    Debug.LogError($"구글 계정으로 전환 실패 / 원인: {linkTask.Exception}");
-
-                    _errorText.text = CYH_FirebaseManager.Auth.CurrentUser.UserId;
                     PopupManager.Instance.ShowOKPopup("구글 계정으로 전환 실패", "OK", () => PopupManager.Instance.HidePopup());
                     return;
                 }
 
                 Firebase.Auth.AuthResult linkedUser = linkTask.Result;
 
-                _errorText.text = CYH_FirebaseManager.Auth.CurrentUser.UserId;
                 PopupManager.Instance.ShowOKPopup("구글 계정으로 전환 성공", "OK", () => PopupManager.Instance.HidePopup());
             });
         });
     }
+
+    //private void OnClick_LinkWithGoogle()
+    //{
+    //    GoogleSignIn.DefaultInstance.SignIn().ContinueWithOnMainThread(task =>
+    //    {
+    //        if (task.IsCanceled || task.IsFaulted)
+    //        {
+    //            PopupManager.Instance.ShowOKPopup("구글 계정 로그인 실패", "OK", () => PopupManager.Instance.HidePopup());
+    //            return;
+    //        }
+
+    //        GoogleSignInUser googleUser = task.Result;
+    //        string idToken = googleUser.IdToken;
+
+    //        Credential credential = GoogleAuthProvider.GetCredential(idToken, null);
+
+    //        // 현재 로그인된 익명 계정을 구글 계정으로 전환
+    //        CYH_FirebaseManager.Auth.CurrentUser.LinkWithCredentialAsync(credential).ContinueWithOnMainThread(linkTask =>
+    //        {
+    //            if (linkTask.IsCanceled || linkTask.IsFaulted)
+    //            {
+    //                PopupManager.Instance.ShowOKPopup("구글 계정으로 전환 실패", "OK", () => PopupManager.Instance.HidePopup());
+    //                return;
+    //            }
+
+    //            Firebase.Auth.AuthResult linkedUser = linkTask.Result;
+
+    //            PopupManager.Instance.ShowOKPopup("구글 계정으로 전환 성공", "OK", () => PopupManager.Instance.HidePopup());
+
+    //            Debug.Log("완료");
+    //        });
+    //    });
+    //}
+
 
     /// <summary>
     /// 계정 전환 시 유저 닉네임을 설정하는 메서드

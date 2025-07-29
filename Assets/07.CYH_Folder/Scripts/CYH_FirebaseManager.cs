@@ -6,6 +6,7 @@ using Google;
 using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CYH_FirebaseManager : Singleton<CYH_FirebaseManager>
 {
@@ -21,34 +22,44 @@ public class CYH_FirebaseManager : Singleton<CYH_FirebaseManager>
     private static FirebaseDatabase database;
     public static FirebaseDatabase Database { get { return database; } }
 
+    private static DatabaseReference dataReference; 
+    public static DatabaseReference DataReference { get { return dataReference; } }
+    
     // 닉네임
     public static string CurrentUserNickname => Auth?.CurrentUser?.DisplayName ?? "게스트";
 
-
+    // 구글
     [SerializeField] private string googleWebAPI = "1912177127-go83if3uk9pelsa2186ti52hu74qhv5g.apps.googleusercontent.com";
     
     private GoogleSignInConfiguration _configuration;
     public GoogleSignInConfiguration Configuration { get { return _configuration; } } 
-
     
-    [SerializeField] private TMP_Text _userNickname;
-    [SerializeField] private TMP_Text _userEmail;
-    [SerializeField] private TMP_Text _error;
-    //[SerializeField] private Image userImage;
+    // 구글 테스트
+    [SerializeField] private Button _GoogleButton;
 
-    private void Awake()
+
+    protected override void Awake()
     {
+        InitFirebase();
+
         _configuration = new GoogleSignInConfiguration {
             WebClientId = googleWebAPI,
             RequestIdToken = true
         };
+
+        // 로그인 초기화
+        //if(auth.CurrentUser != null)
+        //{
+        //    auth.SignOut();
+        //}
     }
 
     private void Start()
     {
-        InitFirebase();
+        _GoogleButton.onClick.AddListener(OnGoolgeSignInClicked);
     }
 
+    //코루틴으로 수정 예정
     private void InitFirebase()
     {
         Firebase.FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(task => {
@@ -68,6 +79,9 @@ public class CYH_FirebaseManager : Singleton<CYH_FirebaseManager>
 
     public void OnGoolgeSignInClicked()
     {
+        PopupManager.Instance.ShowOKPopup("구글 로그인 버튼 클릭", "OK", () => PopupManager.Instance.HidePopup());
+
+
         GoogleSignIn.Configuration = _configuration;
         GoogleSignIn.Configuration.UseGameSignIn = false;
         GoogleSignIn.Configuration.RequestIdToken = true;
@@ -98,13 +112,15 @@ public class CYH_FirebaseManager : Singleton<CYH_FirebaseManager>
         auth.SignInAndRetrieveDataWithCredentialAsync(credential).ContinueWithOnMainThread(task => {
             if (task.IsCanceled) {
                 Debug.LogError("SignInAndRetrieveDataWithCredentialAsync was canceled.");
-                _error.text = "구글 로그인 취소";
+
+                PopupManager.Instance.ShowOKPopup("구글 로그인 취소", "OK", () => PopupManager.Instance.HidePopup());
                 return;
             }
 
             if (task.IsFaulted) {
                 Debug.LogError("SignInAndRetrieveDataWithCredentialAsync encountered an error: " + task.Exception);
-                _error.text = "구글 로그인 실패";
+
+                PopupManager.Instance.ShowOKPopup("구글 로그인 실패", "OK", () => PopupManager.Instance.HidePopup());
                 return;
             }
 
@@ -112,12 +128,9 @@ public class CYH_FirebaseManager : Singleton<CYH_FirebaseManager>
             Debug.LogFormat("User signed in successfully: {0} ({1})",
                 result.User.DisplayName, result.User.UserId);
 
-            _error.text = "구글 로그인 성공";
+            PopupManager.Instance.ShowOKPopup("구글 로그인 성공", "OK", () => PopupManager.Instance.HidePopup());
+
             user = auth.CurrentUser;
-
-            _userNickname.text = user.DisplayName;
-            _userEmail.text = user.Email;
-
         });
     }
 }

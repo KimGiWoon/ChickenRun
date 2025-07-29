@@ -201,7 +201,7 @@ public class AccountPanel : UIBase
     }
 
     /// <summary>
-    /// CurrentUser가 이메일 가입 계정인지 체크하는 메서드
+    /// CurrentUser - 이메일 가입 계정을 체크하는 메서드
     /// </summary>
     private void CheckEmailAccount()
     {
