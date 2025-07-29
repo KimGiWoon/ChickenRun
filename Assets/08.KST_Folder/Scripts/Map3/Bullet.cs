@@ -19,6 +19,11 @@ namespace Kst
             if (!photonView.IsMine) return;
             transform.Translate(_moveDir * _speed * Time.deltaTime);
         }
+        // [PunRPC]
+        // void DestoryPlate(int viewId)
+        // {
+
+        // }
 
         //장애물과 충돌 시
         void OnTriggerEnter2D(Collider2D collision)
