@@ -2,16 +2,47 @@ using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PhotonManager : Singleton<PhotonManager>, ILobbyCallbacks, IMatchmakingCallbacks
+public class PhotonManager : MonoBehaviourPunCallbacks
 {
+    #region Singleton
+
+    public static PhotonManager Instance { get; private set; }
+
+    private void Awake()
+    {
+        // 싱글톤 중복 방지
+        if (Instance != null && Instance != this) {
+            Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
+        DontDestroyOnLoad(gameObject);
+
+        // Photon 초기화
+        if (!PhotonNetwork.IsConnected) {
+            PhotonNetwork.AutomaticallySyncScene = true;
+            PhotonNetwork.ConnectUsingSettings();
+            Debug.Log("[Photon] ConnectUsingSettings 호출");
+        }
+    }
+
+    #endregion // Singleton
+
+
+
+
+
     #region private fields
 
     private List<RoomInfo> _cachedRoomList = new();
     private Action _onJoinedRoomCallback;
     private Action _onLeftRoomCallback;
+    private event Action<List<RoomInfo>> _onRoomListUpdated;
 
     #endregion // private fields
 
@@ -21,24 +52,24 @@ public class PhotonManager : Singleton<PhotonManager>, ILobbyCallbacks, IMatchma
 
     #region mono funcs
 
-    protected override void Awake()
+    private void Start()
     {
-        base.Awake();
+        StartCoroutine(CheckPhotonConnection());
+    }
 
-        if (!PhotonNetwork.IsConnected) {
-            PhotonNetwork.AutomaticallySyncScene = true;
-            PhotonNetwork.ConnectUsingSettings();
+    private IEnumerator CheckPhotonConnection()
+    {
+        float timeout = 5f;
+        while (!PhotonNetwork.IsConnected && timeout > 0f) {
+            Debug.Log($"[Photon] 연결 상태: {PhotonNetwork.NetworkClientState}");
+            yield return new WaitForSeconds(1f);
+            timeout -= 1f;
         }
-    }
 
-    private void OnEnable()
-    {
-        PhotonNetwork.AddCallbackTarget(this);
-    }
-
-    private void OnDisable()
-    {
-        PhotonNetwork.RemoveCallbackTarget(this);
+        if (PhotonNetwork.IsConnected)
+            Debug.Log("[Photon] Photon 연결 성공");
+        else
+            Debug.LogError("[Photon] Photon 연결 실패");
     }
 
     #endregion // mono funcs
@@ -49,54 +80,43 @@ public class PhotonManager : Singleton<PhotonManager>, ILobbyCallbacks, IMatchma
 
     #region public funcs
 
-    /// <summary>
-    /// 방에 입장했을 때 호출되는 콜백을 설정합니다.
-    /// </summary>
-    /// <param name="callback"></param>
     public void SetOnJoinedRoomCallback(Action callback)
     {
         _onJoinedRoomCallback = callback;
     }
 
-    /// <summary>
-    /// 방에서 나갔을 때 호출되는 콜백을 설정합니다.
-    /// </summary>
-    /// <param name="callback"></param>
     public void SetOnLeftRoomCallback(Action callback)
     {
         _onLeftRoomCallback = callback;
     }
 
-    /// <summary>
-    /// 방을 나갑니다.
-    /// </summary>
     public void LeaveRoom()
     {
         PhotonNetwork.LeaveRoom();
     }
 
-    /// <summary>
-    /// 방 목록을 불러오고 실행할 콜백을 전달합니다.
-    /// </summary>
-    /// <param name="callback"></param>
     public void RequestRoomList(Action<List<RoomInfo>> callback)
     {
-        callback?.Invoke(_cachedRoomList);
+        if (!PhotonNetwork.InLobby) {
+            Debug.LogWarning("[Photon] 아직 로비에 입장하지 않음. JoinLobby 시도.");
+            PhotonNetwork.JoinLobby(); // 재시도
+            return;
+        }
+
+        _onRoomListUpdated += callback;
+
+        if (_cachedRoomList.Count > 0) {
+            callback?.Invoke(_cachedRoomList);
+        }
     }
 
-    /// <summary>
-    /// 방을 생성합니다.
-    /// </summary>
-    /// <param name="roomName">방 제목</param>
-    /// <param name="password">비밀번호</param>
-    /// <param name="maxPlayers">최대 인원 수</param>
     public void CreateRoom(string roomName, string password, int maxPlayers)
     {
         RoomOptions options = new RoomOptions {
             MaxPlayers = (byte)maxPlayers,
             IsVisible = true,
             IsOpen = true,
-            CustomRoomProperties = new Hashtable {
+            CustomRoomProperties = new ExitGames.Client.Photon.Hashtable {
                 { "Password", password }
             },
             CustomRoomPropertiesForLobby = new[] { "Password" }
@@ -105,18 +125,11 @@ public class PhotonManager : Singleton<PhotonManager>, ILobbyCallbacks, IMatchma
         PhotonNetwork.CreateRoom(roomName, options, TypedLobby.Default);
     }
 
-    /// <summary>
-    /// 지정된 방에 참가합니다.
-    /// </summary>
-    /// <param name="roomName"></param>
     public void JoinRoom(string roomName)
     {
         PhotonNetwork.JoinRoom(roomName);
     }
 
-    /// <summary>
-    /// 랜덤한 방에 참가하거나, 방이 없으면 새로 생성합니다.
-    /// </summary>
     public void JoinRandomRoomOrCreate()
     {
         PhotonNetwork.JoinRandomRoom();
@@ -128,88 +141,73 @@ public class PhotonManager : Singleton<PhotonManager>, ILobbyCallbacks, IMatchma
 
 
 
-    #region Photon callbacks
+    #region Photon Callbacks
 
-    public void OnConnectedToMaster()
+    public override void OnConnectedToMaster()
     {
+        Debug.Log("[Photon] 마스터 서버 연결됨");
         PhotonNetwork.JoinLobby();
     }
 
-    public void OnJoinedLobby()
+    public override void OnJoinedLobby()
     {
         Debug.Log("[Photon] 로비 입장 완료");
         SetUserUIDToPhoton();
     }
 
-    public void OnLeftLobby()
+    public override void OnRoomListUpdate(List<RoomInfo> roomList)
     {
-        Debug.Log("[Photon] 로비에서 나감");
-    }
+        Debug.Log($"[Photon] {roomList.Count}개의 방 정보 업데이트됨");
 
-    public void OnLobbyStatisticsUpdate(List<TypedLobbyInfo> lobbyStatistics)
-    {
-        // Do Nothing
-    }
-
-    /// <summary>
-    /// 로비에 있는 방 목록이 업데이트되었을 때 호출됩니다.
-    /// </summary>
-    /// <param name="roomList"></param>
-    public void OnRoomListUpdate(List<RoomInfo> roomList)
-    {
         _cachedRoomList.Clear();
-
         foreach (var room in roomList) {
-            if (room.RemovedFromList || room.PlayerCount >= room.MaxPlayers)
+            if (room.RemovedFromList)
                 continue;
 
             _cachedRoomList.Add(room);
         }
+
+        _onRoomListUpdated?.Invoke(_cachedRoomList);
+        _onRoomListUpdated = null;
     }
 
-    public void OnCreatedRoom()
+    public override void OnCreatedRoom()
     {
         Debug.Log("[Photon] 방 생성 완료");
     }
 
-    public void OnCreateRoomFailed(short returnCode, string message)
+    public override void OnCreateRoomFailed(short returnCode, string message)
     {
         Debug.LogWarning($"[Photon] 방 생성 실패: {message}");
     }
 
-    public void OnJoinedRoom()
+    public override void OnJoinedRoom()
     {
         Debug.Log("[Photon] 방 참가 완료");
-
         _onJoinedRoomCallback?.Invoke();
         _onJoinedRoomCallback = null;
     }
 
-    public void OnJoinRoomFailed(short returnCode, string message)
+    public override void OnJoinRoomFailed(short returnCode, string message)
     {
         Debug.LogWarning($"[Photon] 방 참가 실패: {message}");
     }
 
-    public void OnJoinRandomFailed(short returnCode, string message)
+    public override void OnJoinRandomFailed(short returnCode, string message)
     {
         Debug.Log("[Photon] 빠른 매치 실패 → 새 방 생성");
         string randomRoomName = "Quick_" + UnityEngine.Random.Range(1000, 9999);
         CreateRoom(randomRoomName, "", 8);
     }
 
-    public void OnLeftRoom()
+    public override void OnLeftRoom()
     {
+        Debug.Log("[Photon] 방에서 나감");
         _onLeftRoomCallback?.Invoke();
         _onLeftRoomCallback = null;
-        Debug.Log("[Photon] 방에서 나감");
     }
 
-    public void OnFriendListUpdate(List<FriendInfo> friendList)
-    {
-        // Do Nothing
-    }
-
-    #endregion // Photon callbacks
+    #endregion // Photon Callbacks
 
 
 
@@ -221,11 +219,9 @@ public class PhotonManager : Singleton<PhotonManager>, ILobbyCallbacks, IMatchma
     {
         if (CYH_FirebaseManager.User != null) {
             string uid = CYH_FirebaseManager.User.UserId;
-            ExitGames.Client.Photon.Hashtable props = new()
-            {
-            { "UID", uid }
-        };
-
+            ExitGames.Client.Photon.Hashtable props = new() {
+                { "UID", uid }
+            };
             PhotonNetwork.LocalPlayer.SetCustomProperties(props);
             Debug.Log($"[Photon] UID 등록 완료: {uid}");
         }
