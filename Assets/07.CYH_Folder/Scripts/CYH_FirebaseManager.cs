@@ -21,7 +21,10 @@ public class CYH_FirebaseManager : Singleton<CYH_FirebaseManager>
     private static FirebaseDatabase database;
     public static FirebaseDatabase Database { get { return database; } }
 
-    // 구글
+    // 닉네임
+    public static string CurrentUserNickname => Auth?.CurrentUser?.DisplayName ?? "게스트";
+
+
     [SerializeField] private string googleWebAPI = "1912177127-go83if3uk9pelsa2186ti52hu74qhv5g.apps.googleusercontent.com";
     
     private GoogleSignInConfiguration _configuration;
@@ -35,8 +38,7 @@ public class CYH_FirebaseManager : Singleton<CYH_FirebaseManager>
 
     private void Awake()
     {
-        _configuration = new GoogleSignInConfiguration
-        {
+        _configuration = new GoogleSignInConfiguration {
             WebClientId = googleWebAPI,
             RequestIdToken = true
         };
@@ -49,17 +51,14 @@ public class CYH_FirebaseManager : Singleton<CYH_FirebaseManager>
 
     private void InitFirebase()
     {
-        Firebase.FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(task =>
-        {
+        Firebase.FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(task => {
             Firebase.DependencyStatus dependencyStatus = task.Result;
-            if (dependencyStatus == Firebase.DependencyStatus.Available)
-            {
+            if (dependencyStatus == Firebase.DependencyStatus.Available) {
                 app = FirebaseApp.DefaultInstance;
                 auth = FirebaseAuth.DefaultInstance;
                 database = FirebaseDatabase.DefaultInstance;
             }
-            else
-            {
+            else {
                 app = null;
                 auth = null;
                 database = null;
@@ -79,18 +78,15 @@ public class CYH_FirebaseManager : Singleton<CYH_FirebaseManager>
 
     private void OnGoogleAuthenticatedFinished(Task<GoogleSignInUser> task)
     {
-        if (task.IsCanceled)
-        {
+        if (task.IsCanceled) {
             Debug.Log("Login Cancel");
         }
 
-        if (task.IsFaulted)
-        {
+        if (task.IsFaulted) {
             Debug.Log("Faulted");
         }
 
-        else
-        {
+        else {
             GoogleLogin(task);
         }
     }
@@ -99,17 +95,14 @@ public class CYH_FirebaseManager : Singleton<CYH_FirebaseManager>
     {
         Firebase.Auth.Credential credential =
         Firebase.Auth.GoogleAuthProvider.GetCredential(userTask.Result.IdToken, null);
-        auth.SignInAndRetrieveDataWithCredentialAsync(credential).ContinueWithOnMainThread(task =>
-        {
-            if (task.IsCanceled)
-            {
+        auth.SignInAndRetrieveDataWithCredentialAsync(credential).ContinueWithOnMainThread(task => {
+            if (task.IsCanceled) {
                 Debug.LogError("SignInAndRetrieveDataWithCredentialAsync was canceled.");
                 _error.text = "구글 로그인 취소";
                 return;
             }
 
-            if (task.IsFaulted)
-            {
+            if (task.IsFaulted) {
                 Debug.LogError("SignInAndRetrieveDataWithCredentialAsync encountered an error: " + task.Exception);
                 _error.text = "구글 로그인 실패";
                 return;

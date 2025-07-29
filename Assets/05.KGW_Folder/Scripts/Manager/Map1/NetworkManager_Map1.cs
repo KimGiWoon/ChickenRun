@@ -1,19 +1,19 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
+using ExitGames.Client.Photon;
 
 public class NetworkManager_Map1 : MonoBehaviourPunCallbacks
 {
     [Header("Map1 UI Manager Reference")]
     [SerializeField] UIManager_Map1 _UIManager;
 
-    static NetworkManager_Map1 instance;
-    
     public bool _isStart = false;
+
+    static NetworkManager_Map1 instance;
 
     public static NetworkManager_Map1 Instance
     {
@@ -36,8 +36,12 @@ public class NetworkManager_Map1 : MonoBehaviourPunCallbacks
 
     private void Start()
     {
-        // 서버 접속
-        PhotonNetwork.ConnectUsingSettings();
+        // 서버에 연결이 되어 있지 않으면 서버 접속
+        if (!PhotonNetwork.IsConnected)
+        {
+            UnityEngine.Debug.Log("서버에 미연결로 서버 접속");
+            PhotonNetwork.ConnectUsingSettings();
+        }
     }
 
     // 네트워크 매니저가 생성한게 있으면 생성하지 않고 중복으로 생성 시 삭제
@@ -66,6 +70,14 @@ public class NetworkManager_Map1 : MonoBehaviourPunCallbacks
         UnityEngine.Debug.Log("입장 완료");
         // TODO : 플레이어 닉네임 확인용
         PhotonNetwork.LocalPlayer.NickName = $"Player{PhotonNetwork.LocalPlayer.ActorNumber}";
+
+        // 닉네임을 커스텀 프로퍼티로 저장
+        string nickname = PhotonNetwork.LocalPlayer.NickName;
+        Hashtable hashtable = new Hashtable { { "Nickname", nickname } };
+
+        // 닉네임 정보를 포톤서버에 업로드
+        PhotonNetwork.LocalPlayer.SetCustomProperties(hashtable);
+
         PlayerSpawn();
     }
 
@@ -80,7 +92,7 @@ public class NetworkManager_Map1 : MonoBehaviourPunCallbacks
     private void PlayerSpawn()
     {
         Vector2 spawnPos = new Vector2(0, 0);
-        PhotonNetwork.Instantiate($"BasicPlayer", spawnPos, Quaternion.identity);
+        PhotonNetwork.Instantiate($"Player_Map1", spawnPos, Quaternion.identity);
     }
 
     // 입장 플레이어 체크
@@ -113,6 +125,7 @@ public class NetworkManager_Map1 : MonoBehaviourPunCallbacks
         _UIManager.photonView.RPC(nameof(_UIManager.StartGameRoutine), RpcTarget.AllViaServer);
     }
 
+    // 플레이어가 방에 들어오면 체크
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
         UnityEngine.Debug.Log($"Player_{newPlayer.NickName} 입장완료");

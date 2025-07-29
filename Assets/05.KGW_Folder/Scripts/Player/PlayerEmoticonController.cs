@@ -1,13 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using Photon.Pun;
+using Photon.Realtime;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PlayerEmoticonController : MonoBehaviourPun
+public class PlayerEmoticonController : MonoBehaviourPunCallbacks
 {
     [SerializeField] public GameObject _SpeechBubble;
     [SerializeField] public Image _emoticonImage;
+    [SerializeField] TMP_Text _NicknameText;
     [SerializeField] Sprite[] _emoticonSprite;
     [SerializeField] float _emoticonTime = 3f;
 
@@ -17,6 +20,12 @@ public class PlayerEmoticonController : MonoBehaviourPun
     {
         // 이모티콘 패널 전달
         EmoticonPanelDeliver();
+
+        // 키값을 가진 프로퍼티가 있는지 확인 후 있으면 아웃 변수에 저장
+        if(photonView.Owner.CustomProperties.TryGetValue("Nickname", out object nickname))
+        {
+            _NicknameText.text = nickname.ToString();
+        }
     }
     
     // 이모티콘 컨트롤러 전달
@@ -67,5 +76,15 @@ public class PlayerEmoticonController : MonoBehaviourPun
     {
         yield return new WaitForSeconds( _emoticonTime );
         _SpeechBubble.SetActive (false);
+    }
+
+    // 플레이어의 커스텀 프로퍼티가 변경 확인
+    public override void OnPlayerPropertiesUpdate(Player targetPlayer, ExitGames.Client.Photon.Hashtable changedProps)
+    {
+        // 프로퍼티의 소유자가 맞고 키값을 가지고 있는지 체크
+        if(photonView.Owner == targetPlayer && changedProps.ContainsKey("Nickname"))
+        {
+            _NicknameText.text = changedProps["Nickname"].ToString();
+        }
     }
 }
