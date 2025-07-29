@@ -46,6 +46,7 @@ MonoBehaviour:
   - ExitPlayer
   - GameClearLeaveRoom
   - StartGameRoutine
+  - ReadyGame
   - PlayerNickname
   - SetSpeed
   DisableAutoOpenWizard: 1

@@ -6,11 +6,8 @@ using System.Threading.Tasks;
 using Firebase.Auth;
 using Firebase.Database;
 using Firebase.Extensions;
-using Photon.Pun.Demo.Cockpit;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
-using Debug = UnityEngine.Debug;
 
 public class Database_RecordManager : Singleton<Database_RecordManager>
 {
@@ -63,7 +60,7 @@ public class Database_RecordManager : Singleton<Database_RecordManager>
         string email = "hagwhr2@gmail.com";
         string pass = "dltjrdnjs96~";
         
-        _auth = FirebaseManager_LSW.Auth;
+        _auth = CYH_FirebaseManager.Auth;
         if (_auth == null)
         {
             _auth = FirebaseAuth.DefaultInstance;
@@ -73,7 +70,7 @@ public class Database_RecordManager : Singleton<Database_RecordManager>
         {
             if (task.IsCompletedSuccessfully)
             {
-                _reference = FirebaseManager_LSW.Database.RootReference;
+                _reference = CYH_FirebaseManager.Database.RootReference;
             }
         });
         
@@ -156,9 +153,13 @@ public class Database_RecordManager : Singleton<Database_RecordManager>
                             break;
                     }
 
-                    GameObject board = boardPool.GetPool();
-                    board.GetComponent<UserPersonalRecord>().SetRecordText(rank,rankData.Nickname,FormatData(recordValue));
-                    rank++;
+                    if (recordValue != 0)
+                    {
+                        GameObject board = boardPool.GetPool();
+                        board.GetComponent<UserPersonalRecord>()
+                            .SetRecordText(rank,rankData.Nickname,FormatData(recordValue), snapshot.Key);
+                        rank++;
+                    }
                 }
             });
     }
@@ -181,7 +182,8 @@ public class Database_RecordManager : Singleton<Database_RecordManager>
                 {
                     RankData rankData = JsonUtility.FromJson<RankData>(snapshot.GetRawJsonValue());
                     GameObject board = boardList.GetPool();
-                    board.GetComponent<UserPersonalRecord>().SetScoreText(rank,rankData.Nickname,rankData.Score);
+                    board.GetComponent<UserPersonalRecord>()
+                        .SetScoreText(rank,rankData.Nickname,rankData.Score, snapshot.Key);
                     rank++;
                 }
             });
@@ -251,12 +253,28 @@ public class Database_RecordManager : Singleton<Database_RecordManager>
         return info;
     }
     
-    // PlayerInfoUI, RankUI에 쓰이는 메서드로
-    // 유저 개인 랭킹 정보를 불러오는 메서드(동기 처리)
+    // RankUI에 쓰이는 메서드
+    // 유저 개인 랭킹 정보를 불러오는 메서드
     public async Task<RankData> LoadRankData()
     {
         FirebaseUser user = _auth.CurrentUser;
         DatabaseReference userInfo = _reference.Child("RankData").Child(user.UserId);
+        RankData rankData = new RankData();
+
+        DataSnapshot snapshot = await userInfo.GetValueAsync();
+        if (snapshot.Exists)
+        {
+            rankData = JsonUtility.FromJson<RankData>(snapshot.GetRawJsonValue());
+        }
+        
+        return rankData;
+    }
+
+    // PlayerInfoUI에 쓰이는 메서드
+    // uid에 해당하는 플레이어의 랭킹 정보를 불러오는 메서드
+    public async Task<RankData> LoadRankData(string uid)
+    {
+        DatabaseReference userInfo = _reference.Child("RankData").Child(uid);
         RankData rankData = new RankData();
 
         DataSnapshot snapshot = await userInfo.GetValueAsync();
@@ -318,6 +336,7 @@ public class Database_RecordManager : Singleton<Database_RecordManager>
     private void Info()
     {
         _infoPanel.SetActive(!_infoPanel.activeSelf);
+        //_infoPanel.GetComponent<PlayerInfoUIController>().ShowInfo();
     }
     
     // 초기 개인 랭킹 표시 메서드
