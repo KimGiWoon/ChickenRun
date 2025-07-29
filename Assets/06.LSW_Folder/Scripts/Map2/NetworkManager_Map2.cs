@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
+using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 public class NetworkManager_Map2 : MonoBehaviourPunCallbacks
 {
@@ -28,9 +29,11 @@ public class NetworkManager_Map2 : MonoBehaviourPunCallbacks
     // 인게임 진입 시 호출되는 이벤트 
     public override void OnJoinedRoom()
     {
-        Debug.Log("입장 완료");
-        // TODO : 플레이어 닉네임 확인용
         PhotonNetwork.LocalPlayer.NickName = $"Player{PhotonNetwork.LocalPlayer.ActorNumber}";
+        string nickname = PhotonNetwork.LocalPlayer.NickName;
+        Hashtable table = new Hashtable{ { "Nickname", nickname } };
+        PhotonNetwork.LocalPlayer.SetCustomProperties(table);
+        
         PlayerSpawn();
         photonView.RPC(nameof(NotifyPlayer), RpcTarget.MasterClient);
     }

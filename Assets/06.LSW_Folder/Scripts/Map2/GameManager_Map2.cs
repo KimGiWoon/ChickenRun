@@ -3,8 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using UnityEngine;
-using UnityEngine.PlayerLoop;
-using Debug = UnityEngine.Debug;
 
 public class GameManager_Map2 : Singleton<GameManager_Map2>
 {
@@ -45,13 +43,13 @@ public class GameManager_Map2 : Singleton<GameManager_Map2>
         _stopwatch = new Stopwatch();
         _data = new Map2Data("Map2Record");
         GameProgress = new Property<float>(0f);
-        //SetTotalDistance();
+        SetTotalDistance();
     }
 
     private void Update()
     {
         // 플레이어와 결승선의 거리 확인
-        //PlayerPosUpdate();
+        PlayerPosUpdate();
         
         // 3분이 지나면 게임 종료
         if (_stopwatch.ElapsedMilliseconds >= 180000)
@@ -120,7 +118,7 @@ public class GameManager_Map2 : Singleton<GameManager_Map2>
     }
 
     // 플레이어 위치 세팅
-    public void SetPlayerPosition(Transform player)
+    public void SetPlayer(Transform player)
     {
         _player = player;
     }

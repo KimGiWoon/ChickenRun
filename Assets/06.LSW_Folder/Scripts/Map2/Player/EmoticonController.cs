@@ -2,8 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Photon.Pun;
+using TMPro;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class EmoticonController : MonoBehaviourPun
@@ -11,6 +11,7 @@ public class EmoticonController : MonoBehaviourPun
     [SerializeField] private Sprite[] _emoticonSprite;
     [SerializeField] private GameObject _speechBubble;
     [SerializeField] private Image _emoticonImage;
+    [SerializeField] private TextMeshProUGUI _playerNickname;
     
     private EmoticonUI _emoticonUI;
     private Coroutine _emoticonRoutine;
@@ -30,6 +31,12 @@ public class EmoticonController : MonoBehaviourPun
                 onLoveBtn: () => OnEmoticon(4),
                 onWeepBtn: () => OnEmoticon(5));
         }
+    }
+
+    private void Start()
+    {
+        if(photonView.Owner.CustomProperties.TryGetValue("Nickname", out object nickname));
+        _playerNickname.text = nickname?.ToString();
     }
     
     private void OnEmoticon(int index)

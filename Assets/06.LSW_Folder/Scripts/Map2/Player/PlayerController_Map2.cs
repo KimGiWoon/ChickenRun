@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
-using Unity.VisualScripting;
 
 public class PlayerController_Map2 : MonoBehaviourPun
 {
@@ -38,6 +37,7 @@ public class PlayerController_Map2 : MonoBehaviourPun
         {
             Camera.main.GetComponent<CameraController_Map2>().SetTarget(transform);
             GameManager_Map2.Instance.OnReadyGame += () => SetJoint();
+            GameManager_Map2.Instance.SetPlayer(transform);
         }
         // 자신이 아닌 경우 투명도 낮추기
         else
