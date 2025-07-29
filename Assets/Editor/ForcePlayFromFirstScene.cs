@@ -7,6 +7,8 @@ using UnityEngine.SceneManagement;
 [InitializeOnLoad]
 public class ForcePlayFromFirstScene
 {
+    private const string PREF_KEY = "ForcePlayFromFirstScene_Enabled";
+
     static ForcePlayFromFirstScene()
     {
         EditorApplication.playModeStateChanged += OnPlayModeChanged;
@@ -14,6 +16,9 @@ public class ForcePlayFromFirstScene
 
     private static void OnPlayModeChanged(PlayModeStateChange state)
     {
+        if (!EditorPrefs.GetBool(PREF_KEY, true))
+            return;
+
         if (state == PlayModeStateChange.ExitingEditMode) {
             string firstScenePath = SceneUtility.GetScenePathByBuildIndex(0);
 
@@ -26,6 +31,20 @@ public class ForcePlayFromFirstScene
                 }
             }
         }
+    }
+
+    [MenuItem("Tools/Force Play From First Scene")]
+    private static void ToggleForcePlay()
+    {
+        bool current = EditorPrefs.GetBool(PREF_KEY, true);
+        EditorPrefs.SetBool(PREF_KEY, !current);
+    }
+
+    [MenuItem("Tools/Force Play From First Scene", true)]
+    private static bool ToggleForcePlayValidate()
+    {
+        Menu.SetChecked("Tools/Force Play From First Scene", EditorPrefs.GetBool(PREF_KEY, true));
+        return true;
     }
 }
 #endif
