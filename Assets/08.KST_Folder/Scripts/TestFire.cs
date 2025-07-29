@@ -4,6 +4,7 @@ using Firebase.Auth;
 using Firebase.Database;
 using Firebase.Extensions;
 using System;
+using UnityEngine.SceneManagement;
 
 namespace Kst
 {
@@ -17,8 +18,8 @@ namespace Kst
         private FirebaseAuth auth;
         private DatabaseReference database;
 
-        public event Action OnLogin;
-        [SerializeField] GameObject shopPanel,loginPanel;
+        // public event Action OnLogin;
+        // [SerializeField] GameObject shopPanel,loginPanel;
 
         private void Awake()
         {
@@ -62,9 +63,10 @@ namespace Kst
                 else
                 {
                     Debug.Log("로그인 성공: " + Auth.CurrentUser.Email);
-                    shopPanel.SetActive(true);
-                    loginPanel.SetActive(false);
-                    OnLogin.Invoke();
+                    // shopPanel.SetActive(true);
+                    // loginPanel.SetActive(false);
+                    // OnLogin.Invoke();
+                    SceneManager.LoadScene("Shop");
                 }
             });
         }
