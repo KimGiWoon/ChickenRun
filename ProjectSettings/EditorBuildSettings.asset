@@ -6,6 +6,12 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/07.CYH_Folder/Scenes/TestScene.unity
-    guid: 095109a1d8182d24c85f8e07a3f76a28
+    path: Assets/08.KST_Folder/Scenes/Login.unity
+    guid: 80947632788ffa4409737beee3a66764
+  - enabled: 1
+    path: Assets/08.KST_Folder/Scenes/Shop.unity
+    guid: ceeb4b5c8c8e7ae49a3f19a6988159af
+  - enabled: 1
+    path: Assets/08.KST_Folder/Scenes/GameScene_Map3.unity
+    guid: 7c5374a05eb3557449b121b735d4abf1
   m_configObjects: {}

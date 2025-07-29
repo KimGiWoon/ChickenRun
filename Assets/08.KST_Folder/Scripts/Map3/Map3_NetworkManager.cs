@@ -10,6 +10,7 @@ namespace Kst
         [SerializeField] private string playerPrefabName = "Map3_Player";
         [SerializeField] private Map3BtnUI _btnUI;
         [SerializeField] private Transform spawnPoint; // 플레이어 생성 위치
+        [SerializeField] PlateSpawner _plateSpawner;
 
         void Start()
         {
@@ -37,8 +38,8 @@ namespace Kst
             {
                 Map3_PlayerController player = go.GetComponent<Map3_PlayerController>();
                 _btnUI.Init(player);
-                
             }
+            _plateSpawner.StartSpawn();
         }
     }
 }

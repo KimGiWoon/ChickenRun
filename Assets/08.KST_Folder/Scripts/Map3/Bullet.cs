@@ -23,16 +23,25 @@ namespace Kst
         //장애물과 충돌 시
         void OnTriggerEnter2D(Collider2D collision)
         {
-            if (!photonView.IsMine)
+            if (!photonView.IsMine) return;
 
-                if (collision.CompareTag("Obstacle"))
+            if (collision.TryGetComponent(out Plate plate))
+            {
+                if (plate.IsEggPlate())
+                    EggManager.Instance.GainEgg(plate.GetEggAmount());
+                else
                 {
-                    //TODO <김승태> : 추후 오브젝트 풀링 반납 구조로 변경 필요
-                    //장애물 파괴 혹은 추가적인 장치 필요.
-                    PhotonNetwork.Destroy(collision.gameObject);
-                    //총알 파괴
-                    PhotonNetwork.Destroy(gameObject);
+                    int score = plate.GetScore();
+                    if (score > 0) ScoreManager.Instance.AddScroe(score);
+                    else ScoreManager.Instance.MinusScore(-score);
                 }
+                //TODO <김승태> : 추후 오브젝트 풀링 반납 구조로 변경 필요
+                //장애물 파괴 혹은 추가적인 장치 필요.
+                PhotonNetwork.Destroy(collision.gameObject);
+                //총알 파괴
+                PhotonNetwork.Destroy(gameObject);
+            }
+
         }
     }
 
