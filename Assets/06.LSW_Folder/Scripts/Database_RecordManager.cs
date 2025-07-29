@@ -60,7 +60,7 @@ public class Database_RecordManager : Singleton<Database_RecordManager>
         string email = "hagwhr2@gmail.com";
         string pass = "dltjrdnjs96~";
         
-        _auth = FirebaseManager_LSW.Auth;
+        _auth = CYH_FirebaseManager.Auth;
         if (_auth == null)
         {
             _auth = FirebaseAuth.DefaultInstance;
@@ -70,7 +70,7 @@ public class Database_RecordManager : Singleton<Database_RecordManager>
         {
             if (task.IsCompletedSuccessfully)
             {
-                _reference = FirebaseManager_LSW.Database.RootReference;
+                _reference = CYH_FirebaseManager.Database.RootReference;
             }
         });
         
