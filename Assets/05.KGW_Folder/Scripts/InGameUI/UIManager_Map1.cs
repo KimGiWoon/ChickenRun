@@ -5,7 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Stage1UIManager : MonoBehaviourPun
+public class UIManager_Map1 : MonoBehaviourPun
 {
     [Header("Play Time UI Reference")]
     [SerializeField] TMP_Text _playTimeText;
@@ -59,29 +59,26 @@ public class Stage1UIManager : MonoBehaviourPun
     // 맵타입 설정
     private void OnEnable()
     {
-        GameManager.Instance._currentMapType = "Map1";
+        GameManager_Map1.Instance._currentMapType = "Map1";
     }
 
     private void Start()
     {
         // 달걀 획득 UI 이벤트 구독
-        GameManager.Instance.OnEggCountChange += UpdateGetEggUI;
-        // 카메라 모드 체크 관련 이벤트 구독
+        GameManager_Map1.Instance.OnEggCountChange += UpdateGetEggUI;
         // 시작할 시 획득한 달걀은 0이므로 UI설정
         UpdateGetEggUI(0);
+
         SetTotalDistance();
         InGameUIInit();
         SoundVolumeInit();
-        Debug.Log(GameManager.Instance._currentMapType);
+        Debug.Log(GameManager_Map1.Instance._currentMapType);
     }
 
     private void Update()
     {
         // 플레이 타임 UI 출력
-        _playTimeText.text = GameManager.Instance.PlayTimeUpdate();
-
-        // 플레이 타임 오버 체크
-        PlayTimeOverCheck();
+        _playTimeText.text = GameManager_Map1.Instance.PlayTimeUpdate();
 
         // 플레이어와 결승선의 거리 확인
         PlayerPosUpdate();
@@ -90,7 +87,7 @@ public class Stage1UIManager : MonoBehaviourPun
     private void OnDestroy()
     {
         // 달걀 획득 UI 이벤트 해제
-        GameManager.Instance.OnEggCountChange -= UpdateGetEggUI;
+        GameManager_Map1.Instance.OnEggCountChange -= UpdateGetEggUI;
 
         // 메모리 누수 방지로 리셋
         _camModeCheckToggle.onValueChanged.RemoveListener(CamModeCheck);
@@ -219,7 +216,7 @@ public class Stage1UIManager : MonoBehaviourPun
         Debug.Log($"{PlayerNickname}께서 나갔습니다.");
 
         // 현재의 방을 나가기
-        PhotonNetwork.LeaveRoom(this);
+        PhotonNetwork.LeaveRoom();
 
         // 로비 씬이 있으면 추가해서 씬 이동
         //PhotonNetwork.LoadLevel("로비씬");
@@ -245,15 +242,6 @@ public class Stage1UIManager : MonoBehaviourPun
         _playerPosition = player;
     }
 
-    // 게임 플레이 시간 오버 체크
-    private void PlayTimeOverCheck()
-    {
-        if (GameManager.Instance._totalPlayTime > GameManager.Instance._GamePlayTime)
-        {
-            GameManager.Instance.GamePlayTimeOver();
-        }
-    }
-
     // 스타트 코루틴
     [PunRPC]
     public void StartGameRoutine()
@@ -273,7 +261,7 @@ public class Stage1UIManager : MonoBehaviourPun
     {
         WaitForSeconds time = new WaitForSeconds(_routineTime);
         int count = 4;
-        GameManager.Instance._isGoal = false;
+        GameManager_Map1.Instance._isGoal = false;
 
         yield return new WaitForSeconds(2f);
         _startPanel.SetActive(true);
@@ -298,7 +286,7 @@ public class Stage1UIManager : MonoBehaviourPun
             {
                 SoundManager.Instance.PlayBGM(SoundManager.Bgms.BGM_InGame);
                 _startPanel.SetActive(false);
-                GameManager.Instance.StartStopWatch();
+                GameManager_Map1.Instance.StartStopWatch();
                 _wall.SetActive(false);
                 break;
             }
