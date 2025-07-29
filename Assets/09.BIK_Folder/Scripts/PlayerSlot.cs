@@ -52,10 +52,14 @@ public class PlayerSlot : MonoBehaviour
         _readyOffIcon.SetActive(!isReady);
     }
 
-    // 나중에 클릭 시 정보창 표시할 경우 사용
     public void OnClick()
     {
-        // TODO: PlayerInfoPopup.Instance.Show(_player);
+        if (_player.CustomProperties.TryGetValue("UID", out object uidObj) && uidObj is string firebaseUid) {
+            PopupManager.Instance.ShowPlayerInfo(firebaseUid);
+        }
+        else {
+            Debug.LogWarning("해당 플레이어의 UID가 등록되어 있지 않습니다.");
+        }
     }
 
     #endregion // public funcs

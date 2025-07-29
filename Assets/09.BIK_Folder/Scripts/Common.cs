@@ -21,7 +21,22 @@ public enum UIType
 
 public enum MapType
 {
-    Normal = 0,
+    Map1 = 0,
+    Map2,
+    Map3,
+}
+
+public enum ColorType
+{
+    White = 0,
+    Red,
+    Blue,
+    Green,
+    Yellow,
+    Purple,
+    Orange,
+    Pink,
+    Cyan,
 }
 
 #endregion // Type Def

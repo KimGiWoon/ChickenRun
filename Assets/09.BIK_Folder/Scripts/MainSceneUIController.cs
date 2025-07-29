@@ -10,8 +10,6 @@ public class MainSceneUIController : MonoBehaviour
     #region Serialized fields
 
     [Header("Top UI")]
-    [SerializeField] private TMP_Text _goldEggText;
-    [SerializeField] private TMP_Text _normalEggText;
     [SerializeField] private TMP_Text _nicknameText;
     [SerializeField] private Button _settingButton;
 
@@ -67,10 +65,8 @@ public class MainSceneUIController : MonoBehaviour
 
         _settingButton.onClick.AddListener(OpenSettingPopup);
 
-        // TODO: Firebase 닉네임 불러오기 예정
-        //_nicknameText.text = FirebaseManager.Instance.CurrentUserNickname;
+        _nicknameText.text = CYH_FirebaseManager.CurrentUserNickname;
 
-        UpdateTopCurrency(0, 0); // TODO: Firebase에서 불러오기.
         ShowUI(UIType.PlayBase); // 초기 UI 설정
     }
 
@@ -106,17 +102,6 @@ public class MainSceneUIController : MonoBehaviour
         _currentUI?.RefreshUI();
     }
 
-    /// <summary>
-    /// 상단에 있는 재화 UI, 예를 들어 골드 에그와 일반 에그의 수량을 업데이트합니다.
-    /// </summary>
-    /// <param name="goldEgg">골드에그 수량</param>
-    /// <param name="normalEgg">일반에그 수량</param>
-    public void UpdateTopCurrency(int goldEgg, int normalEgg)
-    {
-        _goldEggText.text = goldEgg.ToString();
-        _normalEggText.text = normalEgg.ToString();
-    }
-
     #endregion // public funcs
 
 
@@ -127,7 +112,7 @@ public class MainSceneUIController : MonoBehaviour
 
     private void OnClickPlayAlone()
     {
-        string displayName = "닉네임" + Random.Range(1000, 9999); // TODO Firebase 닉네임 가져오기
+        string displayName = CYH_FirebaseManager.CurrentUserNickname + Random.Range(1000, 9999);
 
         PhotonManager.Instance.SetOnJoinedRoomCallback(() => ShowUI(UIType.PlayLobby));
 
@@ -135,6 +120,7 @@ public class MainSceneUIController : MonoBehaviour
         ExitGames.Client.Photon.Hashtable customProps = new() {
         { "RoomName", displayName },
         { "Password", "" },
+        { "Map", MapType.Map1.ToString() },
         { "MaxPlayersView", 1 }
     };
 
@@ -209,7 +195,7 @@ public class MainSceneUIController : MonoBehaviour
 
     private void OpenSettingPopup()
     {
-        //PopupManager.Instance.ShowSettingPopup(); // TODO : 설정 팝업 구현 예정
+        //PopupManager.Instance.ShowSettingPopup(); // TODO백인권 : 설정 팝업 구현 예정
     }
 
     #endregion // private funcs
