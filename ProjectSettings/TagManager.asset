@@ -9,6 +9,7 @@ TagManager:
   - BounceTile3
   - BounceTile4
   - BounceTile5
+  - Goal
   layers:
   - Default
   - TransparentFX

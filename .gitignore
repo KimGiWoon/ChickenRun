@@ -96,3 +96,5 @@ crashlytics-build.properties
 /.idea/.idea.ChickenRun/.idea
 /Assets/GoogleSignIn
 Assets/GoogleSignIn.meta
+ChickenRun_BurstDebugInformation_DoNotShip/tempburstlibs/arm64-v8a/lib_burst_generated.txt
+ChickenRun_BurstDebugInformation_DoNotShip/tempburstlibs/armeabi-v7a/lib_burst_generated.txt

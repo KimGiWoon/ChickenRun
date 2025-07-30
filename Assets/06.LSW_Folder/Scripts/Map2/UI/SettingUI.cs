@@ -56,6 +56,7 @@ public class SettingUI : MonoBehaviourPun
     private void OffOptionWindow()
     {
         _optionPanel.SetActive(false);
+        GameManager_Map2.Instance.OpenPanel(false);
     }
     
     // 나가기 버튼 클릭
