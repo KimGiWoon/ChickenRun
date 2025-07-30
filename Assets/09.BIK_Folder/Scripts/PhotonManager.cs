@@ -24,11 +24,11 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         DontDestroyOnLoad(gameObject);
 
         // Photon 초기화
-        if (!PhotonNetwork.IsConnected) {
-            PhotonNetwork.AutomaticallySyncScene = true;
-            PhotonNetwork.ConnectUsingSettings();
-            Debug.Log("[Photon] ConnectUsingSettings 호출");
-        }
+        //if (!PhotonNetwork.IsConnected) {
+        //    PhotonNetwork.AutomaticallySyncScene = true;
+        //    PhotonNetwork.ConnectUsingSettings();
+        //    Debug.Log("[Photon] ConnectUsingSettings 호출");
+        //}
     }
 
     #endregion // Singleton
@@ -45,34 +45,6 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     private event Action<List<RoomInfo>> _onRoomListUpdated;
 
     #endregion // private fields
-
-
-
-
-
-    #region mono funcs
-
-    private void Start()
-    {
-        StartCoroutine(CheckPhotonConnection());
-    }
-
-    private IEnumerator CheckPhotonConnection()
-    {
-        float timeout = 5f;
-        while (!PhotonNetwork.IsConnected && timeout > 0f) {
-            Debug.Log($"[Photon] 연결 상태: {PhotonNetwork.NetworkClientState}");
-            yield return new WaitForSeconds(1f);
-            timeout -= 1f;
-        }
-
-        if (PhotonNetwork.IsConnected)
-            Debug.Log("[Photon] Photon 연결 성공");
-        else
-            Debug.LogError("[Photon] Photon 연결 실패");
-    }
-
-    #endregion // mono funcs
 
 
 
@@ -219,14 +191,19 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     {
         if (CYH_FirebaseManager.User != null) {
             string uid = CYH_FirebaseManager.User.UserId;
-            ExitGames.Client.Photon.Hashtable props = new() {
-                { "UID", uid }
-            };
+            string nickname = CYH_FirebaseManager.CurrentUserNickname;
+
+            ExitGames.Client.Photon.Hashtable props = new ExitGames.Client.Photon.Hashtable {
+            { "UID", uid },
+            { "Nickname", nickname }
+        };
+
             PhotonNetwork.LocalPlayer.SetCustomProperties(props);
             Debug.Log($"[Photon] UID 등록 완료: {uid}");
+            Debug.Log($"[Photon] 닉네임 등록 완료: {nickname}");
         }
         else {
-            Debug.LogWarning("[Photon] Firebase 로그인 정보가 없어 UID 등록 실패");
+            Debug.LogWarning("[Photon] Firebase 로그인 정보가 없어 UID 및 닉네임 등록 실패");
         }
     }
 

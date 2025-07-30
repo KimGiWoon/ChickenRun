@@ -39,18 +39,24 @@ public class PlayerSlot : MonoBehaviour
     {
         _player = player;
 
-        _nicknameText.text = player.NickName;
+        // 닉네임 설정 (CustomProperties에서 가져오고, 없으면 기본 Photon 닉네임 사용)
+        if (player.CustomProperties.TryGetValue("Nickname", out object nicknameObj) && nicknameObj is string nickname) {
+            _nicknameText.text = nickname;
+        }
+        else {
+            _nicknameText.text = player.NickName; // 예외 처리용
+        }
 
+        // 준비 상태 표시
         bool isReady = false;
-
-        if (player.CustomProperties.TryGetValue("Ready", out object value)) {
-            if (value is bool b)
-                isReady = b;
+        if (player.CustomProperties.TryGetValue("IsReady", out object readyValue) && readyValue is bool b) {
+            isReady = b;
         }
 
         _readyOnIcon.SetActive(isReady);
         _readyOffIcon.SetActive(!isReady);
     }
+
 
     public async void OnClick()
     {

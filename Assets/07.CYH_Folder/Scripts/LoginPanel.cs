@@ -25,7 +25,7 @@ public class LoginPanel : UIBase
 
     public Action OnClickSignup { get; set; }
     public Action OnClickSocialLogin { get; set; }
-    
+
     // 계정 전환 테스트용
     public Action OnClickLinkAccount { get; set; }
 
@@ -93,6 +93,8 @@ public class LoginPanel : UIBase
                         Debug.Log("로그아웃");
                         return;
                     }
+
+                    CYH_FirebaseManager.Instance.OnFirebaseLoginSuccess();
 
                     SceneManager.LoadScene("MainScene");
                 }

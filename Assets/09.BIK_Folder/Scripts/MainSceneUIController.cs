@@ -53,7 +53,7 @@ public class MainSceneUIController : MonoBehaviour
                 makePanel.Initialize(onMake: OnMakeRoom, onBack: OnBackToLastUI);
             }
             else if (ui is PlayFindRoomPanel findPanel) {
-                findPanel.Initialize(OnBackToBase);
+                findPanel.Initialize(OnBackToBase, OnJoinRoom);
             }
             else if (ui is PlayLobbyPanel lobbyPanel) {
                 lobbyPanel.Initialize(
@@ -191,6 +191,11 @@ public class MainSceneUIController : MonoBehaviour
             // 방 입장 후 콜백으로 PlayLobby로 전환
             PhotonManager.Instance.SetOnJoinedRoomCallback(() => ShowUI(UIType.PlayLobby));
         }
+    }
+
+    private void OnJoinRoom()
+    {
+        PhotonManager.Instance.SetOnJoinedRoomCallback(() => ShowUI(UIType.PlayLobby));
     }
 
     private void OpenSettingPopup()

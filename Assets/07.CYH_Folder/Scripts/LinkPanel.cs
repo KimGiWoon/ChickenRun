@@ -93,6 +93,10 @@ public class LinkPanel : UIBase
     //    });
     //}
 
+
+    /// <summary>
+    /// 익명 계정을 이메일 가입 계정으로 전환
+    /// </summary>
     private void OnClick_LinkWithGoogle()
     {
         // 계정 전환 가능 여부 체크

@@ -1,12 +1,13 @@
-using System.Collections;
-using System.Threading.Tasks;
-using UnityEngine;
-using UnityEngine.UI;
 using Firebase;
 using Firebase.Auth;
 using Firebase.Database;
 using Firebase.Extensions;
 using Google;
+using Photon.Pun;
+using System.Collections;
+using System.Threading.Tasks;
+using UnityEngine;
+using UnityEngine.UI;
 
 public class CYH_FirebaseManager : Singleton<CYH_FirebaseManager>
 {
@@ -40,23 +41,25 @@ public class CYH_FirebaseManager : Singleton<CYH_FirebaseManager>
 
     protected override void Awake()
     {
-        _configuration = new GoogleSignInConfiguration
-        {
+        _configuration = new GoogleSignInConfiguration {
             WebClientId = googleWebAPI,
-            RequestIdToken = true
+            RequestIdToken = true,
+            RequestEmail = true
         };
 
-        // 로그인 초기화
-        //if(auth.CurrentUser != null)
-        //{
-        //    auth.SignOut();
-        //}
+        GoogleSignIn.Configuration = _configuration;
     }
 
     private void Start()
     {
         // firebase 초기화
         StartCoroutine(InitFirebaseCoroutine());
+
+        //로그인 초기화
+        //if (auth.CurrentUser != null)
+        //{
+        //    auth.SignOut();
+        //}
 
         _GoogleButton.onClick.AddListener(OnGoolgeSignInClicked);
     }
@@ -68,15 +71,13 @@ public class CYH_FirebaseManager : Singleton<CYH_FirebaseManager>
         yield return new WaitUntil(() => task.IsCompleted);
 
         Firebase.DependencyStatus dependencyStatus = task.Result;
-        if (dependencyStatus == Firebase.DependencyStatus.Available)
-        {
+        if (dependencyStatus == Firebase.DependencyStatus.Available) {
             app = FirebaseApp.DefaultInstance;
             auth = FirebaseAuth.DefaultInstance;
             database = FirebaseDatabase.DefaultInstance;
         }
 
-        else
-        {
+        else {
             app = null;
             auth = null;
             database = null;
@@ -85,8 +86,7 @@ public class CYH_FirebaseManager : Singleton<CYH_FirebaseManager>
 
     public void OnGoolgeSignInClicked()
     {
-        PopupManager.Instance.ShowOKPopup("구글 로그인 버튼 클릭", "OK", () => PopupManager.Instance.HidePopup());
-
+        Debug.Log("구글 로그인 버튼 입력");
 
         GoogleSignIn.Configuration = _configuration;
         GoogleSignIn.Configuration.UseGameSignIn = false;
@@ -96,20 +96,30 @@ public class CYH_FirebaseManager : Singleton<CYH_FirebaseManager>
         GoogleSignIn.DefaultInstance.SignIn().ContinueWithOnMainThread(OnGoogleAuthenticatedFinished);
     }
 
+    public void OnFirebaseLoginSuccess()
+    {
+        user = auth.CurrentUser;
+
+        if (!PhotonNetwork.IsConnected) {
+            PhotonNetwork.AutomaticallySyncScene = true;
+            PhotonNetwork.ConnectUsingSettings();
+            Debug.Log("[Photon] Firebase 로그인 이후 Photon 연결 시작");
+        }
+    }
+
     private void OnGoogleAuthenticatedFinished(Task<GoogleSignInUser> task)
     {
         if (task.IsCanceled)
         {
-            Debug.Log("Login Cancel");
+            Debug.LogError("구글 인증 취소");
         }
 
         if (task.IsFaulted)
         {
-            Debug.Log("Faulted");
+            Debug.LogError($"구글 인증 실패 : {task.Exception}");
         }
 
-        else
-        {
+        else {
             GoogleLogin(task);
         }
     }
@@ -122,7 +132,7 @@ public class CYH_FirebaseManager : Singleton<CYH_FirebaseManager>
         {
             if (task.IsCanceled)
             {
-                Debug.LogError("SignInAndRetrieveDataWithCredentialAsync was canceled.");
+                Debug.LogError("구글 로그인 취소");
 
                 PopupManager.Instance.ShowOKPopup("구글 로그인 취소", "OK", () => PopupManager.Instance.HidePopup());
                 return;
@@ -130,7 +140,7 @@ public class CYH_FirebaseManager : Singleton<CYH_FirebaseManager>
 
             if (task.IsFaulted)
             {
-                Debug.LogError("SignInAndRetrieveDataWithCredentialAsync encountered an error: " + task.Exception);
+                Debug.LogError($"구글 로그인 실패 : {task.Exception}");
 
                 PopupManager.Instance.ShowOKPopup("구글 로그인 실패", "OK", () => PopupManager.Instance.HidePopup());
                 return;
@@ -139,6 +149,8 @@ public class CYH_FirebaseManager : Singleton<CYH_FirebaseManager>
             Firebase.Auth.AuthResult result = task.Result;
             Debug.LogFormat("User signed in successfully: {0} ({1})",
                 result.User.DisplayName, result.User.UserId);
+
+            OnFirebaseLoginSuccess();
 
             PopupManager.Instance.ShowOKPopup("구글 로그인 성공", "OK", () => PopupManager.Instance.HidePopup());
 
