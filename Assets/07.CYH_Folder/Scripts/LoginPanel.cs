@@ -19,23 +19,23 @@ public class LoginPanel : UIBase
     [SerializeField] private Button _signupButton;
 
     // 계정 전환 테스트용
-    [SerializeField] private Button _linkAccountButton;
+    //[SerializeField] private Button _linkAccountButton;
     // 유저 정보 변경 테스트용
-    [SerializeField] private Button _changeAccountInfoButton;
+    //[SerializeField] private Button _changeAccountInfoButton;
 
     public Action OnClickSignup { get; set; }
     public Action OnClickSocialLogin { get; set; }
 
     // 계정 전환 테스트용
-    public Action OnClickLinkAccount { get; set; }
+    //public Action OnClickLinkAccount { get; set; }
 
     // 유저 정보 변경 테스트용
-    public Action OnClickChangeAccountInfo { get; set; }
+    //public Action OnClickChangeAccountInfo { get; set; }
 
     public Action LoginCompleted { get; set; }
 
     // 로그아웃 테스트용
-    [SerializeField] private Button _signOutButton;
+    //[SerializeField] private Button _signOutButton;
 
 
     private void Start()
@@ -45,13 +45,13 @@ public class LoginPanel : UIBase
         _signupButton.onClick.AddListener(() => OnClickSignup?.Invoke());
 
         // 계정 전환 테스트용
-        _linkAccountButton.onClick.AddListener(() => OnClickLinkAccount?.Invoke());
+        //_linkAccountButton.onClick.AddListener(() => OnClickLinkAccount?.Invoke());
 
         // 유저 정보 변경 테스트용
-        _changeAccountInfoButton.onClick.AddListener(() => OnClickChangeAccountInfo?.Invoke());
+        //_changeAccountInfoButton.onClick.AddListener(() => OnClickChangeAccountInfo?.Invoke());
 
         // 로그아웃 테스트용
-        _signOutButton.onClick.AddListener(() => CYH_FirebaseManager.Auth.SignOut());
+        //_signOutButton.onClick.AddListener(() => CYH_FirebaseManager.Auth.SignOut());
     }
 
     /// <summary>

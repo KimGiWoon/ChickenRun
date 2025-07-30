@@ -17,20 +17,24 @@ public class GameStartPanel : UIBase
         _gameStartButton.onClick.AddListener(() => OnClickGameStart?.Invoke());
         // 로비 씬으로 전환
         _gameStartButton.onClick.AddListener(() => SceneManager.LoadScene("MainScene"));
+
+        Debug.Log("------유저 정보------");
+        Debug.Log($"유저 닉네임 : {CYH_FirebaseManager.Auth.CurrentUser.DisplayName}");
+        Debug.Log($"유저 ID : {CYH_FirebaseManager.Auth.CurrentUser.UserId}");
+        Debug.Log($"이메일 : {CYH_FirebaseManager.Auth.CurrentUser.Email}");
     }
 
     private void OnEnable()
     {
-        //TODO: <최연호> 유저 닉네임 동기화
         FirebaseUser user = FirebaseAuth.DefaultInstance.CurrentUser;
         if (user != null && !string.IsNullOrEmpty(user.DisplayName))
         {
             _nicknameText.text = $"{user.DisplayName} 님";
         }
-
         else if (user.IsAnonymous)
         {
-            _nicknameText.text = "게스트 님";
+            //_nicknameText.text = $"{user.DisplayName} 님";
+            _nicknameText.text = $"게스트 님";
         }
     }
 

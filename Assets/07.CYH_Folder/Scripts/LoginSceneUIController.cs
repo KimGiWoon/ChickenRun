@@ -30,10 +30,10 @@ public class LoginSceneUIManager : MonoBehaviour
                 loginPanel.OnClickSocialLogin = () => ShowUI(LoginUIType.SocialPanel);
 
                 // 계정 전환 테스트용
-                loginPanel.OnClickLinkAccount = () => ShowUI(LoginUIType.LinkPanel);
+                //loginPanel.OnClickLinkAccount = () => ShowUI(LoginUIType.LinkPanel);
 
                 // 유저 정보 변경 테스트용
-                loginPanel.OnClickChangeAccountInfo = () => ShowUI(LoginUIType.AccountPanel);
+                //loginPanel.OnClickChangeAccountInfo = () => ShowUI(LoginUIType.AccountPanel);
 
                 // 이메일 로그인 성공 시 GameStartPanel 활성화
                 loginPanel.LoginCompleted = () => ShowGameStartUI();
@@ -62,19 +62,25 @@ public class LoginSceneUIManager : MonoBehaviour
             else if (ui is GameStartPanel gameStartPanel)
             {
                 gameStartPanel.OnClickGameStart = () => HideUI(LoginUIType.GameStartPanel);
-                gameStartPanel.OnClickGameStart = () => ShowUI(LoginUIType.Login);
             }
         }
 
         // 구글 로그인 성공
-        _googleLogin.LoginCompleted = () => ShowUI(LoginUIType.GameStartPanel);
-        _googleLogin.LoginCompleted = () => HideUI(LoginUIType.Login);
-        _googleLogin.LoginCompleted = () => HideUI(LoginUIType.LinkPanel);
+        _googleLogin.LoginCompleted = () =>
+        {
+            ShowUI(LoginUIType.GameStartPanel);
+            HideUI(LoginUIType.Login);
+            HideUI(LoginUIType.SocialPanel);
+        };
 
         // 게스트 로그인 성공
-        _guestLogin.LoginCompleted = () => ShowUI(LoginUIType.GameStartPanel);
-        _guestLogin.LoginCompleted = () => HideUI(LoginUIType.Login);
-        _guestLogin.LoginCompleted = () => HideUI(LoginUIType.LinkPanel);
+        _guestLogin.LoginCompleted = () =>
+        {
+            Debug.Log("게스트 로그인 성공 후 ShowUI");
+            ShowUI(LoginUIType.GameStartPanel);
+            HideUI(LoginUIType.Login);
+            HideUI(LoginUIType.SocialPanel);
+        };
     }
 
     /// <summary>

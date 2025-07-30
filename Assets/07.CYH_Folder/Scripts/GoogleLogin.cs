@@ -36,18 +36,6 @@ public class GoogleLogin : MonoBehaviour
         GoogleSignIn.DefaultInstance.SignIn().ContinueWithOnMainThread(OnGoogleAuthenticatedFinished);
     }
 
-    public void OnFirebaseLoginSuccess()
-    {
-        FirebaseUser user = CYH_FirebaseManager.Auth.CurrentUser;
-
-        if (!PhotonNetwork.IsConnected)
-        {
-            PhotonNetwork.AutomaticallySyncScene = true;
-            PhotonNetwork.ConnectUsingSettings();
-            Debug.Log("[Photon] Firebase 로그인 이후 Photon 연결 시작");
-        }
-    }
-
     /// <summary>
     /// 구글 인증 완료 후 호출되는 콜백 메서드
     /// 인증 실패: 에러 코드
@@ -103,7 +91,7 @@ public class GoogleLogin : MonoBehaviour
             Debug.LogFormat("User signed in successfully: {0} ({1})",
                 result.User.DisplayName, result.User.UserId);
 
-            OnFirebaseLoginSuccess();
+            CYH_FirebaseManager.Instance.OnFirebaseLoginSuccess();
 
             // 구글 로그인 한 계정을 CurrentUser로 설정
             FirebaseUser user = CYH_FirebaseManager.Auth.CurrentUser;
@@ -114,7 +102,6 @@ public class GoogleLogin : MonoBehaviour
                 Debug.Log("구글 로그인 성공. GameStart패널 활성화");
                 LoginCompleted?.Invoke();
             }
-
         });
     }
 }

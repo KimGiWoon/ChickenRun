@@ -1,7 +1,6 @@
 using Firebase;
 using Firebase.Auth;
 using Firebase.Database;
-using Firebase.Extensions;
 using Google;
 using Photon.Pun;
 using System.Collections;
@@ -38,7 +37,8 @@ public class CYH_FirebaseManager : Singleton<CYH_FirebaseManager>
     protected override void Awake()
     {
         //// GoogleSignIn에 사용할 인증 설정 초기화
-        _configuration = new GoogleSignInConfiguration {
+        _configuration = new GoogleSignInConfiguration
+        {
             WebClientId = googleWebAPI,
             RequestIdToken = true,
             RequestEmail = true
@@ -52,12 +52,6 @@ public class CYH_FirebaseManager : Singleton<CYH_FirebaseManager>
     {
         // firebase 초기화
         StartCoroutine(InitFirebaseCoroutine());
-
-        //로그인 초기화
-        //if (auth.CurrentUser != null)
-        //{
-        //    auth.SignOut();
-        //}
     }
 
     /// <summary>
@@ -70,13 +64,22 @@ public class CYH_FirebaseManager : Singleton<CYH_FirebaseManager>
         yield return new WaitUntil(() => task.IsCompleted);
 
         Firebase.DependencyStatus dependencyStatus = task.Result;
-        if (dependencyStatus == Firebase.DependencyStatus.Available) {
+        if (dependencyStatus == Firebase.DependencyStatus.Available)
+        {
             app = FirebaseApp.DefaultInstance;
             auth = FirebaseAuth.DefaultInstance;
             database = FirebaseDatabase.DefaultInstance;
+
+            // 게임 시작 시 자동 로그아웃
+            if (auth != null && auth.CurrentUser != null)
+            {
+                auth.SignOut();
+                Debug.Log("auth.CurrentUser != null : 로그아웃");
+            }
         }
 
-        else {
+        else
+        {
             app = null;
             auth = null;
             database = null;
