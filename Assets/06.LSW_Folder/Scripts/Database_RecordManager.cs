@@ -239,6 +239,7 @@ public class Database_RecordManager : Singleton<Database_RecordManager>
     // 유저 개인 랭킹 정보를 불러오는 메서드
     public async Task<RankData> LoadRankData()
     {
+        if(_auth == null) _auth = CYH_FirebaseManager.Auth;
         FirebaseUser user = _auth.CurrentUser;
         DatabaseReference userInfo = _reference.Child("RankData").Child(user.UserId);
         RankData rankData = new RankData();
