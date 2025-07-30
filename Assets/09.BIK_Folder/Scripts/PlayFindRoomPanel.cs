@@ -54,6 +54,7 @@ public class PlayFindRoomPanel : UIBase
     public override void RefreshUI()
     {
         // 화면을 새로고침 할때마다 방 목록을 요청합니다.
+        Debug.LogWarning("방을 찾는 중입니다.");
         PhotonManager.Instance.RequestRoomList(OnRoomListReceived);
     }
 
@@ -71,11 +72,13 @@ public class PlayFindRoomPanel : UIBase
     /// <param name="roomList"></param>
     private void OnRoomListReceived(List<RoomInfo> roomList)
     {
+        Debug.Log($"방 목록을 받아왔습니다. 방 개수: {roomList.Count}");
         RefreshRoomList(roomList);
     }
 
     private void RefreshRoomList(List<RoomInfo> rooms)
     {
+        Debug.Log($"방 목록을 새로고침합니다. 방 개수: {rooms.Count}");
         for (int i = 0; i < rooms.Count; i++) {
             if (i >= _roomButtons.Count) {
                 RoomButton newBtn = Instantiate(_roomButtonPrefab, _roomListRoot);

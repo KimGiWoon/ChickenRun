@@ -52,10 +52,10 @@ public class PlayerSlot : MonoBehaviour
         _readyOffIcon.SetActive(!isReady);
     }
 
-    public void OnClick()
+    public async void OnClick()
     {
         if (_player.CustomProperties.TryGetValue("UID", out object uidObj) && uidObj is string firebaseUid) {
-            PopupManager.Instance.ShowPlayerInfo(firebaseUid);
+            await PopupManager.Instance.ShowPlayerInfo(firebaseUid);
         }
         else {
             Debug.LogWarning("해당 플레이어의 UID가 등록되어 있지 않습니다.");
