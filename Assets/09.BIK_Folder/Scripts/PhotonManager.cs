@@ -195,7 +195,8 @@ public class PhotonManager : MonoBehaviourPunCallbacks
 
             ExitGames.Client.Photon.Hashtable props = new ExitGames.Client.Photon.Hashtable {
             { "UID", uid },
-            { "Nickname", nickname }
+            { "Nickname", nickname },
+            {"Color", ColorType.Black }
         };
 
             PhotonNetwork.LocalPlayer.SetCustomProperties(props);

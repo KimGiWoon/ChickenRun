@@ -47,6 +47,19 @@ public class PlayerSlot : MonoBehaviour
             _nicknameText.text = player.NickName; // 예외 처리용
         }
 
+        // 닉네임 색깔 설정
+        if (player.CustomProperties.TryGetValue("Color", out object colorObj) && colorObj is string colorStr) {
+            if (System.Enum.TryParse(colorStr, out ColorType colorType)) {
+                _nicknameText.color = Common.ConvertColorTypeToUnityColor(colorType);
+            }
+            else {
+                _nicknameText.color = Color.black; // 기본 fallback
+            }
+        }
+        else {
+            _nicknameText.color = Color.black;
+        }
+
         // 준비 상태 표시
         bool isReady = false;
         if (player.CustomProperties.TryGetValue("IsReady", out object readyValue) && readyValue is bool b) {

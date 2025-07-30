@@ -322,25 +322,9 @@ public class PlayLobbyPanel : UIBase, IInRoomCallbacks
         if (PhotonNetwork.LocalPlayer.CustomProperties.TryGetValue("Color", out var value)) {
             if (System.Enum.TryParse(value.ToString(), out ColorType parsedColor)) {
                 _currentColor = parsedColor;
-                _currentColorImage.color = ConvertColorTypeToUnityColor(_currentColor);
+                _currentColorImage.color = Common.ConvertColorTypeToUnityColor(_currentColor);
             }
         }
-    }
-
-    private Color ConvertColorTypeToUnityColor(ColorType type)
-    {
-        return type switch {
-            ColorType.White => Color.white,
-            ColorType.Red => Color.red,
-            ColorType.Blue => Color.blue,
-            ColorType.Green => Color.green,
-            ColorType.Yellow => Color.yellow,
-            ColorType.Purple => new Color(0.5f, 0f, 0.5f),
-            ColorType.Orange => new Color(1f, 0.5f, 0f),
-            ColorType.Pink => new Color(1f, 0.4f, 0.7f),
-            ColorType.Cyan => Color.cyan,
-            _ => Color.white,
-        };
     }
 
     private string GetPlayerDisplayName(Player player)
