@@ -6,14 +6,13 @@ using UnityEngine;
 
 public class PlayerInfoUIController : MonoBehaviour
 {
-    [Header("Drag&Drop")] 
+    [Header("Drag&Drop")]
     [SerializeField] private PlayerInfoUI _infoUI;
 
     // MVC 패턴을 위한 연동
     private void Awake()
     {
-        _infoUI.Initialize(onClickExitBtn: () =>
-        {
+        _infoUI.Initialize(onClickExitBtn: () => {
             _infoUI.ResetText();
             _infoUI.SetHide();
         });
@@ -30,8 +29,10 @@ public class PlayerInfoUIController : MonoBehaviour
     // uid에 해당하는 플레이어 정보를 model(DatabaseManager)에서 읽어와 view(_infoUI)에 전달
     private async Task ShowInfo(string uid)
     {
-        _infoUI.gameObject.SetActive(true);
-        var info = await Database_RecordManager.Instance.LoadRankData(uid);
-        _infoUI.SetInfoText(info);
+        await PopupManager.Instance.ShowPlayerInfo(uid);
+
+        //_infoUI.gameObject.SetActive(true);
+        //var info = await Database_RecordManager.Instance.LoadRankData(uid);
+        //_infoUI.SetInfoText(info);
     }
 }

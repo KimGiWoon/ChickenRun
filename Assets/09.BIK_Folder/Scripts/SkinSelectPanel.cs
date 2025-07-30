@@ -94,22 +94,39 @@ public class SkinSelectPanel : UIBase
 
     private void RefreshScrollSnap(List<string> ownedSkins)
     {
-        _scrollSnap.Remove(0); // 첫 항목 제거
+        // 1. SimpleScrollSnap의 모든 기존 항목 제거
+        while (_scrollSnap.NumberOfPanels > 0) {
+            _scrollSnap.RemoveFromBack();
+        }
 
+        // 2. Default 스킨 추가
         AddSkinToScroll("Default");
 
+        // 3. 나머지 스킨 추가
         foreach (var skinName in ownedSkins) {
             AddSkinToScroll(skinName);
         }
 
+        // 4. 첫 번째로 이동 (SelectedPanel 초기화)
         _scrollSnap.GoToPanel(0);
+        _selectedSkinIndex = 0;
     }
 
     private void AddSkinToScroll(string skinName)
     {
-        Image imageInstance = Instantiate(_skinPanel, _scrollSnap.Content);
-        imageInstance.name = skinName;
+        // 1. AddToBack을 통해 프리팹 추가 (내부에서 Instantiate됨)
+        _scrollSnap.AddToBack(_skinPanel.gameObject);
 
+        // 2. 방금 추가된 패널 가져오기 (가장 마지막에 추가된 자식)
+        int lastIndex = _scrollSnap.Content.childCount - 1;
+        Transform newPanelTransform = _scrollSnap.Content.GetChild(lastIndex);
+        newPanelTransform.gameObject.SetActive(true); // <- 활성화
+
+        // 3. Image 컴포넌트 가져오기
+        Image imageInstance = newPanelTransform.GetComponent<Image>();
+        newPanelTransform.name = skinName;
+
+        // 4. Sprite 설정
         Sprite skinSprite = Resources.Load<Sprite>($"Sprites/Skins/{skinName}");
         if (skinSprite != null) {
             imageInstance.sprite = skinSprite;
@@ -117,8 +134,6 @@ public class SkinSelectPanel : UIBase
         else {
             Debug.LogWarning($"[SkinSelect] Sprite not found for skin: {skinName}");
         }
-
-        _scrollSnap.AddToBack(imageInstance.gameObject);
     }
 
     private void OnClickOK()
