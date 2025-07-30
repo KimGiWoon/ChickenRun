@@ -203,6 +203,9 @@ public class PlayLobbyPanel : UIBase, IInRoomCallbacks
     private bool CheckAllPlayersReady()
     {
         foreach (var player in PhotonNetwork.PlayerList) {
+            if (player.IsMasterClient)
+                continue;
+
             if (!player.CustomProperties.TryGetValue("IsReady", out var value) || !(value is bool b) || !b)
                 return false;
         }
