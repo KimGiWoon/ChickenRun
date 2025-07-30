@@ -9,6 +9,12 @@ namespace Kst
         [SerializeField] private PhotonView _pv;
         [SerializeField] private float _movespeed = 5f;
         private float _moveDir = 0f;
+        void Start()
+        {
+            if (!photonView.IsMine) return;
+
+            Camera.main.GetComponent<CameraController>().SetTarget(transform);
+        }
 
         void FixedUpdate()
         {
