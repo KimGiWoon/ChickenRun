@@ -25,6 +25,7 @@ public class UIManager_Map4 : MonoBehaviourPun
     [SerializeField] Transform _playerPosition;
     [SerializeField] Transform _startPosition;
     [SerializeField] Transform _endPosition;
+    [SerializeField] TMP_Text _distanceText;
 
     [Header("Drill Slider UI Reference")]
     [SerializeField] Slider _DrillPosSlider;
@@ -58,6 +59,7 @@ public class UIManager_Map4 : MonoBehaviourPun
     public bool _isOptionOpen = false;
     public bool _isEmoticonPanelOpen = false;
     public float _emoticonTime = 3f;
+    public float _playerEndDistance;
 
     // 맵타입 설정
     private void OnEnable()
@@ -71,7 +73,6 @@ public class UIManager_Map4 : MonoBehaviourPun
         SetDrillDistance();
         InGameUIInit();
         SoundVolumeInit();
-        Debug.Log(GameManager_Map4.Instance._currentMapType);
     }
 
     private void Update()
@@ -103,8 +104,8 @@ public class UIManager_Map4 : MonoBehaviourPun
         _camModeCheckToggle.onValueChanged.AddListener(CamModeCheck);
 
         // 사운드 볼륨
-        _musicSlider.onValueChanged.AddListener((volume) => SoundManager.Instance.BgmVolume(volume));
-        _effectSlider.onValueChanged.AddListener((volume) => SoundManager.Instance.SfxVolume(volume));
+        _musicSlider.onValueChanged.AddListener((volume) => SettingManager.Instance.SetBGM(volume));
+        _effectSlider.onValueChanged.AddListener((volume) => SettingManager.Instance.SetSFX(volume));
 
         // UI 버튼
         _optionButton.onClick.AddListener(() => OnOptionWindow());
@@ -128,8 +129,8 @@ public class UIManager_Map4 : MonoBehaviourPun
     // BGM, SFX 볼륨 초기화
     private void SoundVolumeInit()
     {
-        _musicSlider.value = SoundManager.Instance._bgmAudioSource.volume;
-        _effectSlider.value = SoundManager.Instance._sfxAudioSource.volume;
+        _musicSlider.value = SettingManager.Instance.BGM.Value;
+        _effectSlider.value = SettingManager.Instance.SFX.Value;
 
         // 사운드 초기값 중간 세팅
         _musicSlider.value = 0.1f;
@@ -224,9 +225,10 @@ public class UIManager_Map4 : MonoBehaviourPun
     // 플레이어의 위치와 거리 업데이트
     private void PlayerPosUpdate()
     {
-        float endDistance = Vector2.Distance(_playerPosition.position, _endPosition.position);
-        float progress = Mathf.Clamp01(1 - (endDistance / _playerDistance));
+        _playerEndDistance = Vector2.Distance(_playerPosition.position, _endPosition.position);
+        float progress = Mathf.Clamp01(1 - (_playerEndDistance / _playerDistance));
         _playerPosSlider.value = progress;
+        _distanceText.text = $"{((int)_playerEndDistance).ToString()}m";
     }
 
     // 플레이어 위치 세팅

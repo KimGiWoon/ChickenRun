@@ -42,6 +42,27 @@ public class NetworkManager_Map1 : MonoBehaviourPunCallbacks
             UnityEngine.Debug.Log("서버에 미연결로 서버 접속");
             PhotonNetwork.ConnectUsingSettings();
         }
+        else
+        {
+            UnityEngine.Debug.Log("입장 완료");
+            // TODO : 플레이어 닉네임 확인용
+            PhotonNetwork.LocalPlayer.NickName = $"Player{PhotonNetwork.LocalPlayer.ActorNumber}";
+
+            // 닉네임을 커스텀 프로퍼티로 저장
+            string nickname = PhotonNetwork.LocalPlayer.NickName;
+            Hashtable hashtable = new Hashtable { { "Nickname", nickname } };
+
+            // 닉네임 정보를 포톤서버에 업로드
+            PhotonNetwork.LocalPlayer.SetCustomProperties(hashtable);
+
+            PlayerSpawn();
+
+            if (PhotonNetwork.IsMasterClient)
+            {
+                CheckRoomPlayer();
+            }
+        }
+
     }
 
     // 네트워크 매니저가 생성한게 있으면 생성하지 않고 중복으로 생성 시 삭제
@@ -109,7 +130,7 @@ public class NetworkManager_Map1 : MonoBehaviourPunCallbacks
         int maxPlayer = PhotonNetwork.CurrentRoom.MaxPlayers;
         int maxTest = 2;
 
-        UnityEngine.Debug.Log($"입장 플레이어 : {currentPlayer}/{maxTest}");
+        UnityEngine.Debug.Log($"입장 플레이어 : {currentPlayer}/{maxPlayer}");
 
         if(currentPlayer >= maxTest)
         {

@@ -110,8 +110,8 @@ public class UIManager_Map1 : MonoBehaviourPun
         _camModeCheckToggle.onValueChanged.AddListener(CamModeCheck);
 
         // 사운드 볼륨
-        _musicSlider.onValueChanged.AddListener((volume) => SoundManager.Instance.BgmVolume(volume));
-        _effectSlider.onValueChanged.AddListener((volume) => SoundManager.Instance.SfxVolume(volume));
+        _musicSlider.onValueChanged.AddListener((volume) => SettingManager.Instance.SetBGM(volume));
+        _effectSlider.onValueChanged.AddListener((volume) => SettingManager.Instance.SetSFX(volume));
 
         // UI 버튼
         _optionButton.onClick.AddListener(() => OnOptionWindow());
@@ -135,9 +135,9 @@ public class UIManager_Map1 : MonoBehaviourPun
     // BGM, SFX 볼륨 초기화
     private void SoundVolumeInit()
     {
-        _musicSlider.value = SoundManager.Instance._bgmAudioSource.volume;
-        _effectSlider.value = SoundManager.Instance._sfxAudioSource.volume;
-      
+        _musicSlider.value = SettingManager.Instance.BGM.Value;
+        _effectSlider.value = SettingManager.Instance.SFX.Value;
+
         // 사운드 초기값 중간 세팅
         _musicSlider.value = 0.1f;
         _effectSlider.value = 0.2f;

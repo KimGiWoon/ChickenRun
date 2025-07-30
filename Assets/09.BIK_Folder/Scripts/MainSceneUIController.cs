@@ -154,6 +154,11 @@ public class MainSceneUIController : MonoBehaviour
     private void OnBackToBase()
     {
         if (Photon.Pun.PhotonNetwork.InRoom) {
+            var props = new ExitGames.Client.Photon.Hashtable {
+            { "IsReady", false }
+        };
+            Photon.Pun.PhotonNetwork.LocalPlayer.SetCustomProperties(props);
+
             PhotonManager.Instance.SetOnLeftRoomCallback(() => ShowUI(UIType.PlayBase));
             PhotonManager.Instance.LeaveRoom();
         }
