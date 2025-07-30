@@ -9,10 +9,13 @@ public class LoginSceneUIManager : MonoBehaviour
         SocialPanel,
         SignUpPanel,
         LinkPanel,
-        AccountPanel
+        AccountPanel,
+        GameStartPanel
     }
 
     [SerializeField] private List<UIBase> _uiList;
+    [SerializeField] private GoogleLogin _googleLogin;
+    [SerializeField] private GuestLogin _guestLogin;
 
 
     private void Start()
@@ -31,6 +34,9 @@ public class LoginSceneUIManager : MonoBehaviour
 
                 // 유저 정보 변경 테스트용
                 loginPanel.OnClickChangeAccountInfo = () => ShowUI(LoginUIType.AccountPanel);
+
+                // 이메일 로그인 성공 시 GameStartPanel 활성화
+                loginPanel.LoginCompleted = () => ShowGameStartUI();
             }
 
             else if (ui is SignUpPanel signUpPanel)
@@ -52,11 +58,27 @@ public class LoginSceneUIManager : MonoBehaviour
             {
                 accountPanel.OnClickClosePopup = () => HideUI(LoginUIType.AccountPanel);
             }
+
+            else if (ui is GameStartPanel gameStartPanel)
+            {
+                gameStartPanel.OnClickGameStart = () => HideUI(LoginUIType.GameStartPanel);
+                gameStartPanel.OnClickGameStart = () => ShowUI(LoginUIType.Login);
+            }
         }
+
+        // 구글 로그인 성공
+        _googleLogin.LoginCompleted = () => ShowUI(LoginUIType.GameStartPanel);
+        _googleLogin.LoginCompleted = () => HideUI(LoginUIType.Login);
+        _googleLogin.LoginCompleted = () => HideUI(LoginUIType.LinkPanel);
+
+        // 게스트 로그인 성공
+        _guestLogin.LoginCompleted = () => ShowUI(LoginUIType.GameStartPanel);
+        _guestLogin.LoginCompleted = () => HideUI(LoginUIType.Login);
+        _guestLogin.LoginCompleted = () => HideUI(LoginUIType.LinkPanel);
     }
 
     /// <summary>
-    /// 팝업을 여는 메서드
+    /// 패널을 여는 메서드
     /// </summary>
     /// <param name="type"></param>
     private void ShowUI(LoginUIType type)
@@ -65,11 +87,21 @@ public class LoginSceneUIManager : MonoBehaviour
     }
 
     /// <summary>
-    /// 팝업을 숨기는 메서드
+    /// 패널을 숨기는 메서드
     /// </summary>
     /// <param name="type"></param>
     private void HideUI(LoginUIType type)
     {
         _uiList[(int)type].SetHide();
+    }
+
+    /// <summary>
+    /// GameStart 패널을 여는 메서드
+    /// Login 패널 숨김
+    /// </summary>
+    private void ShowGameStartUI()
+    {
+        ShowUI(LoginUIType.GameStartPanel);
+        HideUI(LoginUIType.Login);
     }
 }

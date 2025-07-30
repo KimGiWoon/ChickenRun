@@ -32,6 +32,8 @@ public class LoginPanel : UIBase
     // 유저 정보 변경 테스트용
     public Action OnClickChangeAccountInfo { get; set; }
 
+    public Action LoginCompleted { get; set; }
+
     // 로그아웃 테스트용
     [SerializeField] private Button _signOutButton;
 
@@ -79,7 +81,7 @@ public class LoginPanel : UIBase
                     AuthResult result = task.Result;
                     FirebaseUser user = result.User;
 
-                    PopupManager.Instance.ShowOKPopup("로그인 성공", "OK", () => PopupManager.Instance.HidePopup());
+                    //PopupManager.Instance.ShowOKPopup("로그인 성공", "OK", () => PopupManager.Instance.HidePopup());
 
                     Debug.Log("------유저 정보------");
                     Debug.Log($"유저 이름 : {user.DisplayName}");
@@ -96,7 +98,14 @@ public class LoginPanel : UIBase
 
                     CYH_FirebaseManager.Instance.OnFirebaseLoginSuccess();
 
-                    SceneManager.LoadScene("MainScene");
+                    // LoginPanel -> GameStartPanel 로 변경
+                    if (user != null)
+                    {
+                        Debug.Log("이메일 로그인 성공. GameStart패널 활성화");
+                        LoginCompleted?.Invoke();
+                    }
+
+                    //SceneManager.LoadScene("MainScene");
                 }
             });
     }

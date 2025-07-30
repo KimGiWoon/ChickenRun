@@ -2,6 +2,7 @@ using Firebase.Auth;
 using Firebase.Extensions;
 using Google;
 using Photon.Pun;
+using System;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
@@ -10,6 +11,8 @@ public class GoogleLogin : MonoBehaviour
 {
     // 구글 로그인 버튼
     [SerializeField] private Button _GoogleLoginButton;
+
+    public Action LoginCompleted { get; set; }
 
     private void Start()
     {
@@ -102,13 +105,16 @@ public class GoogleLogin : MonoBehaviour
 
             OnFirebaseLoginSuccess();
 
-            // 삭제 예정
-            PopupManager.Instance.ShowOKPopup("구글 로그인 성공", "OK", () => PopupManager.Instance.HidePopup());
-
             // 구글 로그인 한 계정을 CurrentUser로 설정
             FirebaseUser user = CYH_FirebaseManager.Auth.CurrentUser;
 
-            //TODO: <최연호> LoginPanel -> GameStartPanel 로 변경 (구글 로그인 성공 팝업 삭제)
+            // LoginPanel -> GameStartPanel 로 변경
+            if (user != null)
+            {
+                Debug.Log("구글 로그인 성공. GameStart패널 활성화");
+                LoginCompleted?.Invoke();
+            }
+
         });
     }
 }

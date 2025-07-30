@@ -95,7 +95,7 @@ public class LinkPanel : UIBase
 
 
     /// <summary>
-    /// 익명 계정을 이메일 가입 계정으로 전환
+    /// 익명 계정을 구글 가입 계정으로 전환
     /// </summary>
     private void OnClick_LinkWithGoogle()
     {
