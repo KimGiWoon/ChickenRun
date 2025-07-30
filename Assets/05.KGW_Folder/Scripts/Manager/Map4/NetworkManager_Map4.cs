@@ -6,11 +6,6 @@ using UnityEngine;
 
 public class NetworkManager_Map4 : MonoBehaviourPunCallbacks
 {
-    [Header("Map4 UI Manager Reference")]
-    [SerializeField] UIManager_Map4 _UIManager;
-
-    public bool _isStart = false;
-
     static NetworkManager_Map4 instance;
 
     public static NetworkManager_Map4 Instance
@@ -89,48 +84,48 @@ public class NetworkManager_Map4 : MonoBehaviourPunCallbacks
     // 플레이어 생성
     private void PlayerSpawn()
     {
-        Vector2 spawnPos = new Vector2(0, -4f);
+        Vector2 spawnPos = new Vector2(0, 0);
         PhotonNetwork.Instantiate($"Player_Map4", spawnPos, Quaternion.identity);
     }
 
-    // 입장 플레이어 체크
-    private void CheckRoomPlayer()
-    {
-        if (_isStart)
-        {
-            return;
-        }
+    //// 입장 플레이어 체크
+    //private void CheckRoomPlayer()
+    //{
+    //    if (_isStart)
+    //    {
+    //        return;
+    //    }
 
-        // 방에 입장한 플레이어
-        int currentPlayer = PhotonNetwork.CurrentRoom.PlayerCount;
-        // 방에 입장 가능한 Max 플레이어
-        int maxPlayer = PhotonNetwork.CurrentRoom.MaxPlayers;
-        int maxTest = 2;
+    //    // 방에 입장한 플레이어
+    //    int currentPlayer = PhotonNetwork.CurrentRoom.PlayerCount;
+    //    // 방에 입장 가능한 Max 플레이어
+    //    int maxPlayer = PhotonNetwork.CurrentRoom.MaxPlayers;
+    //    int maxTest = 2;
 
-        UnityEngine.Debug.Log($"입장 플레이어 : {currentPlayer}/{maxTest}");
+    //    UnityEngine.Debug.Log($"입장 플레이어 : {currentPlayer}/{maxTest}");
 
-        if (currentPlayer >= maxTest)
-        {
-            UnityEngine.Debug.Log("모든 플레이어 입장 완료");
-            photonView.RPC(nameof(StartGame), RpcTarget.AllViaServer);
-        }
-    }
+    //    if (currentPlayer >= maxTest)
+    //    {
+    //        UnityEngine.Debug.Log("모든 플레이어 입장 완료");
+    //        photonView.RPC(nameof(StartGame), RpcTarget.AllViaServer);
+    //    }
+    //}
 
-    // 게임 스타트
-    [PunRPC]
-    private void StartGame()
-    {
-        _UIManager.photonView.RPC(nameof(_UIManager.StartGameRoutine), RpcTarget.AllViaServer);
-    }
+    //// 게임 스타트
+    //[PunRPC]
+    //private void StartGame()
+    //{
+    //    _UIManager.photonView.RPC(nameof(_UIManager.StartGameRoutine), RpcTarget.AllViaServer);
+    //}
 
-    // 플레이어가 방에 들어오면 체크
-    public override void OnPlayerEnteredRoom(Player newPlayer)
-    {
-        UnityEngine.Debug.Log($"Player_{newPlayer.NickName} 입장완료");
+    //// 플레이어가 방에 들어오면 체크
+    //public override void OnPlayerEnteredRoom(Player newPlayer)
+    //{
+    //    UnityEngine.Debug.Log($"Player_{newPlayer.NickName} 입장완료");
 
-        if (PhotonNetwork.IsMasterClient)
-        {
-            CheckRoomPlayer();
-        }
-    }
+    //    if (PhotonNetwork.IsMasterClient)
+    //    {
+    //        CheckRoomPlayer();
+    //    }
+    //}
 }

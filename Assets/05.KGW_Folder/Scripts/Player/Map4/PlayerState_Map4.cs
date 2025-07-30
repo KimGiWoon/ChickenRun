@@ -18,11 +18,11 @@ public class PlayerState_Map4 : MonoBehaviour
     [SerializeField] float _maxTouchTime = 2f;
     public float MaxTouchTime { get { return _maxTouchTime; } set { _maxTouchTime = value; } }
 
-    // Player Jump Left Direction
-    [SerializeField] Vector2 _jumpLeftDir = new Vector2(-0.2f, 1f);
-    public Vector2 JumpLeftDir { get { return _jumpLeftDir; } }
+    // Player Jump X Direction
+    [SerializeField] float _jumpXDir = 0.2f;
+    public float JumpXDir { get { return _jumpXDir; } set { _jumpXDir = value; } }
 
-    // Player Jump Right Direction
-    [SerializeField] Vector2 _jumpRightDir = new Vector2(0.2f, 1f);
-    public Vector2 JumpRightDir { get { return _jumpRightDir; } }
+    // Player Jump Y Direction
+    [SerializeField] float _jumpYDir = 1f;
+    public float JumpYDir { get { return _jumpYDir; } set { _jumpYDir = value; } }
 }

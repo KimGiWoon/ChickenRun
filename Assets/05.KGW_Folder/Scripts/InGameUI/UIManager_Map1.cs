@@ -39,7 +39,7 @@ public class UIManager_Map1 : MonoBehaviourPun
     [SerializeField] CameraController _cameraController;
 
     [Header("Emoticon Panel UI Reference")]
-    [SerializeField] PlayerEmoticonController_Map1 _playerEmoticonController;
+    [SerializeField] PlayerEmoticonController _playerEmoticonController;
     [SerializeField] GameObject _emoticonPanel;
     [SerializeField] Sprite[] _emoticonSprite;
     [SerializeField] Button _smileEmoticon;
@@ -175,7 +175,7 @@ public class UIManager_Map1 : MonoBehaviourPun
     // 플레이어 이모티콘 컨트롤러 가져오기
     public void GetPlayerEmoticonController(GameObject emoticonController)
     {
-        _playerEmoticonController = emoticonController.GetComponent<PlayerEmoticonController_Map1>();
+        _playerEmoticonController = emoticonController.GetComponent<PlayerEmoticonController>();
     }
 
     // 이모티콘 표시

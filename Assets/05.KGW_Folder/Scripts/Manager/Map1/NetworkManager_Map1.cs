@@ -19,7 +19,7 @@ public class NetworkManager_Map1 : MonoBehaviourPunCallbacks
     {
         get
         {
-            if (instance == null)    // 네트워크 매니저가 하이어라키창에 없으면 게임매니저 생성
+            if (instance == null)    // 게임매니저가 하이어라키창에 없으면 게임매니저 생성
             {
                 GameObject gameObject = new GameObject("NetworkManager_Map1");
                 instance = gameObject.AddComponent<NetworkManager_Map1>();
