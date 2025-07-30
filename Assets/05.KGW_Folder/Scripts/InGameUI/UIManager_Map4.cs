@@ -10,6 +10,9 @@ public class UIManager_Map4 : MonoBehaviourPun
     [Header("Play Time UI Reference")]
     [SerializeField] TMP_Text _playTimeText;
 
+    [Header("Egg Count UI Reference")]
+    [SerializeField] TMP_Text _eggCountText;
+
     [Header("Button UI Reference")]
     [SerializeField] Button _optionButton;
     [SerializeField] Button _emoticonButton;
@@ -69,6 +72,11 @@ public class UIManager_Map4 : MonoBehaviourPun
 
     private void Start()
     {
+        // 달걀 획득 UI 이벤트 구독
+        GameManager_Map4.Instance.OnEggCountChange += UpdateGetEggUI;
+        // 시작할 시 획득한 달걀은 0이므로 UI설정
+        UpdateGetEggUI(0);
+
         SetPlayerDistance();
         SetDrillDistance();
         InGameUIInit();
@@ -89,12 +97,21 @@ public class UIManager_Map4 : MonoBehaviourPun
 
     private void OnDestroy()
     {
+        // 달걀 획득 UI 이벤트 해제
+        GameManager_Map4.Instance.OnEggCountChange -= UpdateGetEggUI;
+
         // 메모리 누수 방지로 리셋
         _camModeCheckToggle.onValueChanged.RemoveListener(CamModeCheck);
         _optionButton.onClick.RemoveListener(OnOptionWindow);
         _backButton.onClick.RemoveListener(OffOptionWindow);
         _exitButton.onClick.RemoveListener(OnExitPlayGame);
         _emoticonButton.onClick.RemoveListener(OnEmoticonPanel);
+    }
+
+    // 달걀 획득 UI
+    private void UpdateGetEggUI(int totalEgg)
+    {
+        _eggCountText.text = $"x {totalEgg}";
     }
 
     // 버튼, 토글 UI 초기화
@@ -175,8 +192,13 @@ public class UIManager_Map4 : MonoBehaviourPun
     // 이모티콘 표시
     private void OnEmoticon(int index)
     {
+        // 이모티콘 말풍성 활성화 및 이모티콘 표시
         _playerEmoticonController._SpeechBubble.SetActive(true);
         _playerEmoticonController._emoticonImage.sprite = _emoticonSprite[index];
+
+        // 이모티콘을 사용하면 패널 비활성화
+        _emoticonPanel.SetActive(false);
+        _isEmoticonPanelOpen = false;
 
         // 실행중인 코루틴 무시하고 코루틴 실행
         if (_emoticonRoutine != null)
@@ -210,10 +232,10 @@ public class UIManager_Map4 : MonoBehaviourPun
         Debug.Log($"{PlayerNickname}께서 나갔습니다.");
 
         // 현재의 방을 나가기
-        PhotonNetwork.LeaveRoom();
+        //PhotonNetwork.LeaveRoom();
 
         // 로비 씬이 있으면 추가해서 씬 이동
-        //PhotonNetwork.LoadLevel("로비씬");
+        PhotonNetwork.LoadLevel("MainScene");
     }
 
     // 출발지점과 도착지점 위치 확인
@@ -299,7 +321,7 @@ public class UIManager_Map4 : MonoBehaviourPun
 
             if (count == 0)
             {
-                SoundManager.Instance.PlayBGM(SoundManager.Bgms.BGM_InGame);
+                SoundManager.Instance.PlayBGM(SoundManager.Bgms.BGM_InGame4);
                 _startPanel.SetActive(false);
                 GameManager_Map4.Instance.StartStopWatch();
                 GameManager_Map4.Instance._drillController.gameObject.SetActive(true);
