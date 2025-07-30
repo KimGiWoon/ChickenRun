@@ -6,6 +6,21 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/07.CYH_Folder/Scenes/TestScene.unity
-    guid: 095109a1d8182d24c85f8e07a3f76a28
+    path: Assets/04.Scenes/LoginScene.unity
+    guid: 991a7c76d093752479f56b41ff11c4ef
+  - enabled: 1
+    path: Assets/04.Scenes/MainScene.unity
+    guid: 028fbc514aa4d23499bfa0b822a87db5
+  - enabled: 1
+    path: Assets/04.Scenes/InGameScene/GameScene_Map1.unity
+    guid: ed802662982d1514d995c49f2fcf01e1
+  - enabled: 1
+    path: Assets/04.Scenes/InGameScene/GameScene_Map2.unity
+    guid: 4ab47b1c58c3a464a837d7d1475da3a7
+  - enabled: 1
+    path: Assets/04.Scenes/InGameScene/GameScene_Map3.unity
+    guid: d9a3478125a2d98479e606395886a172
+  - enabled: 1
+    path: Assets/04.Scenes/InGameScene/GameScene_Map4.unity
+    guid: d381b6c1ad930ef43ab8178ea3ac4b7e
   m_configObjects: {}
