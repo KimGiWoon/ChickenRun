@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Kst
 {
-    public abstract class PooledObject : MonoBehaviour
+    public class PooledObject : MonoBehaviour
     {
         public ObjectPool ObjPool { get; private set; }
 

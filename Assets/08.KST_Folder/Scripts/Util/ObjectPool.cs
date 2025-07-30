@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Photon.Pun;
 using UnityEngine;
 
 namespace Kst
@@ -6,16 +7,17 @@ namespace Kst
     public class ObjectPool
     {
         private Stack<PooledObject> _stack;
-        private PooledObject _targetPrefab;
+        private string _prefabPath;
+        // private PooledObject _targetPrefab;
         private GameObject _poolObject;
 
-        public ObjectPool(Transform parent, PooledObject targetPrefab, int initSize = 5) => Init(parent, targetPrefab, initSize);
+        public ObjectPool(Transform parent, string prefabPath, int initSize = 5) => Init(parent, prefabPath, initSize);
 
-        private void Init(Transform parent, PooledObject targetPrefab, int initSize)
+        private void Init(Transform parent, string prefabPath, int initSize)
         {
             _stack = new Stack<PooledObject>(initSize);
-            _targetPrefab = targetPrefab;
-            _poolObject = new GameObject($"{targetPrefab.name} Pool");
+            _prefabPath = prefabPath;
+            _poolObject = new GameObject($"{prefabPath} Pool");
             _poolObject.transform.parent = parent;
 
             for (int i = 0; i < initSize; i++)
@@ -43,7 +45,8 @@ namespace Kst
 
         private void CreatePooledObject()
         {
-            PooledObject obj = MonoBehaviour.Instantiate(_targetPrefab);
+            GameObject go = PhotonNetwork.Instantiate(_prefabPath, Vector3.zero, Quaternion.identity);
+            PooledObject obj = go.GetComponent<PooledObject>();
             obj.PooledInit(this);
             PushPool(obj);
         }
