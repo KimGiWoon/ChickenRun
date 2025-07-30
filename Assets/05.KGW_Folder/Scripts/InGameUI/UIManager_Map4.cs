@@ -25,6 +25,7 @@ public class UIManager_Map4 : MonoBehaviourPun
     [SerializeField] Transform _playerPosition;
     [SerializeField] Transform _startPosition;
     [SerializeField] Transform _endPosition;
+    [SerializeField] TMP_Text _distanceText;
 
     [Header("Drill Slider UI Reference")]
     [SerializeField] Slider _DrillPosSlider;
@@ -227,6 +228,7 @@ public class UIManager_Map4 : MonoBehaviourPun
         float endDistance = Vector2.Distance(_playerPosition.position, _endPosition.position);
         float progress = Mathf.Clamp01(1 - (endDistance / _playerDistance));
         _playerPosSlider.value = progress;
+        _distanceText.text = $"{((int)endDistance).ToString()}m";
     }
 
     // 플레이어 위치 세팅
