@@ -6,7 +6,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PlayerEmoticonController : MonoBehaviourPunCallbacks
+public class PlayerEmoticonController_Map1 : MonoBehaviourPunCallbacks
 {
     [SerializeField] public GameObject _SpeechBubble;
     [SerializeField] public Image _emoticonImage;
