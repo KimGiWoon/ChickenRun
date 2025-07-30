@@ -9,7 +9,6 @@ public class DrillController : MonoBehaviour
     [SerializeField] float _moveSpeed;
     [SerializeField] float _attackDelayTime;
     [SerializeField] GameObject _attackRangeImage;
-    [SerializeField] bool _isStart = false;
 
     Coroutine _drillMoveRoutine;
     Vector2 _moveDirection;
