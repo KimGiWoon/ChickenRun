@@ -7,7 +7,6 @@ using Photon.Pun;
 using System.Collections;
 using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class CYH_FirebaseManager : Singleton<CYH_FirebaseManager>
 {
@@ -35,18 +34,17 @@ public class CYH_FirebaseManager : Singleton<CYH_FirebaseManager>
     private GoogleSignInConfiguration _configuration;
     public GoogleSignInConfiguration Configuration { get { return _configuration; } }
 
-    // 테스트용 구글 로그인 버튼
-    [SerializeField] private Button _GoogleButton;
-
 
     protected override void Awake()
     {
+        //// GoogleSignIn에 사용할 인증 설정 초기화
         _configuration = new GoogleSignInConfiguration {
             WebClientId = googleWebAPI,
             RequestIdToken = true,
             RequestEmail = true
         };
 
+        // 초기화한 설정을 GoogleSignIn.Configuration에 적용
         GoogleSignIn.Configuration = _configuration;
     }
 
@@ -60,10 +58,11 @@ public class CYH_FirebaseManager : Singleton<CYH_FirebaseManager>
         //{
         //    auth.SignOut();
         //}
-
-        _GoogleButton.onClick.AddListener(OnGoolgeSignInClicked);
     }
 
+    /// <summary>
+    /// Firebase 의존성 체크 후 각 인스턴스를 초기화하는 코루틴
+    /// </summary>
     private IEnumerator InitFirebaseCoroutine()
     {
         Task<Firebase.DependencyStatus> task = Firebase.FirebaseApp.CheckAndFixDependenciesAsync();
@@ -84,77 +83,15 @@ public class CYH_FirebaseManager : Singleton<CYH_FirebaseManager>
         }
     }
 
-    public void OnGoolgeSignInClicked()
-    {
-        Debug.Log("구글 로그인 버튼 입력");
-
-        GoogleSignIn.Configuration = _configuration;
-        GoogleSignIn.Configuration.UseGameSignIn = false;
-        GoogleSignIn.Configuration.RequestIdToken = true;
-        GoogleSignIn.Configuration.RequestEmail = true;
-
-        GoogleSignIn.DefaultInstance.SignIn().ContinueWithOnMainThread(OnGoogleAuthenticatedFinished);
-    }
-
     public void OnFirebaseLoginSuccess()
     {
         user = auth.CurrentUser;
 
-        if (!PhotonNetwork.IsConnected) {
+        if (!PhotonNetwork.IsConnected)
+        {
             PhotonNetwork.AutomaticallySyncScene = true;
             PhotonNetwork.ConnectUsingSettings();
             Debug.Log("[Photon] Firebase 로그인 이후 Photon 연결 시작");
         }
-    }
-
-    private void OnGoogleAuthenticatedFinished(Task<GoogleSignInUser> task)
-    {
-        if (task.IsCanceled)
-        {
-            Debug.LogError("구글 인증 취소");
-        }
-
-        if (task.IsFaulted)
-        {
-            Debug.LogError($"구글 인증 실패 : {task.Exception}");
-        }
-
-        else {
-            GoogleLogin(task);
-        }
-    }
-
-    private void GoogleLogin(Task<GoogleSignInUser> userTask)
-    {
-        Firebase.Auth.Credential credential =
-        Firebase.Auth.GoogleAuthProvider.GetCredential(userTask.Result.IdToken, null);
-        auth.SignInAndRetrieveDataWithCredentialAsync(credential).ContinueWithOnMainThread(task =>
-        {
-            if (task.IsCanceled)
-            {
-                Debug.LogError("구글 로그인 취소");
-
-                PopupManager.Instance.ShowOKPopup("구글 로그인 취소", "OK", () => PopupManager.Instance.HidePopup());
-                return;
-            }
-
-            if (task.IsFaulted)
-            {
-                Debug.LogError($"구글 로그인 실패 : {task.Exception}");
-
-                PopupManager.Instance.ShowOKPopup("구글 로그인 실패", "OK", () => PopupManager.Instance.HidePopup());
-                return;
-            }
-
-            Firebase.Auth.AuthResult result = task.Result;
-            Debug.LogFormat("User signed in successfully: {0} ({1})",
-                result.User.DisplayName, result.User.UserId);
-
-            OnFirebaseLoginSuccess();
-
-            PopupManager.Instance.ShowOKPopup("구글 로그인 성공", "OK", () => PopupManager.Instance.HidePopup());
-
-            user = auth.CurrentUser;
-        });
     }
 }
