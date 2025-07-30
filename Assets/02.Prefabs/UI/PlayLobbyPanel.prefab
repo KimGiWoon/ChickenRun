@@ -495,11 +495,12 @@ MonoBehaviour:
   _skinSelectButton: {fileID: 7411712825984023724}
   _skinSelectPanel: {fileID: 5526791084956828605}
   _leftColorButton: {fileID: 805996797694254249}
-  _rightColorButton: {fileID: 805996797694254249}
-  _currentColorImage: {fileID: 2632271251210029199}
+  _rightColorButton: {fileID: 2046595716203195937}
+  _currentColorImage: {fileID: 5304179013319164900}
   _startOrReadyButton: {fileID: 5116107333897319167}
   _startOrReadyText: {fileID: 1326377159351978546}
   _backButton: {fileID: 5851208184392286524}
+  _photonView: {fileID: 2358699871753454203, guid: aba0a670417e5b34fb671d9bd0608f94, type: 3}
 --- !u!1 &1293862458518983314
 GameObject:
   m_ObjectHideFlags: 0

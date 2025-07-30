@@ -20,6 +20,7 @@ public class PopupPassword : UIBase
 
     public void SetShow(Action onOKButton)
     {
+        base.SetShow();
         _okButton.onClick.AddListener(() => {
             if (string.IsNullOrEmpty(_passwordInputField.text)) {
                 Debug.LogWarning("Password cannot be empty.");
