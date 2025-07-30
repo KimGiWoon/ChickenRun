@@ -170,7 +170,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _arrow: {fileID: 3715709268880765523}
   _shootPos: {fileID: 764919464761105731}
-  _bulletPrefab: {fileID: 8202846347936179291, guid: a0c36a614df4f2c4e84deaf4fae058f1, type: 3}
+  _bulletPrefab: {fileID: 6751618364517165171, guid: a0c36a614df4f2c4e84deaf4fae058f1, type: 3}
+  _bulletPath: Bullet
 --- !u!114 &1093067326900060412
 MonoBehaviour:
   m_ObjectHideFlags: 0

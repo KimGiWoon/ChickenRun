@@ -7,6 +7,14 @@ namespace Kst
     {
         [SerializeField] private float _speed = 10f;
         private Vector2 _moveDir;
+        // private PhotonPooledObject _pooledObj;
+        private PooledObject _pooledObj;
+
+        void Awake()
+        {
+            // _pooledObj = GetComponent<PhotonPooledObject>();
+            _pooledObj = GetComponent<PooledObject>();
+        }
 
         //TODO <김승태> : Bullet끼리의 충돌 방지 조건 추가.
         public void Init(Vector2 dir)
@@ -16,19 +24,14 @@ namespace Kst
 
         void Update()
         {
-            if (!photonView.IsMine) return;
+            // if (!photonView.IsMine) return;
             transform.Translate(_moveDir * _speed * Time.deltaTime);
         }
-        // [PunRPC]
-        // void DestoryPlate(int viewId)
-        // {
-
-        // }
 
         //장애물과 충돌 시
         void OnTriggerEnter2D(Collider2D collision)
         {
-            if (!photonView.IsMine) return;
+            // if (!photonView.IsMine) return;
 
             if (collision.TryGetComponent(out Plate plate))
             {
@@ -40,11 +43,13 @@ namespace Kst
                     if (score > 0) ScoreManager.Instance.AddScroe(score);
                     else ScoreManager.Instance.MinusScore(-score);
                 }
-                //TODO <김승태> : 추후 오브젝트 풀링 반납 구조로 변경 필요
-                //장애물 파괴 혹은 추가적인 장치 필요.
-                PhotonNetwork.Destroy(collision.gameObject);
-                //총알 파괴
-                PhotonNetwork.Destroy(gameObject);
+                //플레이트 반납 요청
+
+                // plate.GetComponent<PhotonView>().RPC(nameof(PlateMover.RPC_ReturnPlate), RpcTarget.MasterClient);
+
+                //총알 반납
+                // PhotonNetwork.Destroy(gameObject);
+                _pooledObj.ReturnPool();
             }
 
         }

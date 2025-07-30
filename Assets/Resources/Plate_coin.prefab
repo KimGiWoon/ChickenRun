@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 8603937234591344304}
   - component: {fileID: 7062437225796487424}
   - component: {fileID: 2133105434947314983}
+  - component: {fileID: -4816245575736162163}
   m_Layer: 0
   m_Name: Plate_coin
   m_TagString: Untagged
@@ -200,3 +201,15 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.32, y: 0.32}
   m_EdgeRadius: 0
+--- !u!114 &-4816245575736162163
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8202846347936179291}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 862e70c28077513439be5c42e2d1e205, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

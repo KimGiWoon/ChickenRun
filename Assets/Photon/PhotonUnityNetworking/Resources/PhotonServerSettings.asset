@@ -49,6 +49,11 @@ MonoBehaviour:
   - ReadyGame
   - PlayerNickname
   - SetSpeed
+  - RPC_ReturnPlate
+  - RPC_SpawnPlate
+  - RPC_SyncPlate
+  - RPC_ShootBullet
+  - RPC_SyncPlateSpawn
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
