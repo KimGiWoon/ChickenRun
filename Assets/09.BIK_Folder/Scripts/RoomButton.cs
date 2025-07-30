@@ -21,6 +21,7 @@ public class RoomButton : MonoBehaviour
 
     private string _password = "";
     private string _roomName = "";
+    private System.Action _onClickRoom;
 
     #endregion // Private fields
 
@@ -30,8 +31,9 @@ public class RoomButton : MonoBehaviour
 
     #region public funcs
 
-    public void Initialize(RoomInfo info)
+    public void Initialize(RoomInfo info, System.Action onClickRoom)
     {
+        _onClickRoom = onClickRoom;
         _roomName = info.Name;
 
         string displayRoomName = info.CustomProperties.ContainsKey("RoomName")
@@ -53,6 +55,7 @@ public class RoomButton : MonoBehaviour
         if (string.IsNullOrEmpty(_password)) {
             // 비밀번호가 없는 경우 바로 방에 입장
             PhotonManager.Instance.JoinRoom(_roomName);
+            _onClickRoom?.Invoke();
         }
         else {
             PopupManager.Instance.ShowPasswordPopup(() => {
@@ -60,6 +63,7 @@ public class RoomButton : MonoBehaviour
 
                 if (_password == input) {
                     PhotonManager.Instance.JoinRoom(_roomName);
+                    _onClickRoom?.Invoke();
                 }
                 else {
                     PopupManager.Instance.ShowOKPopup("비밀번호가 일치하지 않습니다.");
