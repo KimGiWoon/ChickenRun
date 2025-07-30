@@ -1,9 +1,12 @@
+using Photon.Pun;
 using Photon.Realtime;
+using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class PlayerSlot : MonoBehaviour
+public class PlayerSlot : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPointerExitHandler
 {
     #region Serialized fields
 
@@ -21,6 +24,9 @@ public class PlayerSlot : MonoBehaviour
     #region private fields
 
     private Player _player;
+    private float _pressTime;
+    private bool _isHolding;
+    private const float KickHoldThreshold = 2f;
 
     #endregion // private fields
 
@@ -39,28 +45,28 @@ public class PlayerSlot : MonoBehaviour
     {
         _player = player;
 
-        // 닉네임 설정 (CustomProperties에서 가져오고, 없으면 기본 Photon 닉네임 사용)
+        // 닉네임 설정
         if (player.CustomProperties.TryGetValue("Nickname", out object nicknameObj) && nicknameObj is string nickname) {
             _nicknameText.text = nickname;
         }
         else {
-            _nicknameText.text = player.NickName; // 예외 처리용
+            _nicknameText.text = player.NickName;
         }
 
-        // 닉네임 색깔 설정
+        // 닉네임 색
         if (player.CustomProperties.TryGetValue("Color", out object colorObj) && colorObj is string colorStr) {
             if (System.Enum.TryParse(colorStr, out ColorType colorType)) {
                 _nicknameText.color = Common.ConvertColorTypeToUnityColor(colorType);
             }
             else {
-                _nicknameText.color = Color.black; // 기본 fallback
+                _nicknameText.color = Color.black;
             }
         }
         else {
             _nicknameText.color = Color.black;
         }
 
-        // 준비 상태 표시
+        // 준비 상태
         bool isReady = false;
         if (player.CustomProperties.TryGetValue("IsReady", out object readyValue) && readyValue is bool b) {
             isReady = b;
@@ -70,8 +76,59 @@ public class PlayerSlot : MonoBehaviour
         _readyOffIcon.SetActive(!isReady);
     }
 
+    #endregion // public funcs
 
-    public async void OnClick()
+
+
+
+
+    #region Pointer Events
+
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        _isHolding = true;
+        _pressTime = 0f;
+        StartCoroutine(HoldCheckCoroutine());
+    }
+
+    public void OnPointerUp(PointerEventData eventData)
+    {
+        if (_pressTime < KickHoldThreshold) {
+            OnClick(); // 짧은 클릭 → 정보 보기
+        }
+
+        _isHolding = false;
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        _isHolding = false;
+    }
+
+    #endregion // Pointer Events
+
+
+
+
+
+    #region private funcs
+
+    private System.Collections.IEnumerator HoldCheckCoroutine()
+    {
+        while (_isHolding) {
+            _pressTime += Time.deltaTime;
+
+            if (_pressTime >= KickHoldThreshold) {
+                TryKickPlayer();
+                _isHolding = false;
+                yield break;
+            }
+
+            yield return null;
+        }
+    }
+
+    private async void OnClick()
     {
         if (_player.CustomProperties.TryGetValue("UID", out object uidObj) && uidObj is string firebaseUid) {
             await PopupManager.Instance.ShowPlayerInfo(firebaseUid);
@@ -81,5 +138,20 @@ public class PlayerSlot : MonoBehaviour
         }
     }
 
-    #endregion // public funcs
+    private void TryKickPlayer()
+    {
+        if (!PhotonNetwork.IsMasterClient)
+            return;
+
+        if (_player.CustomProperties.TryGetValue("UID", out object uidObj) && uidObj is string uid) {
+            PopupManager.Instance.ShowOKCancelPopup("정말로 이 플레이어를 추방하시겠습니까?",
+                "추방", () => {
+                    PhotonManager.Instance.KickPlayer(_player, uid);
+                    Debug.Log($"[Kick] UID {uid} 플레이어 추방 시도");
+                },
+                "취소", null);
+        }
+    }
+
+    #endregion // private funcs
 }

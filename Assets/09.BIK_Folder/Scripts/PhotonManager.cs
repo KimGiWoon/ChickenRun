@@ -43,6 +43,9 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     private Action _onJoinedRoomCallback;
     private Action _onLeftRoomCallback;
     private event Action<List<RoomInfo>> _onRoomListUpdated;
+    [SerializeField] private GameObject _kickRelayPrefab; // PhotonKickRelay 프리팹
+    private PhotonKickRelay _kickRelayInstance;
+    private System.Action _pendingKickedCallback; // 콜백 임시 저장
 
     #endregion // private fields
 
@@ -156,8 +159,43 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     public override void OnJoinedRoom()
     {
         Debug.Log("[Photon] 방 참가 완료");
+
+        // PhotonKickRelay 프리팹 인스턴스 생성
+        GameObject relayObj = PhotonNetwork.Instantiate("PhotonKickRelay", Vector3.zero, Quaternion.identity);
+        PhotonKickRelay relay = relayObj.GetComponent<PhotonKickRelay>();
+        _kickRelayInstance = relay;
+
+        // 지연 저장된 콜백이 있다면 Relay에 전달
+        if (_pendingKickedCallback != null) {
+            _kickRelayInstance.SetOnKickedCallback(_pendingKickedCallback);
+        }
+
+        // 방 참가 콜백 실행
         _onJoinedRoomCallback?.Invoke();
         _onJoinedRoomCallback = null;
+    }
+
+    public void SetOnKickedCallback(Action onkick)
+    {
+        _pendingKickedCallback = onkick;
+        if (_kickRelayInstance != null) {
+            _kickRelayInstance.SetOnKickedCallback(onkick);
+        }
+    }
+
+    public void KickPlayer(Player targetPlayer, string uid)
+    {
+        if (_kickRelayInstance != null) {
+            _kickRelayInstance.KickPlayer(targetPlayer, uid);
+        }
+        else {
+            Debug.LogWarning("[Photon] KickRelay 인스턴스가 없습니다. 방에 참가 후 사용해야 합니다.");
+        }
+    }
+
+    public void OnKicked()
+    {
+        _pendingKickedCallback?.Invoke();
     }
 
     public override void OnJoinRoomFailed(short returnCode, string message)
@@ -177,6 +215,11 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         Debug.Log("[Photon] 방에서 나감");
         _onLeftRoomCallback?.Invoke();
         _onLeftRoomCallback = null;
+
+        if (_kickRelayInstance != null) {
+            PhotonNetwork.Destroy(_kickRelayInstance.gameObject);
+            _kickRelayInstance = null;
+        }
     }
 
     #endregion // Photon Callbacks
@@ -191,7 +234,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     {
         if (CYH_FirebaseManager.User != null) {
             string uid = CYH_FirebaseManager.User.UserId;
-            string nickname = CYH_FirebaseManager.CurrentUserNickname;
+            string nickname = CYH_FirebaseManager.User.DisplayName;
 
             ExitGames.Client.Photon.Hashtable props = new ExitGames.Client.Photon.Hashtable {
             { "UID", uid },

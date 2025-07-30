@@ -82,6 +82,7 @@ public class PlayLobbyPanel : UIBase, IInRoomCallbacks
     private void OnEnable()
     {
         PhotonNetwork.AddCallbackTarget(this);
+        PhotonManager.Instance.SetOnKickedCallback(_onBack);
     }
 
     private void OnDisable()
@@ -177,7 +178,6 @@ public class PlayLobbyPanel : UIBase, IInRoomCallbacks
             slot.SetActive(false);
 
         var players = PhotonNetwork.PlayerList;
-
         for (int i = 0; i < players.Length; i++) {
             _playerSlots[i].SetActive(true);
             _playerSlots[i].SetPlayer(players[i]);

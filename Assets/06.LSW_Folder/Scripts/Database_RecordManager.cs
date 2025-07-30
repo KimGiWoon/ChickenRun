@@ -57,19 +57,16 @@ public class Database_RecordManager : Singleton<Database_RecordManager>
     // 진짜 이메일/비번 아님. 아마도.
     private void Start()
     {
-        string email = "hagwhr2@gmail.com";
-        string pass = "dltjrdnjs96~";
+        //_auth = CYH_FirebaseManager.Auth;
+        //if (_auth == null) {
+        //    _auth = FirebaseAuth.DefaultInstance;
+        //}
 
-        _auth = CYH_FirebaseManager.Auth;
-        if (_auth == null) {
-            _auth = FirebaseAuth.DefaultInstance;
-        }
-
-        _auth.SignInWithEmailAndPasswordAsync(email, pass).ContinueWithOnMainThread(task => {
-            if (task.IsCompletedSuccessfully) {
-                _reference = CYH_FirebaseManager.Database.RootReference;
-            }
-        });
+        //_auth.SignInWithEmailAndPasswordAsync(email, pass).ContinueWithOnMainThread(task => {
+        //    if (task.IsCompletedSuccessfully) {
+        //        _reference = CYH_FirebaseManager.Database.RootReference;
+        //    }
+        //});
 
         // todo : GameManager 이벤트 메서드 연동
         //GameManager.Instance.OnEndGame += (data) => SaveUserRecord(data);

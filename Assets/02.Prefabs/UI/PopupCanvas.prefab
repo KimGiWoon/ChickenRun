@@ -119,7 +119,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _dontDestroyOnLoad: 1
-  _popupPanel: {fileID: 0}
+  _popupPanel: {fileID: 1546549620539739856}
   _playerInfoUI: {fileID: 8267081272210714267}
   _popupPassword: {fileID: 6391352823053210662}
 --- !u!114 &5402463793682453510
@@ -702,6 +702,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 111558700b6b2c34da6c60c1cb1699ad, type: 3}
+--- !u!114 &1546549620539739856 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2645245895203777171, guid: 111558700b6b2c34da6c60c1cb1699ad, type: 3}
+  m_PrefabInstance: {fileID: 3585920353259955267}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a6e69f960941b548a84bbaadcf7dc58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &8583279420394553494 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5106607709641172181, guid: 111558700b6b2c34da6c60c1cb1699ad, type: 3}
