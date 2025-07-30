@@ -54,6 +54,7 @@ MonoBehaviour:
   - RPC_SyncPlate
   - RPC_ShootBullet
   - RPC_SyncPlateSpawn
+  - PlateSpawn
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

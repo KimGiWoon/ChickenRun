@@ -39,7 +39,7 @@ namespace Kst
                 Map3_PlayerController player = go.GetComponent<Map3_PlayerController>();
                 _btnUI.Init(player);
             }
-            // _plateSpawner.StartSpawn();
+            _plateSpawner.StartSpawn();
         }
     }
 }

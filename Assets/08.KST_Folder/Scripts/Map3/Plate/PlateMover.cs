@@ -11,37 +11,25 @@ public class PlateMover : MonoBehaviourPun
     private PooledObject _pooled;
     void Awake()
     {
-        // if (PhotonNetwork.IsMasterClient)
-        //     _pooled = GetComponent<PhotonPooledObject>();
         _pooled = GetComponent<PooledObject>();
-    }
-
-    void Start()
-    {
-        if (photonView.IsMine)
-        {
-            _speed = Random.Range(_minspeed, _maxSpeed);
-            photonView.RPC(nameof(SetSpeed), RpcTarget.AllBuffered, _speed);
-        }
     }
     void Update()
     {
         transform.Translate(Vector2.down * _speed * Time.deltaTime);
 
         if (transform.position.y < -6f)
-            photonView.RPC(nameof(RPC_ReturnPlate), RpcTarget.MasterClient);
+            _pooled.ReturnPool();
     }
 
-    [PunRPC]
-    void SetSpeed(float speed)
+    public void SetSpeed(float speed)
     {
         _speed = speed;
     }
+    public void ReturnPool() => _pooled.ReturnPool();
 
     [PunRPC]
-    public void RPC_ReturnPlate()
+    public void RequestReturn()
     {
-        if (PhotonNetwork.IsMasterClient)
-            _pooled.ReturnPool();
+        _pooled.ReturnPool();
     }
 }
