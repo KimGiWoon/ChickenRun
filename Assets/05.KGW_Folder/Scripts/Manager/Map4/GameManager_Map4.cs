@@ -17,6 +17,11 @@ public class GameManager_Map4 : MonoBehaviourPunCallbacks
 
     static GameManager_Map4 instance;
 
+    // 결승점과 가장가까운 플레이어
+    public int _1stPlace;
+    public int _2ndPlace;
+    public int _3rdPlace;
+
     int _totalEggCount = 0;
     Map4Data _data;
     public bool _isGoal = false;
@@ -140,6 +145,15 @@ public class GameManager_Map4 : MonoBehaviourPunCallbacks
             UnityEngine.Debug.Log("모든 플레이어 도착");
             photonView.RPC(nameof(GameClearLeaveRoom), RpcTarget.AllViaServer);
         }
+    }
+
+    // 1,2,3등 확인
+    public void RankUpdate(int number)
+    {
+        // 결승점과의 거리
+        float _distance = _gameUIManager._playerEndDistance;
+
+        
     }
 
     // 게임 플레이 시간 오버 체크
