@@ -52,9 +52,12 @@ public class AudioManager_Map2 : Singleton<AudioManager_Map2>
     // BGM 플레이
     public void PlayBGM(Bgms bgm)
     {
-        _bgmAudioSource.clip = _bgmFiles[(int)bgm];
-        _bgmAudioSource.loop = true;
-        _bgmAudioSource.Play();
+        if (_bgmFiles.Length > (int)bgm)
+        {
+            _bgmAudioSource.clip = _bgmFiles[(int)bgm];
+            _bgmAudioSource.loop = true;
+            _bgmAudioSource.Play();
+        }
     }
 
     // BGM 정지
@@ -66,7 +69,10 @@ public class AudioManager_Map2 : Singleton<AudioManager_Map2>
     // SFX 플레이
     public void PlaySFX(Sfxs sfx)
     {
-        _sfxAudioSource.PlayOneShot(_sfxFiles[(int)sfx]);
+        if (_sfxFiles.Length > (int)sfx)
+        {
+            _sfxAudioSource.PlayOneShot(_sfxFiles[(int)sfx]);
+        }
     }
 
     // BGM 볼륨

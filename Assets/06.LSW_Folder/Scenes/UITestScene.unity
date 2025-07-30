@@ -945,9 +945,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _dontDestroyOnLoad: 1
   googleWebAPI: 1912177127-go83if3uk9pelsa2186ti52hu74qhv5g.apps.googleusercontent.com
-  _userNickname: {fileID: 0}
-  _userEmail: {fileID: 0}
-  _error: {fileID: 0}
+  _GoogleButton: {fileID: 0}
 --- !u!1 &421787951
 GameObject:
   m_ObjectHideFlags: 0

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
+using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 public class PlayerController_Map2 : MonoBehaviourPun
 {
@@ -13,12 +14,14 @@ public class PlayerController_Map2 : MonoBehaviourPun
     private DistanceJoint2D _joint;
     private SpriteRenderer _playerRenderer;
     private Vector2 _moveDir;
+    private GameObject _partner;
     
     private bool _isGround;
     private bool _isOnTouch;
     private bool _isOffTouch;
     private bool _isLinked;
     private bool _isInputBlocked;
+    private bool _isBounce;
 
     private float _touchStartTime;
     private float _touchEndTime;
@@ -28,7 +31,12 @@ public class PlayerController_Map2 : MonoBehaviourPun
         _rigid = GetComponent<Rigidbody2D>();
         _player = GetComponent<PlayerProperty>();
         _joint = GetComponent<DistanceJoint2D>();
+        _playerRenderer = GetComponent<SpriteRenderer>();
         _joint.enabled = false;
+
+        Hashtable hashtable = PhotonNetwork.LocalPlayer.CustomProperties;
+        hashtable.TryAdd("Team", "red");
+        PhotonNetwork.LocalPlayer.SetCustomProperties(hashtable);
     }
 
     private void Start()
@@ -52,14 +60,26 @@ public class PlayerController_Map2 : MonoBehaviourPun
     // 마우스 입력은 전처리기를 통해 Editor 상에서만 사용하고 빌드 시 포함x
     private void Update()
     {
-        if (photonView.IsMine && !_isInputBlocked)
+        if (photonView.IsMine)
         {
+            if (!_isInputBlocked)
+            {
 #if UNITY_EDITOR
-            TouchInput_Test();
+                TouchInput_Test();
 #endif
-            TouchInput();
+                TouchInput();
+            }
+            if (_isBounce)
+            {
+                float dist = Vector2.Distance(transform.position, _partner.transform.position);
+                if (dist >= _joint.distance - 0.05f)
+                {
+                    Vector2 dir = transform.position - _partner.transform.position;
+                    _partner.GetComponent<Rigidbody2D>().velocity = dir * _rigid.velocity.magnitude;
+                    _partner.GetComponent<Rigidbody2D>().mass = 0.01f;
+                }
+            }
         }
-    
     }
 
     // Rigidbody2D의 속성을 변경하는 경우 FixedUpdate에서 처리
@@ -78,6 +98,10 @@ public class PlayerController_Map2 : MonoBehaviourPun
         if(((1 << collision.gameObject.layer) & _groundLayer) != 0)
         {
             _isGround = true;
+        }
+        else
+        {
+            _isGround = false;
         }
     }
 
@@ -154,6 +178,7 @@ public class PlayerController_Map2 : MonoBehaviourPun
                     _joint.distance = 1f;
                     _joint.enabled = true;
                     _isLinked = true;
+                    _partner = player.gameObject;
                     ResetAlpha(player);
                     break;
                 } 
@@ -166,7 +191,12 @@ public class PlayerController_Map2 : MonoBehaviourPun
     {
         if (_rigid.velocity.y < 0 && !_isGround)
         {
-            _rigid.gravityScale = 1.5f;
+            _rigid.gravityScale = 1f;
+            _isBounce = false;
+            if (_partner?.GetComponent<Rigidbody2D>().mass < 1f)
+            {
+                _partner.GetComponent<Rigidbody2D>().mass = 1f;
+            }
         }
         else
         {
@@ -179,7 +209,8 @@ public class PlayerController_Map2 : MonoBehaviourPun
     {
         if (Application.isMobilePlatform)
         {
-            if (!_isGround) return;
+            if (!_isGround || _rigid.velocity.y > 3) return;
+            
             // 화면 터치 여부는 터치하고 있는 손가락 수로 판단
             if (Input.touchCount > 0)
             {
@@ -224,7 +255,7 @@ public class PlayerController_Map2 : MonoBehaviourPun
 #if UNITY_EDITOR
     private void TouchInput_Test()
     {
-        if (!_isGround) return;
+        if (!_isGround || _rigid.velocity.y > 3) return;
         // 화면 터치 시 터치 타임 측정
         if (Input.GetMouseButtonDown(0))
         {
@@ -282,5 +313,6 @@ public class PlayerController_Map2 : MonoBehaviourPun
     {
         _rigid.velocity = new Vector2(_rigid.velocity.x, 0);
         _rigid.AddForce(Vector2.up * power, ForceMode2D.Impulse);
+        _isBounce = true;
     }
 }
