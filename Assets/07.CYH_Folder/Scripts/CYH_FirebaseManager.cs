@@ -43,20 +43,23 @@ public class CYH_FirebaseManager : Singleton<CYH_FirebaseManager>
         _configuration = new GoogleSignInConfiguration
         {
             WebClientId = googleWebAPI,
-            RequestIdToken = true
+            RequestIdToken = true,
+            RequestEmail = true
         };
 
-        // 로그인 초기화
-        //if(auth.CurrentUser != null)
-        //{
-        //    auth.SignOut();
-        //}
+        GoogleSignIn.Configuration = _configuration;
     }
 
     private void Start()
     {
         // firebase 초기화
         StartCoroutine(InitFirebaseCoroutine());
+
+        //로그인 초기화
+        //if (auth.CurrentUser != null)
+        //{
+        //    auth.SignOut();
+        //}
 
         _GoogleButton.onClick.AddListener(OnGoolgeSignInClicked);
     }
@@ -85,8 +88,7 @@ public class CYH_FirebaseManager : Singleton<CYH_FirebaseManager>
 
     public void OnGoolgeSignInClicked()
     {
-        PopupManager.Instance.ShowOKPopup("구글 로그인 버튼 클릭", "OK", () => PopupManager.Instance.HidePopup());
-
+        Debug.Log("구글 로그인 버튼 입력");
 
         GoogleSignIn.Configuration = _configuration;
         GoogleSignIn.Configuration.UseGameSignIn = false;
@@ -100,12 +102,12 @@ public class CYH_FirebaseManager : Singleton<CYH_FirebaseManager>
     {
         if (task.IsCanceled)
         {
-            Debug.Log("Login Cancel");
+            Debug.LogError("구글 인증 취소");
         }
 
         if (task.IsFaulted)
         {
-            Debug.Log("Faulted");
+            Debug.LogError($"구글 인증 실패 : {task.Exception}");
         }
 
         else
@@ -122,7 +124,7 @@ public class CYH_FirebaseManager : Singleton<CYH_FirebaseManager>
         {
             if (task.IsCanceled)
             {
-                Debug.LogError("SignInAndRetrieveDataWithCredentialAsync was canceled.");
+                Debug.LogError("구글 로그인 취소");
 
                 PopupManager.Instance.ShowOKPopup("구글 로그인 취소", "OK", () => PopupManager.Instance.HidePopup());
                 return;
@@ -130,7 +132,7 @@ public class CYH_FirebaseManager : Singleton<CYH_FirebaseManager>
 
             if (task.IsFaulted)
             {
-                Debug.LogError("SignInAndRetrieveDataWithCredentialAsync encountered an error: " + task.Exception);
+                Debug.LogError($"구글 로그인 실패 : {task.Exception}");
 
                 PopupManager.Instance.ShowOKPopup("구글 로그인 실패", "OK", () => PopupManager.Instance.HidePopup());
                 return;
