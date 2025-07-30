@@ -99,13 +99,13 @@ public class PlayLobbyPanel : UIBase, IInRoomCallbacks
 
     public void OnPlayerEnteredRoom(Player newPlayer)
     {
-        Debug.Log($"[Photon] 플레이어 입장: {newPlayer.NickName}");
+        Debug.Log($"[Photon] 플레이어 입장: {GetPlayerDisplayName(newPlayer)}");
         RefreshUI();
     }
 
     public void OnPlayerLeftRoom(Player otherPlayer)
     {
-        Debug.Log($"[Photon] 플레이어 퇴장: {otherPlayer.NickName}");
+        Debug.Log($"[Photon] 플레이어 퇴장: {GetPlayerDisplayName(otherPlayer)}");
         RefreshUI();
     }
 
@@ -117,13 +117,13 @@ public class PlayLobbyPanel : UIBase, IInRoomCallbacks
 
     public void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
     {
-        Debug.Log($"[Photon] 플레이어 속성 변경: {targetPlayer.NickName}");
+        Debug.Log($"[Photon] 플레이어 속성 변경: {GetPlayerDisplayName(targetPlayer)}");
         RefreshUI();
     }
 
     public void OnMasterClientSwitched(Player newMasterClient)
     {
-        Debug.Log($"[Photon] 방장이 변경됨: {newMasterClient.NickName}");
+        Debug.Log($"[Photon] 방장이 변경됨: {GetPlayerDisplayName(newMasterClient)}");
         RefreshUI();
     }
 
@@ -187,13 +187,23 @@ public class PlayLobbyPanel : UIBase, IInRoomCallbacks
     private void RefreshBottomButton()
     {
         if (PhotonNetwork.IsMasterClient) {
+            bool isReadyAlreadyTrue = PhotonNetwork.LocalPlayer.CustomProperties.TryGetValue("IsReady", out var currentValue)
+                                      && currentValue is bool b && b;
+
+            if (!isReadyAlreadyTrue) {
+                Hashtable props = new Hashtable {
+                { "IsReady", true }
+            };
+                PhotonNetwork.LocalPlayer.SetCustomProperties(props);
+            }
+
             bool allReady = CheckAllPlayersReady();
-            _startOrReadyText.text = "게임 시작";
+            _startOrReadyText.text = "게임시작";
             _startOrReadyButton.interactable = allReady;
         }
         else {
             bool isReady = PhotonNetwork.LocalPlayer.CustomProperties.TryGetValue("IsReady", out var value)
-                && value is bool b && b;
+                           && value is bool b && b;
 
             _startOrReadyText.text = isReady ? "준비 완료" : "준비";
             _startOrReadyButton.interactable = true;
@@ -331,6 +341,14 @@ public class PlayLobbyPanel : UIBase, IInRoomCallbacks
             ColorType.Cyan => Color.cyan,
             _ => Color.white,
         };
+    }
+
+    private string GetPlayerDisplayName(Player player)
+    {
+        if (player.CustomProperties.TryGetValue("Nickname", out var nicknameObj) && nicknameObj is string nickname)
+            return nickname;
+        else
+            return player.NickName; // fallback
     }
 
     #endregion // private funcs

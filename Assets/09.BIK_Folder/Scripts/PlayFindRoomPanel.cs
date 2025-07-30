@@ -24,6 +24,7 @@ public class PlayFindRoomPanel : UIBase
 
     private List<RoomButton> _roomButtons = new();
     private System.Action _onBack;
+    private System.Action _onJoin;
 
     #endregion // private fields
 
@@ -46,9 +47,10 @@ public class PlayFindRoomPanel : UIBase
 
     #region public funcs
 
-    public void Initialize(System.Action onBack)
+    public void Initialize(System.Action onBack, System.Action onJoin)
     {
         _onBack = onBack;
+        _onJoin = onJoin;
     }
 
     public override void RefreshUI()
@@ -86,12 +88,17 @@ public class PlayFindRoomPanel : UIBase
             }
 
             _roomButtons[i].gameObject.SetActive(true);
-            _roomButtons[i].Initialize(rooms[i]);
+            _roomButtons[i].Initialize(rooms[i], OnJoinedRoom);
         }
 
         for (int i = rooms.Count; i < _roomButtons.Count; i++) {
             _roomButtons[i].gameObject.SetActive(false);
         }
+    }
+
+    private void OnJoinedRoom()
+    {
+        _onJoin?.Invoke();
     }
 
     #endregion // private funcs
