@@ -43,7 +43,11 @@ public class LoginPanel : UIBase
     {
         _loginButton.onClick.AddListener(OnClick_Login);
         _socialLoginButton.onClick.AddListener(() => OnClickSocialLogin?.Invoke());
-        _signupButton.onClick.AddListener(() => OnClickSignup?.Invoke());
+
+        _signupButton.onClick.AddListener(() => {
+            OnClickSignup?.Invoke();
+            RefreshUI();
+        });
 
         // 계정 전환 테스트용
         //_linkAccountButton.onClick.AddListener(() => OnClickLinkAccount?.Invoke());
