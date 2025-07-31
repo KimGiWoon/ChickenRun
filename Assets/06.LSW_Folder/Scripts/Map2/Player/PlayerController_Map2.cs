@@ -46,10 +46,6 @@ public class PlayerController_Map2 : MonoBehaviourPun, IPunObservable
         _lineRenderer = GetComponent<LineRenderer>();
         _joint.enabled = false;
         _lineRenderer.enabled = false;
-
-        Hashtable hashtable = PhotonNetwork.LocalPlayer.CustomProperties;
-        hashtable.TryAdd("Team", "red");
-        PhotonNetwork.LocalPlayer.SetCustomProperties(hashtable);
     }
 
     private void Start()
@@ -142,7 +138,7 @@ public class PlayerController_Map2 : MonoBehaviourPun, IPunObservable
             GameManager_Map2.Instance.ReachGoalPoint();
         }
     }
-
+    
     private void PlayerStateUpdate()
     {
         if (_rigid.velocity == Vector2.zero)
@@ -184,7 +180,7 @@ public class PlayerController_Map2 : MonoBehaviourPun, IPunObservable
         if (_isLinked) return;
         
         // 네트워크에 저장된 커스텀 프로퍼티의 내 팀
-        string myTeam = PhotonNetwork.LocalPlayer.CustomProperties["Team"] as string;
+        string myTeam = PhotonNetwork.LocalPlayer.CustomProperties["Color"] as string;
         
         foreach (var player in GameObject.FindGameObjectsWithTag("Player"))
         {
@@ -198,7 +194,7 @@ public class PlayerController_Map2 : MonoBehaviourPun, IPunObservable
             if (otherPlayer == null) continue;
             
             // 네트워크에 저장된 커스텀 프로퍼티의 다른 플레이어의 팀
-            string team = otherPlayer.Owner.CustomProperties["Team"] as string;
+            string team = otherPlayer.Owner.CustomProperties["Color"] as string;
             
             // 해당 팀이 내 팀과 같은 경우
             if (team == myTeam)

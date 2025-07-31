@@ -14,10 +14,24 @@ public class NetworkManager_Map2 : MonoBehaviourPunCallbacks
         // 서버 접속
         PhotonNetwork.ConnectUsingSettings();
     }
-    
+
     private void Start()
-    {   
+    {
         GameManager_Map2.Instance.OnTimeUp += () => PhotonNetwork.LeaveRoom();
+
+        if (!PhotonNetwork.IsConnected)
+        {
+            PhotonNetwork.ConnectUsingSettings();
+        }
+
+        PhotonNetwork.LocalPlayer.NickName = $"Player{PhotonNetwork.LocalPlayer.ActorNumber}";
+        string nickname = PhotonNetwork.LocalPlayer.NickName;
+
+        Hashtable table = new Hashtable { { "Nickname", nickname } };
+        PhotonNetwork.LocalPlayer.SetCustomProperties(table);
+
+        PlayerSpawn();
+        photonView.RPC(nameof(NotifyPlayer), RpcTarget.MasterClient);
     }
 
     // 마스터 서버 접속
@@ -31,9 +45,10 @@ public class NetworkManager_Map2 : MonoBehaviourPunCallbacks
     {
         PhotonNetwork.LocalPlayer.NickName = $"Player{PhotonNetwork.LocalPlayer.ActorNumber}";
         string nickname = PhotonNetwork.LocalPlayer.NickName;
-        Hashtable table = new Hashtable{ { "Nickname", nickname } };
+
+        Hashtable table = new Hashtable { { "Nickname", nickname } };
         PhotonNetwork.LocalPlayer.SetCustomProperties(table);
-        
+
         PlayerSpawn();
         photonView.RPC(nameof(NotifyPlayer), RpcTarget.MasterClient);
     }
@@ -46,10 +61,12 @@ public class NetworkManager_Map2 : MonoBehaviourPunCallbacks
     
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
-        string team = otherPlayer.CustomProperties["Team"] as string;
-        if (PhotonNetwork.LocalPlayer.CustomProperties.TryGetValue("Team", out object myTeamObj))
+        string team = otherPlayer.CustomProperties["Color"] as string;
+        Debug.Log(team);
+        if (PhotonNetwork.LocalPlayer.CustomProperties.TryGetValue("Color", out var myTeamObj))
         {
             string myTeam = myTeamObj.ToString();
+            Debug.Log(myTeam);
             if (myTeam == team)
             {
                 // todo 팝업을 띄워도 될 듯? (3초 뒤에 나가집니다)
@@ -69,9 +86,9 @@ public class NetworkManager_Map2 : MonoBehaviourPunCallbacks
     private void NotifyPlayer()
     {
         _currentPlayer++;
-        if (PhotonNetwork.IsMasterClient && _currentPlayer == 2)
+        if (PhotonNetwork.IsMasterClient && _currentPlayer >= PhotonNetwork.CurrentRoom.MaxPlayers)
         {
-            photonView.RPC(nameof(ReadyGame), RpcTarget.All);
+            photonView.RPC(nameof(ReadyGame), RpcTarget.AllViaServer);
         }
     }
 

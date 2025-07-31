@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Photon.Pun;
@@ -18,7 +19,6 @@ public class SettingUI : MonoBehaviourPun
 
     private float _cacheBGM;
     private float _cacheSFX;
-    
     
     private void Start()
     {
@@ -63,22 +63,19 @@ public class SettingUI : MonoBehaviourPun
     private void OnExitPlayGame()
     {
         string exitPlayer = PhotonNetwork.LocalPlayer.NickName;
-
+        
         // 나감을 알림
         photonView.RPC(nameof(ExitPlayer), RpcTarget.AllViaServer, exitPlayer);
     }
     
     // 방 나가기
     [PunRPC]
-    private void ExitPlayer(string PlayerNickname)
+    private void ExitPlayer(string playerNickname)
     {
-        Debug.Log($"{PlayerNickname}께서 나갔습니다.");
-
-        // 현재의 방을 나가기
-        PhotonNetwork.LeaveRoom(this);
-
-        // 로비 씬이 있으면 추가해서 씬 이동
-        //PhotonNetwork.LoadLevel("로비씬");
+        Debug.Log($"{playerNickname}께서 나갔습니다.");
+        if (PhotonNetwork.LocalPlayer.NickName == playerNickname)
+        {
+            PhotonNetwork.LoadLevel("MainScene");
+        }
     }
-    
 }
