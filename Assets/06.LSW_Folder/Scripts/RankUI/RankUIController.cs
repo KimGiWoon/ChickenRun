@@ -76,6 +76,11 @@ public class RankUIController: MonoBehaviour
     private async Task ShowRank()
     {
         Database_RecordManager.UserRankInfo info = await Database_RecordManager.Instance.LoadUserRank();
+        if (info.RecordOrScore == null)
+        {
+            _rankUI.SetPopupText_Score();
+            return;
+        }
         _rankUI.SetRankText(info.Rank.ToString(), info.Nickname, info.RecordOrScore);
     }
 }

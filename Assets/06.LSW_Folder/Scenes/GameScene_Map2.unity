@@ -642,6 +642,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _isTest: 1
+  _power: 0
 --- !u!251 &162491864
 PlatformEffector2D:
   m_ObjectHideFlags: 0
@@ -1283,6 +1284,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _isTest: 1
+  _power: 0
 --- !u!251 &191053333
 PlatformEffector2D:
   m_ObjectHideFlags: 0
@@ -1447,6 +1449,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _isTest: 1
+  _power: 0
 --- !u!251 &197733874
 PlatformEffector2D:
   m_ObjectHideFlags: 0
@@ -1745,6 +1748,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _isTest: 0
+  _power: 0
 --- !u!251 &221376202
 PlatformEffector2D:
   m_ObjectHideFlags: 0
@@ -1909,6 +1913,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _isTest: 0
+  _power: 0
 --- !u!251 &268483524
 PlatformEffector2D:
   m_ObjectHideFlags: 0
@@ -2073,6 +2078,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _isTest: 0
+  _power: 0
 --- !u!251 &268612932
 PlatformEffector2D:
   m_ObjectHideFlags: 0
@@ -2237,6 +2243,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _isTest: 1
+  _power: 0
 --- !u!251 &274874848
 PlatformEffector2D:
   m_ObjectHideFlags: 0
@@ -2401,6 +2408,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _isTest: 1
+  _power: 0
 --- !u!251 &279565123
 PlatformEffector2D:
   m_ObjectHideFlags: 0
@@ -2565,6 +2573,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _isTest: 0
+  _power: 0
 --- !u!251 &355314843
 PlatformEffector2D:
   m_ObjectHideFlags: 0
@@ -2729,6 +2738,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _isTest: 1
+  _power: 0
 --- !u!251 &368558296
 PlatformEffector2D:
   m_ObjectHideFlags: 0
@@ -2893,6 +2903,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _isTest: 1
+  _power: 0
 --- !u!251 &377456652
 PlatformEffector2D:
   m_ObjectHideFlags: 0
@@ -3057,6 +3068,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _isTest: 1
+  _power: 0
 --- !u!251 &382139163
 PlatformEffector2D:
   m_ObjectHideFlags: 0
@@ -3355,6 +3367,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _isTest: 0
+  _power: 0
 --- !u!251 &418780175
 PlatformEffector2D:
   m_ObjectHideFlags: 0
@@ -3519,6 +3532,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _isTest: 1
+  _power: 0
 --- !u!251 &450825566
 PlatformEffector2D:
   m_ObjectHideFlags: 0
@@ -3804,6 +3818,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _isTest: 1
+  _power: 0
 --- !u!251 &464405279
 PlatformEffector2D:
   m_ObjectHideFlags: 0
@@ -3945,17 +3960,17 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 468778465}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0.7071068, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2, y: 2, z: 1}
+  m_LocalScale: {x: 2, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1414131619}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 20.5}
-  m_SizeDelta: {x: 20, y: 0}
+  m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &468778467
 MonoBehaviour:
@@ -3977,7 +3992,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -463754303992490470, guid: 9b9ab683f2527a74581cab6071661105, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 79784eacfc65cda4ca2164cb3ef16e8b, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -4043,6 +4058,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _isTest: 0
+  _power: 0
 --- !u!251 &476462901
 PlatformEffector2D:
   m_ObjectHideFlags: 0
@@ -4357,6 +4373,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _isTest: 1
+  _power: 0
 --- !u!251 &511853031
 PlatformEffector2D:
   m_ObjectHideFlags: 0
@@ -4521,6 +4538,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _isTest: 0
+  _power: 0
 --- !u!251 &521867880
 PlatformEffector2D:
   m_ObjectHideFlags: 0
@@ -5076,6 +5094,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _isTest: 1
+  _power: 0
 --- !u!251 &625563051
 PlatformEffector2D:
   m_ObjectHideFlags: 0
@@ -5540,6 +5559,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _isTest: 1
+  _power: 0
 --- !u!251 &721182939
 PlatformEffector2D:
   m_ObjectHideFlags: 0
@@ -5858,6 +5878,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _isTest: 1
+  _power: 0
 --- !u!251 &744746183
 PlatformEffector2D:
   m_ObjectHideFlags: 0
@@ -6022,6 +6043,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _isTest: 1
+  _power: 0
 --- !u!251 &830834624
 PlatformEffector2D:
   m_ObjectHideFlags: 0
@@ -6669,6 +6691,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _isTest: 0
+  _power: 0
 --- !u!251 &971608091
 PlatformEffector2D:
   m_ObjectHideFlags: 0
@@ -6833,6 +6856,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _isTest: 1
+  _power: 0
 --- !u!251 &974217600
 PlatformEffector2D:
   m_ObjectHideFlags: 0
@@ -7143,6 +7167,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _isTest: 1
+  _power: 0
 --- !u!251 &1081688257
 PlatformEffector2D:
   m_ObjectHideFlags: 0
@@ -7307,6 +7332,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _isTest: 1
+  _power: 0
 --- !u!251 &1112569097
 PlatformEffector2D:
   m_ObjectHideFlags: 0
@@ -7592,6 +7618,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _isTest: 1
+  _power: 0
 --- !u!251 &1217843622
 PlatformEffector2D:
   m_ObjectHideFlags: 0
@@ -9536,6 +9563,7 @@ MonoBehaviour:
   _angryEmoticon: {fileID: 1520641835}
   _loveEmoticon: {fileID: 1650035350}
   _weepEmoticon: {fileID: 1895012438}
+  _emoticonPanel: {fileID: 0}
 --- !u!114 &1597692223
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9757,6 +9785,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _isTest: 1
+  _power: 0
 --- !u!251 &1653013418
 PlatformEffector2D:
   m_ObjectHideFlags: 0
@@ -10248,6 +10277,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _isTest: 0
+  _power: 0
 --- !u!251 &1823419530
 PlatformEffector2D:
   m_ObjectHideFlags: 0
@@ -10412,6 +10442,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _isTest: 1
+  _power: 0
 --- !u!251 &1854348021
 PlatformEffector2D:
   m_ObjectHideFlags: 0
@@ -10767,6 +10798,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _isTest: 0
+  _power: 0
 --- !u!1 &1895012437
 GameObject:
   m_ObjectHideFlags: 0
@@ -11217,6 +11249,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _isTest: 0
+  _power: 0
 --- !u!251 &1911231791
 PlatformEffector2D:
   m_ObjectHideFlags: 0
@@ -11497,6 +11530,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _isTest: 1
+  _power: 0
 --- !u!1 &1925134806
 GameObject:
   m_ObjectHideFlags: 0
@@ -11817,6 +11851,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _isTest: 0
+  _power: 0
 --- !u!251 &1947305239
 PlatformEffector2D:
   m_ObjectHideFlags: 0
@@ -12202,6 +12237,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _isTest: 1
+  _power: 0
 --- !u!251 &2034064200
 PlatformEffector2D:
   m_ObjectHideFlags: 0
@@ -12451,6 +12487,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _isTest: 1
+  _power: 0
 --- !u!251 &2063348697
 PlatformEffector2D:
   m_ObjectHideFlags: 0

@@ -67,7 +67,7 @@ public class Database_RecordManager : Singleton<Database_RecordManager>
 
     // GameManager 게임 종료 이벤트에 등록할 메서드
     // 플레이한 맵의 기록을 저장/갱신하고, 1등인 경우 승수를 +1한다.
-    /*private void SaveUserRecord(GameResultData data)
+    public void SaveUserMap1Record(GameManager_Map1.Map1Data data)
     {
         string uid = _auth.CurrentUser.UserId;
         string key = data.MapType;
@@ -83,9 +83,18 @@ public class Database_RecordManager : Singleton<Database_RecordManager>
             }
             return TransactionResult.Success(mutableData);
         });
+
+        DatabaseReference eggRef = _reference.Child("UserData").Child(uid).Child("gold");
+        
+        eggRef.RunTransaction(mutableData =>
+        {
+            int currentEgg = mutableData.Value == null ? 0 : (int)mutableData.Value;
+            mutableData.Value = currentEgg + data.EggCount;
+            return TransactionResult.Success(mutableData);
+        });
         
         // 1등했을 때 승수 갱신 Transaction
-        if(data.IsWin)
+        /*if(data.IsWin)
         {
             DatabaseReference scoreRef = _reference.Child("RankData").Child(uid).Child("Score");
             scoreRef.RunTransaction(mutableData =>
@@ -94,8 +103,8 @@ public class Database_RecordManager : Singleton<Database_RecordManager>
                 mutableData.Value = currentRecord + 1;
                 return TransactionResult.Success(mutableData);
             });
-        }
-    }*/
+        }*/
+    }
 
     // 기록을 어떤 방식으로 저장하는 것이 비용이 가장 적게 들어가는가?
     // MM:SS:SS 를 그대로 캐싱하는 것은 아무리 생각해도 비용이 높을 것 같음
@@ -217,6 +226,9 @@ public class Database_RecordManager : Singleton<Database_RecordManager>
         UserRankInfo info = new UserRankInfo();
         int myRecord = (int)userRankData.Score;
 
+        if (myRecord == 0)
+            return info;
+        
         int myRank = -1;
         DataSnapshot snapshot = await _reference
             .Child("RankData")

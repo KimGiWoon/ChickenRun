@@ -69,7 +69,7 @@ public class PlayerController_Map2 : MonoBehaviourPun
 #endif
                 TouchInput();
             }
-            if (_isBounce)
+            if (_isBounce && _partner !=null)
             {
                 float dist = Vector2.Distance(transform.position, _partner.transform.position);
                 if (dist >= _joint.distance - 0.05f)
@@ -311,8 +311,10 @@ public class PlayerController_Map2 : MonoBehaviourPun
     // Bounce Tile을 밟았을 때 호출되는 메서드
     public void Bounce(float power)
     {
-        _rigid.velocity = new Vector2(_rigid.velocity.x, 0);
-        _rigid.AddForce(Vector2.up * power, ForceMode2D.Impulse);
-        _isBounce = true;
+        if (_rigid.velocity.y <= 0)
+        {
+            _rigid.AddForce(Vector2.up * power, ForceMode2D.Impulse);
+            _isBounce = true;
+        }
     }
 }
