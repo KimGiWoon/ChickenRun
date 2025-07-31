@@ -202,11 +202,12 @@ public class PlayerController_Map4 : MonoBehaviourPun, IPunObservable
             _isDeath = true;
             gameObject.SetActive(false);
 
-            // 방장에게 알리기
-            if (PhotonNetwork.IsMasterClient)
-            {
-                GameManager_Map4.Instance.PlayerDeath();
-            }
+            GameManager_Map4.Instance.PlayerDeath();
+            //// 방장에게 알리기
+            //if (PhotonNetwork.IsMasterClient)
+            //{
+            //    GameManager_Map4.Instance.PlayerDeath();
+            //}
         }
     }
 

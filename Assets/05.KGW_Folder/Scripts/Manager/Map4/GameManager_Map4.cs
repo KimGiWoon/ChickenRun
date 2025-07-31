@@ -132,6 +132,7 @@ public void CreateGameManager()
     public void PlayerDeath()
     {
         OnPlayerDeath?.Invoke();    // 카메라 전환 이벤트 호출
+        _data.EggCount = _totalEggCount;
 
         if (PhotonNetwork.IsMasterClient)
         {
@@ -143,7 +144,6 @@ public void CreateGameManager()
                 PlayerAllDeath();
             }
         }
-        
     }
 
     // 플레이어 결승점 도착
