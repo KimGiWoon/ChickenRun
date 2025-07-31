@@ -58,7 +58,7 @@ public class SkinItemController : MonoBehaviour
     {
         if (_goldManager.GetCurrentEgg() >= _data.Price)
         {
-            string uid = FirebaseManager.Auth.CurrentUser?.UserId;
+            string uid = CYH_FirebaseManager.Auth.CurrentUser?.UserId;
             if (!string.IsNullOrEmpty(uid))
             {
                 _goldManager.UseEgg(_data.Price);

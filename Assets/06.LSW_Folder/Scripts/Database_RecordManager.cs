@@ -52,22 +52,15 @@ public class Database_RecordManager : Singleton<Database_RecordManager>
         //_testBtn.onClick.AddListener(Test);
         //_infoBtn.onClick.AddListener(Info);
     }
-
-    // 테스트용 자동 로그인 코드
-    // 진짜 이메일/비번 아님. 아마도.
+    
     private void Start()
     {
-        //_auth = CYH_FirebaseManager.Auth;
-        //if (_auth == null) {
-        //    _auth = FirebaseAuth.DefaultInstance;
-        //}
-
-        //_auth.SignInWithEmailAndPasswordAsync(email, pass).ContinueWithOnMainThread(task => {
-        //    if (task.IsCompletedSuccessfully) {
-        //        _reference = CYH_FirebaseManager.Database.RootReference;
-        //    }
-        //});
-
+        _auth = CYH_FirebaseManager.Auth;
+        if (_auth == null) {
+            _auth = FirebaseAuth.DefaultInstance;
+        }
+        _reference = CYH_FirebaseManager.Database.RootReference;
+        
         // todo : GameManager 이벤트 메서드 연동
         //GameManager.Instance.OnEndGame += (data) => SaveUserRecord(data);
     }
@@ -120,6 +113,7 @@ public class Database_RecordManager : Singleton<Database_RecordManager>
     // Map Record에 따라 표시될 Record 랭킹보드에 사용되는 메서드
     public void LoadRecordRank(string record, GameObjectPool boardPool)
     {
+        if(_reference == null) _reference = CYH_FirebaseManager.Database.RootReference;
         _reference.Child("RankData")
             .OrderByChild(record)
             .LimitToFirst(20)
@@ -245,6 +239,7 @@ public class Database_RecordManager : Singleton<Database_RecordManager>
     // 유저 개인 랭킹 정보를 불러오는 메서드
     public async Task<RankData> LoadRankData()
     {
+        if(_auth == null) _auth = CYH_FirebaseManager.Auth;
         FirebaseUser user = _auth.CurrentUser;
         DatabaseReference userInfo = _reference.Child("RankData").Child(user.UserId);
         RankData rankData = new RankData();

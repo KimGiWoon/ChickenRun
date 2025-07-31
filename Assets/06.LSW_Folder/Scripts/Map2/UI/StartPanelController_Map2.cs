@@ -17,7 +17,7 @@ public class StartPanelController_Map2 : MonoBehaviourPun
         GameManager_Map2.Instance.OnReadyGame += ReadyGame;
     }
     
-    public void ReadyGame()
+    private void ReadyGame()
     {
         photonView.RPC(nameof(StartGameRoutine), RpcTarget.AllViaServer);
     }

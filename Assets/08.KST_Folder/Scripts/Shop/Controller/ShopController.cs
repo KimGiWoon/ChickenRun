@@ -17,7 +17,7 @@ namespace Kst
         private void Start()
         {
             _shopDataLoader.OnSkinDataLoaded += DataLoad;
-            string uid = FirebaseManager.Auth.CurrentUser?.UserId;
+            string uid = CYH_FirebaseManager.Auth.CurrentUser?.UserId;
 
             if (string.IsNullOrEmpty(uid))
                 return;

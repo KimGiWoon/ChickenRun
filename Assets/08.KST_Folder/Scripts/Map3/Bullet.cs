@@ -7,8 +7,12 @@ namespace Kst
     {
         [SerializeField] private float _speed = 10f;
         private Vector2 _moveDir;
+        private PooledObject _pooledObj;
 
-        //TODO <김승태> : Bullet끼리의 충돌 방지 조건 추가.
+        void Awake()
+        {
+            _pooledObj = GetComponent<PooledObject>();
+        }
         public void Init(Vector2 dir)
         {
             _moveDir = dir.normalized;
@@ -16,23 +20,30 @@ namespace Kst
 
         void Update()
         {
-            if (!photonView.IsMine) return;
             transform.Translate(_moveDir * _speed * Time.deltaTime);
         }
 
         //장애물과 충돌 시
         void OnTriggerEnter2D(Collider2D collision)
         {
-            if (!photonView.IsMine)
-
-                if (collision.CompareTag("Obstacle"))
+            if (collision.TryGetComponent(out Plate plate))
+            {
+                if (plate.IsEggPlate())
+                    EggManager.Instance.GainEgg(plate.GetEggAmount());
+                else
                 {
-                    //TODO <김승태> : 추후 오브젝트 풀링 반납 구조로 변경 필요
-                    //장애물 파괴 혹은 추가적인 장치 필요.
-                    PhotonNetwork.Destroy(collision.gameObject);
-                    //총알 파괴
-                    PhotonNetwork.Destroy(gameObject);
+                    int score = plate.GetScore();
+                    if (score > 0) ScoreManager.Instance.AddScroe(score);
+                    else ScoreManager.Instance.MinusScore(-score);
                 }
+                //플레이트 반납 요청
+                PlateMover mover = plate.GetComponentInChildren<PlateMover>();
+                mover.ReturnPool();
+
+                //총알 반납
+                _pooledObj.ReturnPool();
+            }
+
         }
     }
 
