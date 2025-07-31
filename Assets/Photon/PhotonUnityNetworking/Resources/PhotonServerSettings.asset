@@ -49,6 +49,15 @@ MonoBehaviour:
   - ReadyGame
   - PlayerNickname
   - RPC_ReceiveKickByUID
+  - PlateSpawn
+  - RequestReturn
+  - RPC_ShootBullet
+  - GiveEgg
+  - GiveScore
+  - RPC_AddScore
+  - RPC_GiveEgg
+  - AddScore
+  - MinusScore
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

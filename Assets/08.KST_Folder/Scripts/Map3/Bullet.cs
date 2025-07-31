@@ -8,14 +8,16 @@ namespace Kst
         [SerializeField] private float _speed = 10f;
         private Vector2 _moveDir;
         private PooledObject _pooledObj;
+        private int _actorNum;
 
         void Awake()
         {
             _pooledObj = GetComponent<PooledObject>();
         }
-        public void Init(Vector2 dir)
+        public void Init(Vector2 dir, int actorNum)
         {
             _moveDir = dir.normalized;
+            _actorNum = actorNum;
         }
 
         void Update()
@@ -28,14 +30,20 @@ namespace Kst
         {
             if (collision.TryGetComponent(out Plate plate))
             {
-                if (plate.IsEggPlate())
-                    EggManager.Instance.GainEgg(plate.GetEggAmount());
-                else
+                if (PhotonNetwork.IsMasterClient)
                 {
-                    int score = plate.GetScore();
-                    if (score > 0) ScoreManager.Instance.AddScroe(score);
-                    else ScoreManager.Instance.MinusScore(-score);
+                    if (plate.IsEggPlate())
+                        GameManager_Map3.Instance.photonView.RPC(nameof(GameManager_Map3.GiveEgg), RpcTarget.All, _actorNum, plate.GetEggAmount());
+                    else
+                    {
+                        int score = plate.GetScore();
+                        if (score > 0)
+                            GameManager_Map3.Instance.photonView.RPC(nameof(GameManager_Map3.AddScore), RpcTarget.All, _actorNum, plate.GetScore());
+                        else
+                            GameManager_Map3.Instance.photonView.RPC(nameof(GameManager_Map3.MinusScore), RpcTarget.All, _actorNum, plate.GetScore());
+                    }
                 }
+
                 //플레이트 반납 요청
                 PlateMover mover = plate.GetComponentInChildren<PlateMover>();
                 mover.ReturnPool();
@@ -43,8 +51,6 @@ namespace Kst
                 //총알 반납
                 _pooledObj.ReturnPool();
             }
-
         }
     }
-
 }
