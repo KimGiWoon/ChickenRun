@@ -67,7 +67,13 @@ public class MainSceneUIController : MonoBehaviour
 
         _nicknameText.text = CYH_FirebaseManager.CurrentUserNickname;
 
-        ShowUI(UIType.PlayBase); // 초기 UI 설정
+        // 방에 들어와있는 경우(플레이씬에서 로비로 나왔을 때) 다시 로비로 자동 이동
+        if (PhotonNetwork.InRoom) {
+            ShowUI(UIType.PlayLobby);
+        }
+        else {
+            ShowUI(UIType.PlayBase);
+        }
     }
 
     #endregion // mono funcs

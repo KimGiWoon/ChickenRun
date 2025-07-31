@@ -226,6 +226,16 @@ public class PlayLobbyPanel : UIBase, IInRoomCallbacks
     private void OnClickStartOrReady()
     {
         if (PhotonNetwork.IsMasterClient) {
+            // 최대 인원이 다 찼는지 확인
+            int currentPlayers = PhotonNetwork.CurrentRoom.PlayerCount;
+            int maxPlayers = PhotonNetwork.CurrentRoom.MaxPlayers;
+
+            if (currentPlayers < maxPlayers) {
+                Debug.LogWarning("[Photon] 모든 플레이어가 입장하지 않았습니다. 게임을 시작할 수 없습니다.");
+                PopupManager.Instance.ShowOKPopup("모든 플레이어가 입장해야 게임을 시작할 수 있습니다.", "확인");
+                return;
+            }
+
             // 현재 맵 타입 가져오기
             string mapString = PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue("Map", out var value)
                 ? value.ToString()
@@ -234,38 +244,36 @@ public class PlayLobbyPanel : UIBase, IInRoomCallbacks
             if (System.Enum.TryParse(mapString, out MapType selectedMap)) {
                 Debug.Log($"[Photon] 게임 시작 - 선택된 맵: {selectedMap}");
 
-                // 선택된 맵 타입에 맞는 씬 이름으로 변경
                 switch (selectedMap) {
                     case MapType.Map1:
-                        PhotonNetwork.LoadLevel("GameScene_Map1"); // TODO백인권 : 맵 씬 이름 변경 시 수정
+                        PhotonNetwork.LoadLevel("GameScene_Map1");
                         break;
-                    case MapType.Map2:
-                        PhotonNetwork.LoadLevel("GameScene_Map2");
-                        break;
-                    case MapType.Map3:
-                        PhotonNetwork.LoadLevel("GameScene_Map3");
-                        break;
+                    //case MapType.Map2:
+                    //    PhotonNetwork.LoadLevel("GameScene_Map2");
+                    //    break;
+                    //case MapType.Map3:
+                    //    PhotonNetwork.LoadLevel("GameScene_Map3");
+                    //    break;
                     default:
                         PhotonNetwork.LoadLevel("GameScene_Map1");
                         break;
                 }
             }
             else {
-                // 맵 타입 파싱 실패 시 기본 맵 로드
                 PhotonNetwork.LoadLevel("GameScene_Map1");
             }
         }
         else {
-            // 현재 상태 가져오기
             bool isReady = PhotonNetwork.LocalPlayer.CustomProperties.TryGetValue("IsReady", out var value) && value is bool b && b;
 
-            // 반대 상태로 전환
             Hashtable props = new Hashtable {
-                { "IsReady", !isReady }};
+            { "IsReady", !isReady }
+        };
 
             PhotonNetwork.LocalPlayer.SetCustomProperties(props);
         }
     }
+
 
     private void ChangeMap(int dir)
     {
