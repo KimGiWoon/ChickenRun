@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Photon.Pun;
+using Photon.Realtime;
 using UnityEngine;
 
 public class GameManager_Map4 : MonoBehaviourPunCallbacks
@@ -13,14 +14,8 @@ public class GameManager_Map4 : MonoBehaviourPunCallbacks
 
     [Header("Map4 Setting")]
     [SerializeField] public float _GamePlayTime;
-    [SerializeField] public int _totalPlayerCount;
 
     static GameManager_Map4 instance;
-
-    // 결승점과 가장가까운 플레이어
-    public int _1stPlace;
-    public int _2ndPlace;
-    public int _3rdPlace;
 
     int _totalEggCount = 0;
     Map4Data _data;
@@ -30,8 +25,12 @@ public class GameManager_Map4 : MonoBehaviourPunCallbacks
     public Stopwatch _stopwatch;
     public string _currentMapType;
     public float _totalPlayTime;
+    public int _alivePlayer;
+    public int _totalPlayerCount;
 
     // 달걀 획득에 대한 이벤트 (UI 적용)
+    public event Action<int> OnEggCountChange;
+    public event Action OnPlayerDeath;
     public event Action<Map4Data> OnEndGame;
 
     public static GameManager_Map4 Instance
@@ -68,23 +67,14 @@ public class GameManager_Map4 : MonoBehaviourPunCallbacks
         _data = new Map4Data("Map4Record");
     }
 
-    private void Start()
-    {
-        // 총 플레이 인원 설정
-        //_totalPlayerCount = PhotonNetwork.CurrentRoom.PlayerCount;
-
-        _totalPlayerCount = 2;
-
-    }
-
     private void Update()
     {
         // 플레이 타임 오버 체크
         PlayTimeOverCheck();
     }
 
-    // 게임매니저가 생성한게 있으면 생성하지 않고 중복으로 생성 시 삭제
-    public void CreateGameManager()
+// 게임매니저가 생성한게 있으면 생성하지 않고 중복으로 생성 시 삭제
+public void CreateGameManager()
     {
         if (instance == null)
         {
@@ -131,29 +121,55 @@ public class GameManager_Map4 : MonoBehaviourPunCallbacks
         return string.Format($"{minuteTime:D2}:{secondTime:00.00}");
     }
 
+    // 달걀 획득
+    public void GetEgg(int eggCount)
+    {
+        _totalEggCount += eggCount;
+        OnEggCountChange?.Invoke(_totalEggCount);   // 이벤트 호출
+    }
+
+    // 플레이어 죽음
+    public void PlayerDeath()
+    {
+        OnPlayerDeath?.Invoke();    // 카메라 전환 이벤트 호출
+        _data.EggCount = _totalEggCount;
+
+        if (PhotonNetwork.IsMasterClient)
+        {
+            _alivePlayer -= 1;
+            UnityEngine.Debug.Log($"살아남은 사람 : {_alivePlayer}");
+
+            if (_alivePlayer <= 0)
+            {
+                PlayerAllDeath();
+            }
+        }
+    }
+
     // 플레이어 결승점 도착
     public void PlayerReachedGoal(string playerNickname)
     {
+        if (!PhotonNetwork.IsMasterClient)
+            return;
+
         _goalPlayerCount++;
         _data.EggCount = _totalEggCount;
         OnEndGame?.Invoke(_data);
-        UnityEngine.Debug.Log($"현재 결승점에 도착한 플레이어 : {_goalPlayerCount}/{_totalPlayerCount}");
+        UnityEngine.Debug.Log($"현재 결승점에 도착한 플레이어 : {_goalPlayerCount}/{_alivePlayer}");
 
-        // 모든 플레이어 결승점 도착
-        if (_goalPlayerCount >= _totalPlayerCount)
+        // 살아남은 플레이어 결승점 도착
+        if (_goalPlayerCount >= _alivePlayer)
         {
             UnityEngine.Debug.Log("모든 플레이어 도착");
             photonView.RPC(nameof(GameClearLeaveRoom), RpcTarget.AllViaServer);
         }
     }
 
-    // 1,2,3등 확인
-    public void RankUpdate(int number)
+    // 모든 플레이어가 죽음
+    public void PlayerAllDeath()
     {
-        // 결승점과의 거리
-        float _distance = _gameUIManager._playerEndDistance;
-
-        
+        UnityEngine.Debug.Log("모든 플레이어가 사망했습니다.");
+        photonView.RPC(nameof(GameClearLeaveRoom), RpcTarget.AllViaServer);
     }
 
     // 게임 플레이 시간 오버 체크
@@ -183,9 +199,9 @@ public class GameManager_Map4 : MonoBehaviourPunCallbacks
         _stopwatch?.Reset();
 
         // 현재의 방을 나가기
-        PhotonNetwork.LeaveRoom();
+        //PhotonNetwork.LeaveRoom();
 
         // 로비 씬이 있으면 추가해서 씬 이동
-        //PhotonNetwork.LoadLevel("로비씬");
+        PhotonNetwork.LoadLevel("MainScene");
     }
 }

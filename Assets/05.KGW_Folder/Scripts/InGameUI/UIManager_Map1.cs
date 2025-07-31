@@ -72,7 +72,6 @@ public class UIManager_Map1 : MonoBehaviourPun
         SetTotalDistance();
         InGameUIInit();
         SoundVolumeInit();
-        Debug.Log(GameManager_Map1.Instance._currentMapType);
     }
 
     private void Update()
@@ -181,8 +180,13 @@ public class UIManager_Map1 : MonoBehaviourPun
     // 이모티콘 표시
     private void OnEmoticon(int index)
     {
+        // 이모티콘 말풍성 활성화 및 이모티콘 표시
         _playerEmoticonController._SpeechBubble.SetActive(true);
         _playerEmoticonController._emoticonImage.sprite = _emoticonSprite[index];
+
+        // 이모티콘을 사용하면 패널 비활성화
+        _emoticonPanel.SetActive(false);
+        _isEmoticonPanelOpen = false;
 
         // 실행중인 코루틴 무시하고 코루틴 실행
         if (_emoticonRoutine != null)
@@ -284,7 +288,7 @@ public class UIManager_Map1 : MonoBehaviourPun
 
             if(count == 0)
             {
-                SoundManager.Instance.PlayBGM(SoundManager.Bgms.BGM_InGame);
+                SoundManager.Instance.PlayBGM(SoundManager.Bgms.BGM_InGame1);
                 _startPanel.SetActive(false);
                 GameManager_Map1.Instance.StartStopWatch();
                 _wall.SetActive(false);

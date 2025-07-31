@@ -23,18 +23,19 @@ namespace Kst
             if (!photonView.IsMine) return;
 
             Vector2 shotDir = _arrow.GetDir();
-            photonView.RPC(nameof(RPC_ShootBullet), RpcTarget.AllViaServer, _shootPos.position, shotDir);
+            int actorNum = PhotonNetwork.LocalPlayer.ActorNumber;
+            photonView.RPC(nameof(RPC_ShootBullet), RpcTarget.AllViaServer, _shootPos.position, shotDir, actorNum);
 
         }
 
         [PunRPC]
-        void RPC_ShootBullet(Vector3 shootPos, Vector2 dir)
+        void RPC_ShootBullet(Vector3 shootPos, Vector2 dir, int actorNum)
         {
             PooledObject bullet = _bulletPool.PopPool();
 
             bullet.transform.SetPositionAndRotation(shootPos, Quaternion.identity);
             if (bullet.TryGetComponent(out Bullet b))
-                b.Init(dir);
+                b.Init(dir,actorNum);
         }
     }
 }
