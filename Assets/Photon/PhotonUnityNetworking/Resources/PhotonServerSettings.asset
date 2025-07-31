@@ -49,6 +49,9 @@ MonoBehaviour:
   - ReadyGame
   - PlayerNickname
   - RPC_ReceiveKickByUID
+  - PlateSpawn
+  - RequestReturn
+  - RPC_ShootBullet
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
