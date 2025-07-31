@@ -3,8 +3,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AudioManager_Map2 : Singleton<AudioManager_Map2>
+public class AudioManager_Map2 : MonoBehaviour
 {
+    private static AudioManager_Map2 _instance;
+    public static AudioManager_Map2 Instance
+    {
+        get
+        {
+            return _instance;
+        }
+    }
+    
     // 인게임 BGM
     public enum Bgms
     {
@@ -30,6 +39,18 @@ public class AudioManager_Map2 : Singleton<AudioManager_Map2>
     [SerializeField] public AudioSource _bgmAudioSource;
     [SerializeField] public AudioSource _sfxAudioSource;
 
+    private void Awake()
+    {
+        if (_instance == null)
+        {
+            _instance = this;
+        }
+        else 
+        { 
+            Destroy(gameObject);
+        }
+    }
+    
     private void Start()
     {
         BgmUpdate(SettingManager.Instance.BGM.Value);
@@ -39,9 +60,8 @@ public class AudioManager_Map2 : Singleton<AudioManager_Map2>
         SettingManager.Instance.SFX.OnChanged += SfxUpdate;
     }
 
-    protected override void OnDestroy()
+    public void OnDestroy()
     {
-        base.OnDestroy();
         if (Application.isPlaying)
         {
             SettingManager.Instance.BGM.OnChanged -= BgmUpdate;
