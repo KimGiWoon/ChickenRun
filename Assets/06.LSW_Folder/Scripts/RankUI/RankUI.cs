@@ -95,6 +95,13 @@ public class RankUI : UIBase
         _popup.text = "플레이하여 기록을 세워보세요!";
     }
     
+    public void SetPopupText_Score()
+    {
+        _userRankRecord.SetActive(false);
+        _userRankEmpty.SetActive(true);
+        _popup.text = "멀티 게임에서 승리를 해보세요!";
+    }
+    
     // MVC 패턴 구현을 위한 public 메서드 (이벤트 처리)
     public void Initialize(
         Func<Task> onClickMap1Rank,
