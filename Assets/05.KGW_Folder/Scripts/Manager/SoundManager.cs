@@ -7,7 +7,10 @@ public class SoundManager : Singleton<SoundManager>
     // 인게임 BGM
     public enum Bgms
     {
-        BGM_InGame
+        BGM_InGame1,
+        BGM_InGame2,
+        BGM_InGame3,
+        BGM_InGame4
     }
 
     // 인게임 SFX

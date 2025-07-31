@@ -319,6 +319,7 @@ MonoBehaviour:
   _playerRenderer: {fileID: 5085655038668472634}
   _playerAni: {fileID: 8357870223618436093}
   _correctionValue: 20
+  _isDeath: 0
 --- !u!114 &-4604309535846496321
 MonoBehaviour:
   m_ObjectHideFlags: 0

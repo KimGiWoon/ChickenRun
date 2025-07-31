@@ -59,12 +59,4 @@ public class DrillController : MonoBehaviour
             _moveTarget += (Vector3)_moveDirection.normalized * _moveDistance;
         }
     }
-
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.gameObject.layer == LayerMask.NameToLayer("Player"))
-        {
-            Debug.Log("플레이어가 드릴에 닿았습니다.");
-        }
-    }
 }
