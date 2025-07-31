@@ -132,7 +132,7 @@ public class NetworkManager_Map1 : MonoBehaviourPunCallbacks
 
         UnityEngine.Debug.Log($"입장 플레이어 : {currentPlayer}/{maxPlayer}");
 
-        if(currentPlayer >= maxTest)
+        if(currentPlayer >= maxPlayer)
         {
             UnityEngine.Debug.Log("모든 플레이어 입장 완료");
             GameManager_Map1.Instance._totalPlayerCount = currentPlayer;
