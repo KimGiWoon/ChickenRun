@@ -33,14 +33,14 @@ namespace Kst
                 if (PhotonNetwork.IsMasterClient)
                 {
                     if (plate.IsEggPlate())
-                        GameManager_Map3.Instance.photonView.RPC(nameof(GameManager_Map3.GiveEgg), RpcTarget.All, _actorNum, plate.GetEggAmount());
+                        ScoreManager.Instance.photonView.RPC(nameof(ScoreManager.GiveEgg), RpcTarget.All, _actorNum, plate.GetEggAmount());
                     else
                     {
                         int score = plate.GetScore();
                         if (score > 0)
-                            GameManager_Map3.Instance.photonView.RPC(nameof(GameManager_Map3.AddScore), RpcTarget.All, _actorNum, plate.GetScore());
+                            ScoreManager.Instance.photonView.RPC(nameof(ScoreManager.AddScore), RpcTarget.All, _actorNum, plate.GetScore());
                         else
-                            GameManager_Map3.Instance.photonView.RPC(nameof(GameManager_Map3.MinusScore), RpcTarget.All, _actorNum, plate.GetScore());
+                            ScoreManager.Instance.photonView.RPC(nameof(ScoreManager.MinusScore), RpcTarget.All, _actorNum, plate.GetScore());
                     }
                 }
 
