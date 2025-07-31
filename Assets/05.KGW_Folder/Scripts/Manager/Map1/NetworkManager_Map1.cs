@@ -45,8 +45,6 @@ public class NetworkManager_Map1 : MonoBehaviourPunCallbacks
         else
         {
             UnityEngine.Debug.Log("입장 완료");
-            // TODO : 플레이어 닉네임 확인용
-            PhotonNetwork.LocalPlayer.NickName = $"Player{PhotonNetwork.LocalPlayer.ActorNumber}";
 
             // 닉네임을 커스텀 프로퍼티로 저장
             string nickname = PhotonNetwork.LocalPlayer.NickName;
@@ -55,8 +53,10 @@ public class NetworkManager_Map1 : MonoBehaviourPunCallbacks
             // 닉네임 정보를 포톤서버에 업로드
             PhotonNetwork.LocalPlayer.SetCustomProperties(hashtable);
 
+            // 플레이어 생성
             PlayerSpawn();
 
+            // 방에 들어온 플레이어 체크
             if (PhotonNetwork.IsMasterClient)
             {
                 CheckRoomPlayer();
@@ -135,6 +135,7 @@ public class NetworkManager_Map1 : MonoBehaviourPunCallbacks
         if(currentPlayer >= maxTest)
         {
             UnityEngine.Debug.Log("모든 플레이어 입장 완료");
+            GameManager_Map1.Instance._totalPlayerCount = currentPlayer;
             photonView.RPC(nameof(StartGame), RpcTarget.AllViaServer);
         }
     }
