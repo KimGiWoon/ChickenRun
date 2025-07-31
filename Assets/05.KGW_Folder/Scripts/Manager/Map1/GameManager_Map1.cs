@@ -1,8 +1,8 @@
+using Photon.Pun;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using Photon.Pun;
 using UnityEngine;
 
 public class GameManager_Map1 : MonoBehaviourPunCallbacks
@@ -15,7 +15,7 @@ public class GameManager_Map1 : MonoBehaviourPunCallbacks
     [SerializeField] public int _totalPlayerCount;
 
     static GameManager_Map1 instance;
-    
+
     int _totalEggCount = 0;
     Map1Data _data;
     public bool _isGoal = false;
@@ -25,19 +25,16 @@ public class GameManager_Map1 : MonoBehaviourPunCallbacks
     public Stopwatch _stopwatch;
     public string _currentMapType;
     public float _totalPlayTime;
-    
+
     // 달걀 획득에 대한 이벤트 (UI 적용)
     public event Action<int> OnEggCountChange;
     public event Action<Map1Data> OnEndGame;
 
-    public static GameManager_Map1 Instance
-    {
-        get
-        {
-            if(instance == null)    // 게임매니저가 하이어라키창에 없으면 게임매니저 생성
+    public static GameManager_Map1 Instance {
+        get {
+            if (instance == null)    // 게임매니저가 하이어라키창에 없으면 게임매니저 생성
             {
-                GameObject gameObject = new GameObject("GameManager_Map1");
-                instance = gameObject.AddComponent<GameManager_Map1>();
+                instance = FindObjectOfType<GameManager_Map1>();
             }
             return instance;
         }
@@ -59,7 +56,17 @@ public class GameManager_Map1 : MonoBehaviourPunCallbacks
     private void Awake()
     {
         // 게임매니저 생성
-        CreateGameManager();
+        //CreateGameManager();
+
+        if (instance == null) {
+            instance = this;
+            DontDestroyOnLoad(this.gameObject);
+        }
+        else if (instance != this) {
+            Destroy(gameObject);
+            return;
+        }
+
         _stopwatch = new Stopwatch();
         _data = new Map1Data("Map1Record");
     }
@@ -71,18 +78,16 @@ public class GameManager_Map1 : MonoBehaviourPunCallbacks
     }
 
     // 게임매니저가 생성한게 있으면 생성하지 않고 중복으로 생성 시 삭제
-    public void CreateGameManager()
-    {
-        if (instance == null)
-        {
-            instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
-    }
+    //public void CreateGameManager()
+    //{
+    //    if (instance == null) {
+    //        instance = this;
+    //        DontDestroyOnLoad(gameObject);
+    //    }
+    //    else {
+    //        Destroy(gameObject);
+    //    }
+    //}
 
     // 시작위치 저장
     public void StartPosSave(Transform pos)
@@ -94,11 +99,10 @@ public class GameManager_Map1 : MonoBehaviourPunCallbacks
     public void StartStopWatch()
     {
         // 스탑워치 리셋
-        if(_stopwatch != null)
-        {
+        if (_stopwatch != null) {
             _stopwatch.Reset();
         }
-        
+
         // 스탑워치 시작
         _stopwatch.Start();
     }
@@ -143,8 +147,7 @@ public class GameManager_Map1 : MonoBehaviourPunCallbacks
         UnityEngine.Debug.Log($"현재 결승점에 도착한 플레이어 : {_goalPlayerCount}/{_totalPlayerCount}");
 
         // 모든 플레이어 결승점 도착
-        if(_goalPlayerCount >= _totalPlayerCount)
-        {
+        if (_goalPlayerCount >= _totalPlayerCount) {
             UnityEngine.Debug.Log("모든 플레이어 도착");
             photonView.RPC(nameof(GameClearLeaveRoom), RpcTarget.AllViaServer);
         }
@@ -153,8 +156,7 @@ public class GameManager_Map1 : MonoBehaviourPunCallbacks
     // 게임 플레이 시간 오버 체크
     private void PlayTimeOverCheck()
     {
-        if (_totalPlayTime > _GamePlayTime)
-        {
+        if (_totalPlayTime > _GamePlayTime) {
             GamePlayTimeOver();
         }
     }
