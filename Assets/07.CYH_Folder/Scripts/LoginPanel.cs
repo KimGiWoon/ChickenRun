@@ -1,5 +1,6 @@
 using Firebase.Auth;
 using Firebase.Extensions;
+using Photon.Pun.Demo.Cockpit;
 using System;
 using TMPro;
 using UnityEngine;
@@ -42,7 +43,11 @@ public class LoginPanel : UIBase
     {
         _loginButton.onClick.AddListener(OnClick_Login);
         _socialLoginButton.onClick.AddListener(() => OnClickSocialLogin?.Invoke());
-        _signupButton.onClick.AddListener(() => OnClickSignup?.Invoke());
+
+        _signupButton.onClick.AddListener(() => {
+            OnClickSignup?.Invoke();
+            RefreshUI();
+        });
 
         // 계정 전환 테스트용
         //_linkAccountButton.onClick.AddListener(() => OnClickLinkAccount?.Invoke());
@@ -52,6 +57,17 @@ public class LoginPanel : UIBase
 
         // 로그아웃 테스트용
         //_signOutButton.onClick.AddListener(() => CYH_FirebaseManager.Auth.SignOut());
+    }
+
+    private void OnDisable()
+    {
+        RefreshUI();
+    }
+
+    public override void RefreshUI()
+    {
+        _emailField.text = "";
+        _passwordField.text = "";
     }
 
     /// <summary>

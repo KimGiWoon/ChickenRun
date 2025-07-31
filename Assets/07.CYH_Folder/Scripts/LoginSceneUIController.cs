@@ -61,7 +61,24 @@ public class LoginSceneUIManager : MonoBehaviour
 
             else if (ui is GameStartPanel gameStartPanel)
             {
+                // 게임 시작 버튼
                 gameStartPanel.OnClickGameStart = () => HideUI(LoginUIType.GameStartPanel);
+
+                // 로그아웃 버튼
+                gameStartPanel.OnClickSignOut = () =>
+                {
+                    HideUI(LoginUIType.GameStartPanel);
+                    ShowUI(LoginUIType.Login);
+                    PopupManager.Instance.ShowOKPopup("로그아웃 성공", "OK", () => PopupManager.Instance.HidePopup());
+                };
+
+                // 회원탈퇴 버튼
+                gameStartPanel.OnClickDeleteAccount = () =>
+                {
+                    HideUI(LoginUIType.GameStartPanel);
+                    ShowUI(LoginUIType.Login);
+                    PopupManager.Instance.ShowOKPopup("회원 탈퇴 성공", "OK", () => PopupManager.Instance.HidePopup());
+                };
             }
         }
 

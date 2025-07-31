@@ -19,6 +19,8 @@ public class LinkPanel : UIBase
 
     [SerializeField] private TMP_Text _errorText;
 
+    private GameStartPanel _gameStartPanel;
+
     public Action OnClickLinkWithEmail { get; set; }
     public Action OnClickClosePopup { get; set; }
 
@@ -97,7 +99,7 @@ public class LinkPanel : UIBase
     /// <summary>
     /// 익명 계정을 구글 가입 계정으로 전환
     /// </summary>
-    private void OnClick_LinkWithGoogle()
+    public void OnClick_LinkWithGoogle()
     {
         // 계정 전환 가능 여부 체크
         FirebaseUser user = CYH_FirebaseManager.Auth.CurrentUser;
@@ -140,6 +142,16 @@ public class LinkPanel : UIBase
                 Firebase.Auth.AuthResult linkedUser = linkTask.Result;
 
                 PopupManager.Instance.ShowOKPopup("구글 계정으로 전환 성공", "OK", () => PopupManager.Instance.HidePopup());
+
+                FirebaseUser user = linkedUser.User ?? FirebaseAuth.DefaultInstance.CurrentUser;
+
+                Debug.Log("------유저 정보------");
+                Debug.Log($"유저 이름 : {user.DisplayName}");
+                Debug.Log($"유저 ID: {user.UserId}");
+                Debug.Log($"이메일 : {user.Email}");
+
+                _gameStartPanel.SetNicknameField();
+
             });
         });
     }
