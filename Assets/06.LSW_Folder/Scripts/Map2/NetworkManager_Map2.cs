@@ -62,15 +62,13 @@ public class NetworkManager_Map2 : MonoBehaviourPunCallbacks
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
         string team = otherPlayer.CustomProperties["Color"] as string;
-        Debug.Log(team);
         if (PhotonNetwork.LocalPlayer.CustomProperties.TryGetValue("Color", out var myTeamObj))
         {
             string myTeam = myTeamObj.ToString();
-            Debug.Log(myTeam);
             if (myTeam == team)
             {
                 // todo 팝업을 띄워도 될 듯? (3초 뒤에 나가집니다)
-                PhotonNetwork.LeaveRoom();
+                PhotonNetwork.LoadLevel("MainScene");
             }
         }
     }

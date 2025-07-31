@@ -76,6 +76,7 @@ public class SettingUI : MonoBehaviourPun
         if (PhotonNetwork.LocalPlayer.NickName == playerNickname)
         {
             PhotonNetwork.LoadLevel("MainScene");
+            PhotonNetwork.LeaveRoom();
         }
     }
 }
