@@ -56,7 +56,7 @@ public class PlayerInfoUI : UIBase
         }
         else
         {
-            _map1Record.text = "Map2 : 기록 없음";
+            _map2Record.text = "Map2 : 기록 없음";
         }
         if (data.Map3Record != 0)
         {
