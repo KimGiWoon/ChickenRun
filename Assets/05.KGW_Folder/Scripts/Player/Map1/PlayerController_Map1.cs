@@ -51,30 +51,16 @@ public class PlayerController_Map1 : MonoBehaviourPun, IPunObservable
         // 플레이어 시작위치 저장
         GameManager_Map1.Instance.StartPosSave(transform);
 
+        if(_gameUIManager ==  null)
+        {
+            _gameUIManager = FindObjectOfType<UIManager_Map1>();
+        }
+
         // 자기 자신의 카메라 설정
-        if (photonView.IsMine) {
+        if (photonView.IsMine) 
+        {
             Camera.main.GetComponent<CameraController>().SetTarget(transform);
-
-            if (GameManager_Map1.Instance == null) {
-                Debug.LogWarning("11111");
-            }
-
-            if (GameManager_Map1.Instance._gameUIManager == null) {
-                Debug.LogWarning("22222");
-
-            }
-            if (transform == null) {
-                Debug.LogWarning("33333");
-
-            }
-
-
-
             GameManager_Map1.Instance._gameUIManager.SetPlayerPosition(transform);
-
-
-            _gameUIManager = GameManager_Map1.Instance._gameUIManager;
-
         }
     }
 

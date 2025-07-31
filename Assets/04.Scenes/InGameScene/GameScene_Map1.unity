@@ -419,11 +419,26 @@ PrefabInstance:
       propertyPath: _UIManager
       value: 
       objectReference: {fileID: 2037621463}
+    - target: {fileID: 7618825147066060082, guid: e45c401bbc19dc842996bb6a3cf7e069, type: 3}
+      propertyPath: _gameManager_Map1
+      value: 
+      objectReference: {fileID: 1958535544}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e45c401bbc19dc842996bb6a3cf7e069, type: 3}
+--- !u!114 &541778456 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7618825147066060082, guid: e45c401bbc19dc842996bb6a3cf7e069, type: 3}
+  m_PrefabInstance: {fileID: 541778455}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d12c0591c13d41a439a59389eb98af79, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &847439789
 GameObject:
   m_ObjectHideFlags: 0
@@ -500,7 +515,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
-  m_VertexColorAlwaysGammaSpace: 0
+  m_VertexColorAlwaysGammaSpace: 1
   m_AdditionalShaderChannelsFlag: 0
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
@@ -1088,6 +1103,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 81c6ab81374ca0b45bab1137e714ebf6, type: 3}
+--- !u!114 &1958535544 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7472974193570990470, guid: 81c6ab81374ca0b45bab1137e714ebf6, type: 3}
+  m_PrefabInstance: {fileID: 1958535543}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba0436e62a667034885411dbe4bc7ebb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &2027702161
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1243,6 +1269,7 @@ MonoBehaviour:
   _angryEmoticon: {fileID: 976280083}
   _loveEmoticon: {fileID: 976280082}
   _weepEmoticon: {fileID: 976280080}
+  _networkManager: {fileID: 541778456}
   _isOptionOpen: 0
   _isEmoticonPanelOpen: 0
   _emoticonTime: 3

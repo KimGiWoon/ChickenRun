@@ -12,27 +12,6 @@ public class NetworkManager_Map4 : MonoBehaviourPunCallbacks
     public bool _isStart = false;
     public int _currentPlayer;
 
-    static NetworkManager_Map4 instance;
-
-    public static NetworkManager_Map4 Instance
-    {
-        get
-        {
-            if(instance == null)    // 네트워크 매니저가 하이어라키창에 없으면 게임매니저 생성
-            {
-                GameObject gameObject = new GameObject("NetworkManager_Map4");
-                instance = gameObject.GetComponent<NetworkManager_Map4>();
-            }
-            return instance;
-        }
-    }
-
-    private void Awake()
-    {
-        // 네트워크 매니저 생성
-        CreateNetworkManager();
-    }
-
     private void Start()
     {
         // 서버에 연결이 되어 있지 않으면 서버 접속
@@ -44,14 +23,7 @@ public class NetworkManager_Map4 : MonoBehaviourPunCallbacks
         else
         {
             UnityEngine.Debug.Log("입장 완료");
-
-            // 닉네임을 커스텀 프로퍼티로 저장
-            string nickname = PhotonNetwork.LocalPlayer.NickName;
-            Hashtable hashtable = new Hashtable { { "Nickname", nickname } };
-
-            // 닉네임 정보를 포톤서버에 업로드
-            PhotonNetwork.LocalPlayer.SetCustomProperties(hashtable);
-
+         
             // 플레이어 생성
             PlayerSpawn();
 
@@ -60,20 +32,6 @@ public class NetworkManager_Map4 : MonoBehaviourPunCallbacks
             {
                 CheckRoomPlayer();
             }
-        }
-    }
-
-    // 네트워크 매니저가 생성한게 있으면 생성하지 않고 중복으로 생성 시 삭제
-    public void CreateNetworkManager()
-    {
-        if(instance == null)
-        {
-            instance = this;
-            DontDestroyOnLoad(gameObject);   
-        }
-        else
-        {
-            Destroy(gameObject);
         }
     }
 
@@ -87,24 +45,14 @@ public class NetworkManager_Map4 : MonoBehaviourPunCallbacks
     public override void OnJoinedRoom()
     {
         UnityEngine.Debug.Log("입장 완료");
-        // TODO : 플레이어 닉네임 확인용
-        PhotonNetwork.LocalPlayer.NickName = $"Player{PhotonNetwork.LocalPlayer.ActorNumber}";
-
-        // 닉네임을 커스텀 프로퍼티로 저장
-        string nickname = PhotonNetwork.LocalPlayer.NickName;
-        Hashtable hashtable = new Hashtable { { "Nickname", nickname } };
-
-        // 닉네임 정보를 포톤서버에 업로드
-        PhotonNetwork.LocalPlayer.SetCustomProperties(hashtable);
 
         PlayerSpawn();
-    }
 
-    // 방을 나가기
-    public override void OnLeftRoom()
-    {
-        UnityEngine.Debug.Log("방을 나감");
-        //SceneManager.LoadScene("Room")
+        // 방에 들어온 플레이어 체크
+        if (PhotonNetwork.IsMasterClient)
+        {
+            CheckRoomPlayer();
+        }
     }
 
     // 플레이어 생성
@@ -126,9 +74,8 @@ public class NetworkManager_Map4 : MonoBehaviourPunCallbacks
         _currentPlayer = PhotonNetwork.CurrentRoom.PlayerCount;
         // 방에 입장 가능한 Max 플레이어
         int maxPlayer = PhotonNetwork.CurrentRoom.MaxPlayers;
-        int maxTest = 2;
 
-        UnityEngine.Debug.Log($"입장 플레이어 : {_currentPlayer}/{maxTest}");
+        UnityEngine.Debug.Log($"입장 플레이어 : {_currentPlayer}/{maxPlayer}");
 
         // 현재 인원 전달
         if (PhotonNetwork.IsMasterClient)
@@ -137,9 +84,10 @@ public class NetworkManager_Map4 : MonoBehaviourPunCallbacks
             GameManager_Map4.Instance._alivePlayer = _currentPlayer;
         }
 
-        if (_currentPlayer >= maxTest)
+        if (_currentPlayer >= maxPlayer)
         {
             UnityEngine.Debug.Log("모든 플레이어 입장 완료");
+            // 게임 시작
             photonView.RPC(nameof(StartGame), RpcTarget.AllViaServer);
         }
     }
@@ -148,6 +96,7 @@ public class NetworkManager_Map4 : MonoBehaviourPunCallbacks
     [PunRPC]
     private void StartGame()
     {
+        _isStart = true;
         _UIManager.photonView.RPC(nameof(_UIManager.StartGameRoutine), RpcTarget.AllViaServer);
     }
 

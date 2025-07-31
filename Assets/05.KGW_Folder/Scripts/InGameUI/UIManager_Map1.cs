@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Photon.Pun;
 using TMPro;
 using UnityEngine;
@@ -48,6 +49,9 @@ public class UIManager_Map1 : MonoBehaviourPun
     [SerializeField] Button _angryEmoticon;
     [SerializeField] Button _loveEmoticon;
     [SerializeField] Button _weepEmoticon;
+
+    [Header("Manager Reference")]
+    [SerializeField] NetworkManager_Map1 _networkManager;
 
     Coroutine _panelRoutine;
     Coroutine _emoticonRoutine;
@@ -208,7 +212,7 @@ public class UIManager_Map1 : MonoBehaviourPun
     private void OnExitPlayGame()
     {
         string exitPlayer = PhotonNetwork.LocalPlayer.NickName;
-
+        GameManager_Map1.Instance._stopwatch.Stop();
         // 나감을 알림
         photonView.RPC(nameof(ExitPlayer), RpcTarget.AllViaServer, exitPlayer);
     }
@@ -217,10 +221,10 @@ public class UIManager_Map1 : MonoBehaviourPun
     [PunRPC]
     private void ExitPlayer(string PlayerNickname)
     {
-        Debug.Log($"{PlayerNickname}께서 나갔습니다.");
-
-        // 현재의 방을 나가기
-        //PhotonNetwork.LeaveRoom();
+        UnityEngine.Debug.Log($"{PlayerNickname}께서 나갔습니다.");
+        _networkManager._isStart = false;
+        SoundManager.Instance.StopBGM();
+        GameManager_Map1.Instance._stopwatch?.Reset();
 
         // 로비 씬이 있으면 추가해서 씬 이동
         PhotonNetwork.LoadLevel("MainScene");
@@ -267,7 +271,7 @@ public class UIManager_Map1 : MonoBehaviourPun
         int count = 4;
         GameManager_Map1.Instance._isGoal = false;
 
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(4f);
         _startPanel.SetActive(true);
 
         while (true)
