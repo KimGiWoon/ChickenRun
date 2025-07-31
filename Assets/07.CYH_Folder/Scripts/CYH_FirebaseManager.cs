@@ -69,6 +69,7 @@ public class CYH_FirebaseManager : Singleton<CYH_FirebaseManager>
             app = FirebaseApp.DefaultInstance;
             auth = FirebaseAuth.DefaultInstance;
             database = FirebaseDatabase.DefaultInstance;
+            dataReference = FirebaseDatabase.DefaultInstance.RootReference;
 
             // 게임 시작 시 자동 로그아웃
             if (auth != null && auth.CurrentUser != null)
@@ -83,6 +84,7 @@ public class CYH_FirebaseManager : Singleton<CYH_FirebaseManager>
             app = null;
             auth = null;
             database = null;
+            dataReference = null;
         }
     }
 
