@@ -5,16 +5,19 @@ using UnityEngine;
 using Photon.Pun;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
-public class PlayerController_Map2 : MonoBehaviourPun
+public class PlayerController_Map2 : MonoBehaviourPun, IPunObservable
 {
     [SerializeField] private LayerMask _groundLayer;
-    
+
+    private LineRenderer _lineRenderer;
+    private Animator _animator;
     private Rigidbody2D _rigid;
     private PlayerProperty _player;
     private DistanceJoint2D _joint;
     private SpriteRenderer _playerRenderer;
     private Vector2 _moveDir;
     private GameObject _partner;
+
     
     private bool _isGround;
     private bool _isOnTouch;
@@ -25,14 +28,24 @@ public class PlayerController_Map2 : MonoBehaviourPun
 
     private float _touchStartTime;
     private float _touchEndTime;
+   
+    private int _currentAnimatorHash;
+    private int _receiveAnimatorHash;
+    
+    private readonly int Idle_Hash = Animator.StringToHash("ChickenIdle");
+    private readonly int Glide_Hash = Animator.StringToHash("ChickenGlide");
+    private readonly int Jump_Hash = Animator.StringToHash("ChickenJump");
     
     private void Awake()
     {
         _rigid = GetComponent<Rigidbody2D>();
         _player = GetComponent<PlayerProperty>();
         _joint = GetComponent<DistanceJoint2D>();
-        _playerRenderer = GetComponent<SpriteRenderer>();
+        _animator = GetComponentInChildren<Animator>();
+        _playerRenderer = GetComponentInChildren<SpriteRenderer>();
+        _lineRenderer = GetComponent<LineRenderer>();
         _joint.enabled = false;
+        _lineRenderer.enabled = false;
 
         Hashtable hashtable = PhotonNetwork.LocalPlayer.CustomProperties;
         hashtable.TryAdd("Team", "red");
@@ -79,6 +92,14 @@ public class PlayerController_Map2 : MonoBehaviourPun
                     _partner.GetComponent<Rigidbody2D>().mass = 0.01f;
                 }
             }
+            PlayerStateUpdate();
+            if(_partner != null)
+            {
+                Vector2 posA = (Vector2)transform.position + Vector2.up * 0.2f;
+                Vector2 posB = (Vector2)_partner.transform.position + Vector2.up * 0.2f;
+                _lineRenderer.SetPosition(0, posA);
+                _lineRenderer.SetPosition(1, posB);
+            }
         }
     }
 
@@ -122,12 +143,26 @@ public class PlayerController_Map2 : MonoBehaviourPun
         }
     }
 
+    private void PlayerStateUpdate()
+    {
+        if (_rigid.velocity == Vector2.zero)
+        {
+            _currentAnimatorHash = Idle_Hash;
+            _animator.Play(Idle_Hash);
+        }
+        else if (_rigid.velocity.y < 0)
+        {
+            _currentAnimatorHash = Glide_Hash;
+            _animator.Play(Glide_Hash);
+        }
+    }
+    
     // player의 투명도를 다시 1로 리셋하는 메서드
     private void ResetAlpha(GameObject player)
     {
-        Color color = player.GetComponent<SpriteRenderer>().color;
+        Color color = player.GetComponentInChildren<SpriteRenderer>().color;
         color.a = 1f;
-        player.GetComponent<SpriteRenderer>().color = color;
+        player.GetComponentInChildren<SpriteRenderer>().color = color;
     }
     
     // 투명도 조절 메서드
@@ -180,6 +215,11 @@ public class PlayerController_Map2 : MonoBehaviourPun
                     _isLinked = true;
                     _partner = player.gameObject;
                     ResetAlpha(player);
+
+                    _lineRenderer.enabled = true;
+                    _lineRenderer.positionCount = 2;
+                    _lineRenderer.startWidth = 0.02f;
+                    _lineRenderer.endWidth = 0.02f;
                     break;
                 } 
             } 
@@ -232,11 +272,13 @@ public class PlayerController_Map2 : MonoBehaviourPun
                     if (touch.position.x < centerOfScreen)
                     {
                         _moveDir = _player.MoveLeftDir.normalized;
+                        _playerRenderer.flipX = true;
                     }
                     // 더 크면 = 중심 기준 오른쪽을 터치한 경우
                     else
                     {
                         _moveDir = _player.MoveRightDir.normalized;
+                        _playerRenderer.flipX = false;
                     }
                 }
                 
@@ -269,10 +311,12 @@ public class PlayerController_Map2 : MonoBehaviourPun
             if (mousePos.x < centerOfScreen)
             {
                 _moveDir = _player.MoveLeftDir.normalized;
+                _playerRenderer.flipX = true;
             }
             else
             {
                 _moveDir = _player.MoveRightDir.normalized;
+                _playerRenderer.flipX = false;
             }
         }
         
@@ -300,6 +344,9 @@ public class PlayerController_Map2 : MonoBehaviourPun
             
             _rigid.velocity = Vector2.zero;
             _rigid.AddForce(_moveDir * jumpPower, ForceMode2D.Impulse);
+            
+            _currentAnimatorHash = Jump_Hash;
+            _animator.Play(Jump_Hash);
 
             // 플래그 초기화
             _isGround = false;
@@ -315,6 +362,24 @@ public class PlayerController_Map2 : MonoBehaviourPun
         {
             _rigid.AddForce(Vector2.up * power, ForceMode2D.Impulse);
             _isBounce = true;
+        }
+    }
+    
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        // 동기화 데이터 보내기
+        if (stream.IsWriting)
+        {
+            stream.SendNext(_currentAnimatorHash);  // 현재 플레이어의 애니메이션 데이터 전송
+            stream.SendNext(_playerRenderer.flipX); // 플레이어의 방향 데이터 전송
+            stream.SendNext(_playerRenderer.flipY); // 플레이어의 방향 데이터 전송
+        }
+        else    // 동기화 데이터 받기
+        {
+            _receiveAnimatorHash = (int)stream.ReceiveNext();    // 애니메이션 정보 받기
+            _animator.Play(_receiveAnimatorHash);   // 받은 정보로 애니메이션 플레이
+            _playerRenderer.flipX = (bool)stream.ReceiveNext();
+            _playerRenderer.flipY = (bool)stream.ReceiveNext();
         }
     }
 }
