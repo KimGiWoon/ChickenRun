@@ -166,6 +166,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 532926505480855507, guid: fd30e0fe42efb9e4299f72990e926521, type: 3}
+      propertyPath: _goldManager
+      value: 
+      objectReference: {fileID: 692344971}
     - target: {fileID: 1504957321099702789, guid: fd30e0fe42efb9e4299f72990e926521, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -964,6 +968,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 5016197345270361458, guid: fd30e0fe42efb9e4299f72990e926521, type: 3}
   m_PrefabInstance: {fileID: 692344969}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &692344971 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2069496725902868739, guid: fd30e0fe42efb9e4299f72990e926521, type: 3}
+  m_PrefabInstance: {fileID: 692344969}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b857317e901a7241898997c22fcef6a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1197011357
 GameObject:
   m_ObjectHideFlags: 0
