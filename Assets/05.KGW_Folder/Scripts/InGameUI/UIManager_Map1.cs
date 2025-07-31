@@ -216,10 +216,10 @@ public class UIManager_Map1 : MonoBehaviourPun
         Debug.Log($"{PlayerNickname}께서 나갔습니다.");
 
         // 현재의 방을 나가기
-        PhotonNetwork.LeaveRoom();
+        //PhotonNetwork.LeaveRoom();
 
         // 로비 씬이 있으면 추가해서 씬 이동
-        //PhotonNetwork.LoadLevel("로비씬");
+        PhotonNetwork.LoadLevel("MainScene");
     }
 
     // 출발지점과 도착지점 위치 확인

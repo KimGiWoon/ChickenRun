@@ -1,14 +1,16 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Photon.Realtime;
 using UnityEngine;
 
 public class BounceTile : MonoBehaviour
 {
     [SerializeField] private bool _isTest = true;
-    private float _power;
+    [SerializeField] private float _power;
     private void Start()
     {
+        if (_power != 0) return;
         switch (tag)
         {
             case "BounceTile1" :
@@ -21,10 +23,10 @@ public class BounceTile : MonoBehaviour
                 _power = 9f;
                 break;
             case "BounceTile4" :
-                _power = 11f;
+                _power = 13f;
                 break;
             case "BounceTile5" :
-                _power = 13f;
+                _power = 20f;
                 break;
         }
     }

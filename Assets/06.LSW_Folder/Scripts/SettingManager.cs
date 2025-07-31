@@ -12,12 +12,18 @@ public class SettingManager : Singleton<SettingManager>
     {
         base.Awake();
         Init();
-    }
 
+        BGM.OnChanged += (value) => SaveSettings();
+        SFX.OnChanged += (value) => SaveSettings();
+        CamMode.OnChanged += (value) => SaveSettings();
+    }
+    
     private void Init()
     {
         BGM = new Property<float>(0.5f);
         SFX = new Property<float>(0.5f);
+        CamMode = new Property<bool>(true);
+        LoadSettings();
     }
 
     public void SetBGM(float input)
@@ -33,5 +39,19 @@ public class SettingManager : Singleton<SettingManager>
     public void SetCamMode(bool input)
     {
         CamMode.Value = input;
+    }
+
+    private void SaveSettings()
+    {
+        PlayerPrefs.SetFloat("BGMVolume", BGM.Value);
+        PlayerPrefs.SetFloat("SFXVolume", SFX.Value);
+        PlayerPrefs.SetInt("IsFixedCam", CamMode.Value ? 1 : 0);
+    }
+
+    private void LoadSettings()
+    {
+        BGM.Value = PlayerPrefs.GetFloat("BGMVolume");
+        SFX.Value = PlayerPrefs.GetFloat("SFXVolume");
+        CamMode.Value = PlayerPrefs.GetInt("IsFixedCam") == 1;
     }
 }
