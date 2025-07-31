@@ -165,6 +165,7 @@ public class GameManager_Map1 : MonoBehaviourPunCallbacks
         _stopwatch.Stop();
         _data.EggCount = _totalEggCount;
         OnEndGame?.Invoke(_data);
+        Database_RecordManager.Instance.SaveUserMap1Record(_data);
         UnityEngine.Debug.Log("게임 플레이 시간이 지났습니다.");
         photonView.RPC(nameof(GameClearLeaveRoom), RpcTarget.AllViaServer);
     }
