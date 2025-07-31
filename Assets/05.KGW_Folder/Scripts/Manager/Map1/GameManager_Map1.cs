@@ -64,15 +64,6 @@ public class GameManager_Map1 : MonoBehaviourPunCallbacks
         _data = new Map1Data("Map1Record");
     }
 
-    private void Start()
-    {
-        // 총 플레이 인원 설정
-        //_totalPlayerCount = PhotonNetwork.CurrentRoom.PlayerCount;
-
-        _totalPlayerCount = 2;
-
-    }
-
     private void Update()
     {
         // 플레이 타임 오버 체크
@@ -143,6 +134,9 @@ public class GameManager_Map1 : MonoBehaviourPunCallbacks
     // 플레이어 결승점 도착
     public void PlayerReachedGoal(string playerNickname)
     {
+        if (!PhotonNetwork.IsMasterClient)
+            return;
+
         _goalPlayerCount++;
         _data.EggCount = _totalEggCount;
         OnEndGame?.Invoke(_data);

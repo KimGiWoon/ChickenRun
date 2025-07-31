@@ -10,6 +10,7 @@ public class NetworkManager_Map4 : MonoBehaviourPunCallbacks
     [SerializeField] UIManager_Map4 _UIManager;
 
     public bool _isStart = false;
+    public int _currentPlayer;
 
     static NetworkManager_Map4 instance;
 
@@ -39,6 +40,26 @@ public class NetworkManager_Map4 : MonoBehaviourPunCallbacks
         {
             UnityEngine.Debug.Log("서버에 미연결로 서버 접속");
             PhotonNetwork.ConnectUsingSettings();
+        }
+        else
+        {
+            UnityEngine.Debug.Log("입장 완료");
+
+            // 닉네임을 커스텀 프로퍼티로 저장
+            string nickname = PhotonNetwork.LocalPlayer.NickName;
+            Hashtable hashtable = new Hashtable { { "Nickname", nickname } };
+
+            // 닉네임 정보를 포톤서버에 업로드
+            PhotonNetwork.LocalPlayer.SetCustomProperties(hashtable);
+
+            // 플레이어 생성
+            PlayerSpawn();
+
+            // 방에 들어온 플레이어 체크
+            if (PhotonNetwork.IsMasterClient)
+            {
+                CheckRoomPlayer();
+            }
         }
     }
 
@@ -102,14 +123,21 @@ public class NetworkManager_Map4 : MonoBehaviourPunCallbacks
         }
 
         // 방에 입장한 플레이어
-        int currentPlayer = PhotonNetwork.CurrentRoom.PlayerCount;
+        _currentPlayer = PhotonNetwork.CurrentRoom.PlayerCount;
         // 방에 입장 가능한 Max 플레이어
         int maxPlayer = PhotonNetwork.CurrentRoom.MaxPlayers;
         int maxTest = 2;
 
-        UnityEngine.Debug.Log($"입장 플레이어 : {currentPlayer}/{maxTest}");
+        UnityEngine.Debug.Log($"입장 플레이어 : {_currentPlayer}/{maxTest}");
 
-        if (currentPlayer >= maxTest)
+        // 현재 인원 전달
+        if (PhotonNetwork.IsMasterClient)
+        {
+            GameManager_Map4.Instance._totalPlayerCount = _currentPlayer;
+            GameManager_Map4.Instance._alivePlayer = _currentPlayer;
+        }
+
+        if (_currentPlayer >= maxTest)
         {
             UnityEngine.Debug.Log("모든 플레이어 입장 완료");
             photonView.RPC(nameof(StartGame), RpcTarget.AllViaServer);
