@@ -25,7 +25,7 @@ namespace Kst
 
         private IEnumerator DelaySubscribe()
         {
-            while (FirebaseManager.User == null)
+            while (CYH_FirebaseManager.User == null)
                 yield return null;
 
 
@@ -33,8 +33,8 @@ namespace Kst
         }
         void InitEgg()
         {
-            string uid = FirebaseManager.User.UserId;
-            _normalEggRef = FirebaseManager.DB.Child("UserData").Child(uid).Child("gold");
+            string uid = CYH_FirebaseManager.User.UserId;
+            _normalEggRef = CYH_FirebaseManager.DataReference.Child("UserData").Child(uid).Child("gold");
 
             _normalEggRef.GetValueAsync().ContinueWithOnMainThread(task =>
             {
@@ -114,7 +114,7 @@ namespace Kst
         //로그인 여부 확인 로직
         private bool IsUserLogin()
         {
-            if (FirebaseManager.User == null)
+            if (CYH_FirebaseManager.User == null)
             {
                 Debug.LogError("로그인 되어 있지 않음");
                 return false;

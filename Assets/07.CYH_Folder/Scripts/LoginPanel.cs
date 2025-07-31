@@ -19,21 +19,23 @@ public class LoginPanel : UIBase
     [SerializeField] private Button _signupButton;
 
     // 계정 전환 테스트용
-    [SerializeField] private Button _linkAccountButton;
+    //[SerializeField] private Button _linkAccountButton;
     // 유저 정보 변경 테스트용
-    [SerializeField] private Button _changeAccountInfoButton;
+    //[SerializeField] private Button _changeAccountInfoButton;
 
     public Action OnClickSignup { get; set; }
     public Action OnClickSocialLogin { get; set; }
 
     // 계정 전환 테스트용
-    public Action OnClickLinkAccount { get; set; }
+    //public Action OnClickLinkAccount { get; set; }
 
     // 유저 정보 변경 테스트용
-    public Action OnClickChangeAccountInfo { get; set; }
+    //public Action OnClickChangeAccountInfo { get; set; }
+
+    public Action LoginCompleted { get; set; }
 
     // 로그아웃 테스트용
-    [SerializeField] private Button _signOutButton;
+    //[SerializeField] private Button _signOutButton;
 
 
     private void Start()
@@ -43,13 +45,13 @@ public class LoginPanel : UIBase
         _signupButton.onClick.AddListener(() => OnClickSignup?.Invoke());
 
         // 계정 전환 테스트용
-        _linkAccountButton.onClick.AddListener(() => OnClickLinkAccount?.Invoke());
+        //_linkAccountButton.onClick.AddListener(() => OnClickLinkAccount?.Invoke());
 
         // 유저 정보 변경 테스트용
-        _changeAccountInfoButton.onClick.AddListener(() => OnClickChangeAccountInfo?.Invoke());
+        //_changeAccountInfoButton.onClick.AddListener(() => OnClickChangeAccountInfo?.Invoke());
 
         // 로그아웃 테스트용
-        _signOutButton.onClick.AddListener(() => CYH_FirebaseManager.Auth.SignOut());
+        //_signOutButton.onClick.AddListener(() => CYH_FirebaseManager.Auth.SignOut());
     }
 
     /// <summary>
@@ -79,7 +81,7 @@ public class LoginPanel : UIBase
                     AuthResult result = task.Result;
                     FirebaseUser user = result.User;
 
-                    PopupManager.Instance.ShowOKPopup("로그인 성공", "OK", () => PopupManager.Instance.HidePopup());
+                    //PopupManager.Instance.ShowOKPopup("로그인 성공", "OK", () => PopupManager.Instance.HidePopup());
 
                     Debug.Log("------유저 정보------");
                     Debug.Log($"유저 이름 : {user.DisplayName}");
@@ -96,7 +98,14 @@ public class LoginPanel : UIBase
 
                     CYH_FirebaseManager.Instance.OnFirebaseLoginSuccess();
 
-                    SceneManager.LoadScene("MainScene");
+                    // LoginPanel -> GameStartPanel 로 변경
+                    if (user != null)
+                    {
+                        Debug.Log("이메일 로그인 성공. GameStart패널 활성화");
+                        LoginCompleted?.Invoke();
+                    }
+
+                    //SceneManager.LoadScene("MainScene");
                 }
             });
     }

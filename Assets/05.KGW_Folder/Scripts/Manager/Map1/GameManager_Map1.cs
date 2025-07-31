@@ -183,10 +183,10 @@ public class GameManager_Map1 : MonoBehaviourPunCallbacks
         _stopwatch?.Reset();
 
         // 현재의 방을 나가기
-        PhotonNetwork.LeaveRoom();
+        //PhotonNetwork.LeaveRoom();
 
         // 로비 씬이 있으면 추가해서 씬 이동
-        //PhotonNetwork.LoadLevel("로비씬");
+        PhotonNetwork.LoadLevel("MainScene");
     }
 }
 
