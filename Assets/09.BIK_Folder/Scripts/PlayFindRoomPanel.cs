@@ -93,7 +93,7 @@ public class PlayFindRoomPanel : UIBase
 
     private void RefreshRoomList(List<RoomInfo> rooms)
     {
-        if (!gameObject.activeInHierarchy || _roomListRoot == null)
+        if (this == null || !gameObject.activeInHierarchy || _roomListRoot == null)
             return;
 
         Debug.Log($"방 목록을 새로고침합니다. 방 개수: {rooms.Count}");
