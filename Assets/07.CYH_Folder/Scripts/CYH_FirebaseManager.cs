@@ -24,6 +24,15 @@ public class CYH_FirebaseManager : Singleton<CYH_FirebaseManager>
     private static DatabaseReference dataReference;
     public static DatabaseReference DataReference { get { return dataReference; } }
 
+    // firebase 초기화 완료 여부 체크 플래그
+    private bool _isFirebaseReady = false;   
+
+    public bool IsFirebaseReady           
+    {
+        get { return _isFirebaseReady; }
+        private set { _isFirebaseReady = value; }
+    }
+
     // 닉네임
     public static string CurrentUserNickname => Auth?.CurrentUser?.DisplayName ?? "게스트";
 
@@ -36,7 +45,7 @@ public class CYH_FirebaseManager : Singleton<CYH_FirebaseManager>
 
     protected override void Awake()
     {
-        //// GoogleSignIn에 사용할 인증 설정 초기화
+        // GoogleSignIn에 사용할 인증 설정 초기화
         _configuration = new GoogleSignInConfiguration
         {
             WebClientId = googleWebAPI,
@@ -72,11 +81,11 @@ public class CYH_FirebaseManager : Singleton<CYH_FirebaseManager>
             dataReference = FirebaseDatabase.DefaultInstance.RootReference;
 
             // 게임 시작 시 자동 로그아웃
-            if (auth != null && auth.CurrentUser != null)
-            {
-                auth.SignOut();
-                Debug.Log("auth.CurrentUser != null : 로그아웃");
-            }
+            //if (auth != null && auth.CurrentUser != null)
+            //{
+            //    auth.SignOut();
+            //    Debug.Log("auth.CurrentUser != null : 로그아웃");
+            //}
         }
 
         else
@@ -86,6 +95,9 @@ public class CYH_FirebaseManager : Singleton<CYH_FirebaseManager>
             database = null;
             dataReference = null;
         }
+
+        IsFirebaseReady = true;
+        Debug.Log($"IsFirebaseReady : {IsFirebaseReady}");
     }
 
     public void OnFirebaseLoginSuccess()
@@ -94,9 +106,21 @@ public class CYH_FirebaseManager : Singleton<CYH_FirebaseManager>
 
         if (!PhotonNetwork.IsConnected)
         {
-            PhotonNetwork.AutomaticallySyncScene = true;
+            //PhotonNetwork.AutomaticallySyncScene = true;
             PhotonNetwork.ConnectUsingSettings();
             Debug.Log("[Photon] Firebase 로그인 이후 Photon 연결 시작");
         }
+    }
+
+    /// <summary>
+    /// 게임 실행 시 CurrentUser(로그인 유저) 여부를 체크하는 메서드
+    /// true: 로그인된 유저가 있음 (자동 로그인 상태) -> GameStartPanel
+    /// false: 로그인된 유저가 없음 (로그인 필요) -> LoginPanel
+    /// </summary>
+    /// <returns></returns>
+    public bool IsLoggedIn()
+    {
+        Debug.Log($"IsLoggedIn 실행");
+        return (auth != null && auth.CurrentUser != null) ? true : false;
     }
 }

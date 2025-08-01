@@ -16,6 +16,7 @@ public class GameStartPanel : UIBase
     public Action OnClickGameStart { get; set; }
     public Action OnClickSignOut { get; set; }
     public Action OnClickDeleteAccount { get; set; }
+    public Action<string> OnSetNicknameField { get; set; }
 
     private void Start()
     {
@@ -23,12 +24,15 @@ public class GameStartPanel : UIBase
         // 로비 씬으로 전환
         _gameStartButton.onClick.AddListener(() => SceneManager.LoadScene("MainScene"));
 
-        _signOutButton.onClick.AddListener(() => {
+        _signOutButton.onClick.AddListener(() =>
+        {
             CYH_FirebaseManager.Auth.SignOut();
             OnClickSignOut?.Invoke();
         });
 
         _deleteAccountButton.onClick.AddListener(() => OnClick_DelteButton());
+
+        OnSetNicknameField += SetNicknameField;
 
         Debug.Log("------유저 정보------");
         Debug.Log($"유저 닉네임 : {CYH_FirebaseManager.Auth.CurrentUser.DisplayName}");
@@ -47,19 +51,52 @@ public class GameStartPanel : UIBase
     }
 
     /// <summary>
-    /// 닉네임 text에 뜨는 닉네임을 변경하는 메세드
+    /// 닉네임 text에 표시되는 닉네임을 변경하는 메세드
     /// </summary>
     public void SetNicknameField()
     {
-        FirebaseUser user = FirebaseAuth.DefaultInstance.CurrentUser;
+        FirebaseUser user = CYH_FirebaseManager.Auth.CurrentUser;
+        Debug.Log("GameStartPanel 이벤트 호출");
+
         if (user != null && !string.IsNullOrEmpty(user.DisplayName))
         {
+            Debug.Log("현재 유저 상태: 닉네임 null 아님, 유저 null 아님");
             _nicknameText.text = $"{user.DisplayName} 님";
         }
         else if (user.IsAnonymous)
         {
+            Debug.LogError($"현재 유저 상태: 게스트 / Displayname : {user.DisplayName}");
             //_nicknameText.text = $"{user.DisplayName} 님";
             _nicknameText.text = $"게스트 님";
+        }
+    }
+
+
+    /// <summary>
+    /// 닉네임 text에 표시되는 닉네임을 변경하는 메세드
+    /// </summary>
+    /// <param name="googleDisplayName">구글 계정 Displayname</param>
+    public void SetNicknameField(string googleDisplayName)
+    {
+        FirebaseUser user = CYH_FirebaseManager.Auth.CurrentUser;
+        Debug.Log("GameStartPanel 이벤트 호출");
+
+        if (user != null)
+        {
+            Debug.Log("현재 유저 상태: 닉네임 null 아님, 유저 null 아님");
+            _nicknameText.text = $"{googleDisplayName} 님";
+        }
+
+        else if (user.IsAnonymous)
+        {
+            Debug.LogError($"현재 유저 상태: 게스트 / Displayname : {user.DisplayName}");
+            _nicknameText.text = $"게스트 님";
+        }
+
+        else
+        {
+            Debug.LogError($"현재 유저 상태: else / Displayname : {user.DisplayName}");
+            _nicknameText.text = $"else 님";
         }
     }
 
@@ -95,7 +132,7 @@ public class GameStartPanel : UIBase
                 Debug.Log("유저 삭제 성공");
 
                 // 현재 로그인된 유저가 있으면 로그아웃
-                if(currentUser != null)
+                if (currentUser != null)
                 {
                     CYH_FirebaseManager.Auth.SignOut();
                 }

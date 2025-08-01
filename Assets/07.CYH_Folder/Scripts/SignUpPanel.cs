@@ -283,6 +283,8 @@ public class SignUpPanel : UIBase
     /// <param name="currentUser">닉네임을 설정할 유저</param>
     private void SetUserNickname(FirebaseUser currentUser)
     {
+        DatabaseReference userData = CYH_FirebaseManager.Database.RootReference.Child("UserData");
+        
         UserProfile profile = new UserProfile();
         profile.DisplayName = _nicknameField.text;
 
@@ -301,6 +303,8 @@ public class SignUpPanel : UIBase
                     return;
                 }
                 Debug.Log("닉네임 설정 성공");
+                // TODO: <최연호> 닉네임 UserData UpdateChildrenAsync / SetValueAsync
+                // RankData SetValue
             });
     }
 }
