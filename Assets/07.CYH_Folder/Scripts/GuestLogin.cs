@@ -48,6 +48,8 @@ public class GuestLogin : MonoBehaviour
 
             CYH_FirebaseManager.Instance.OnFirebaseLoginSuccess();
 
+            // 새로고침
+            user.ReloadAsync();
 
             Debug.Log("------유저 정보------");
             Debug.Log($"유저 닉네임 : {user.DisplayName}");

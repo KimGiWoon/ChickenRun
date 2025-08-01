@@ -16,6 +16,7 @@ public class GameStartPanel : UIBase
     public Action OnClickGameStart { get; set; }
     public Action OnClickSignOut { get; set; }
     public Action OnClickDeleteAccount { get; set; }
+    public Action OnSetNicknameField { get; set; }
 
     private void Start()
     {
@@ -29,6 +30,8 @@ public class GameStartPanel : UIBase
         });
 
         _deleteAccountButton.onClick.AddListener(() => OnClick_DelteButton());
+
+        OnSetNicknameField += SetNicknameField;
 
         Debug.Log("------유저 정보------");
         Debug.Log($"유저 닉네임 : {CYH_FirebaseManager.Auth.CurrentUser.DisplayName}");
@@ -52,13 +55,17 @@ public class GameStartPanel : UIBase
     public void SetNicknameField()
     {
         FirebaseUser user = FirebaseAuth.DefaultInstance.CurrentUser;
+        Debug.Log("GameStartPanel 이벤트 호출");
+
         if (user != null && !string.IsNullOrEmpty(user.DisplayName))
         {
+            Debug.Log("현재 유저 상태: 닉네임 null 아님, 유저 null 아님");
             _nicknameText.text = $"{user.DisplayName} 님";
         }
         else if (user.IsAnonymous)
         {
             //_nicknameText.text = $"{user.DisplayName} 님";
+            Debug.Log("현재 유저 상태: 게스트");
             _nicknameText.text = $"게스트 님";
         }
     }

@@ -10086,7 +10086,7 @@ MonoBehaviour:
   _googleButton: {fileID: 1712245254}
   _emailButton: {fileID: 1737762555}
   _closeButton: {fileID: 261251518}
-  _errorText: {fileID: 0}
+  _gameStartPanel: {fileID: 946019935}
 --- !u!114 &1717271339
 MonoBehaviour:
   m_ObjectHideFlags: 0
