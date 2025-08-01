@@ -143,6 +143,9 @@ public class PlayerSlot : MonoBehaviour, IPointerDownHandler, IPointerUpHandler,
         if (!PhotonNetwork.IsMasterClient)
             return;
 
+        if (_player == PhotonNetwork.LocalPlayer)
+            return;
+
         if (_player.CustomProperties.TryGetValue("UID", out object uidObj) && uidObj is string uid) {
             PopupManager.Instance.ShowOKCancelPopup("정말로 이 플레이어를 추방하시겠습니까?",
                 "추방", () => {
