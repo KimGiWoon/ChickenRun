@@ -39,6 +39,16 @@ public class EmoticonController : MonoBehaviourPun
         {
             _playerNickname.text = nickname?.ToString();
         }
+        if (photonView.Owner.CustomProperties.TryGetValue("Color", out object colors))
+        {
+            string colorHex = colors.ToString();
+
+            // RGBA 타입을 Color로 변환
+            if (ColorUtility.TryParseHtmlString(colorHex, out Color nicknameColor))
+            {
+                _playerNickname.color = nicknameColor;
+            }
+        }
     }
     
     private void OnEmoticon(int index)
