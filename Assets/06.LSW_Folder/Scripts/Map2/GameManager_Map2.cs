@@ -121,7 +121,6 @@ public class GameManager_Map2 : MonoBehaviour
         OnEndGame?.Invoke(_data);
         // 게임 결과 UI 호출 
         yield return new WaitForSeconds(3f);
-        _stopwatch.Reset();
         OnTimeUp?.Invoke();
     }
     

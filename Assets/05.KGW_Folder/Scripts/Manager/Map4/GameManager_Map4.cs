@@ -8,9 +8,10 @@ using UnityEngine;
 
 public class GameManager_Map4 : MonoBehaviourPunCallbacks
 {
-    [Header("Map4 Ui Manager Reference")]
+    [Header("Manager Reference")]
     [SerializeField] public UIManager_Map4 _gameUIManager;
     [SerializeField] public DrillController _drillController;
+    [SerializeField] NetworkManager_Map4 _networkManager;
 
     [Header("Map4 Setting")]
     [SerializeField] public float _GamePlayTime;
@@ -168,6 +169,7 @@ public void CreateGameManager()
     // 모든 플레이어가 죽음
     public void PlayerAllDeath()
     {
+        _data.EggCount = _totalEggCount;
         UnityEngine.Debug.Log("모든 플레이어가 사망했습니다.");
         photonView.RPC(nameof(GameClearLeaveRoom), RpcTarget.AllViaServer);
     }
@@ -196,10 +198,8 @@ public void CreateGameManager()
     public void GameClearLeaveRoom()
     {
         UnityEngine.Debug.Log("모든 플레이어가 방을 나갑니다.");
-        _stopwatch?.Reset();
-
-        // 현재의 방을 나가기
-        //PhotonNetwork.LeaveRoom();
+        _networkManager._isStart = false;
+        SoundManager.Instance.StopBGM();
 
         // 로비 씬이 있으면 추가해서 씬 이동
         PhotonNetwork.LoadLevel("MainScene");
