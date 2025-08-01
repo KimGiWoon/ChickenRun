@@ -236,11 +236,12 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         if (CYH_FirebaseManager.User != null) {
             string uid = CYH_FirebaseManager.User.UserId;
             string nickname = CYH_FirebaseManager.User.DisplayName;
+            string colorHex = ColorUtility.ToHtmlStringRGBA(Color.black);
 
             ExitGames.Client.Photon.Hashtable props = new ExitGames.Client.Photon.Hashtable {
             { "UID", uid },
             { "Nickname", nickname },
-            {"Color", ColorType.Black }
+            {"Color", colorHex }
         };
 
             PhotonNetwork.LocalPlayer.SetCustomProperties(props);
