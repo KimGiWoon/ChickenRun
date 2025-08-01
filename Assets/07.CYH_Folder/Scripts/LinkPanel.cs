@@ -22,6 +22,7 @@ public class LinkPanel : UIBase
 
     public Action OnClickLinkWithEmail { get; set; }
     public Action OnClickClosePopup { get; set; }
+    public Action OnClickSignOut { get; set; }
 
 
     private void Start()
@@ -70,7 +71,7 @@ public class LinkPanel : UIBase
 
     //        user.ReloadAsync();
 
-    //        PopupManager.Instance.ShowOKPopup("이메일 계정으로 전환 성공", "OK", () => PopupManager.Instance.HidePopup());
+    //        PopupManager.Instance.ShowOKPopup("이메일 계정으로 전환 성공\r\n 다시 로그인 해주세요.", "OK", () => PopupManager.Instance.HidePopup());
 
     //        Debug.Log("이메일 가입 성공");
     //        Debug.Log("------유저 정보------");
@@ -146,17 +147,22 @@ public class LinkPanel : UIBase
 
                 // 새로고침
                 //user.ReloadAsync();
-                //StartCoroutine(WaitForReloadAndLog(user));
 
                 Debug.Log("------유저 정보------");
                 Debug.Log($"유저 이름 : {user.DisplayName}");
                 Debug.Log($"유저 ID: {user.UserId}");
                 Debug.Log($"이메일 : {user.Email}");
 
-                //_gameStartPanel.SetNicknameField();
-                _gameStartPanel.OnSetNicknameField?.Invoke();
+                StartCoroutine(WaitForReloadAndLog(user));
 
-                PopupManager.Instance.ShowOKPopup("구글 계정으로 전환 성공", "OK", () => PopupManager.Instance.HidePopup());
+                PopupManager.Instance.ShowOKPopup("구글 계정으로 전환 성공\r\n 다시 로그인 해주세요.", "OK", () =>
+                {
+                    PopupManager.Instance.HidePopup();
+                    // SignOut
+                    CYH_FirebaseManager.Auth.SignOut();
+                    // LoginPanel ShowUI, GameStartPanel HideUI
+                    OnClickSignOut?.Invoke();
+                });
             });
         });
     }
@@ -186,9 +192,11 @@ public class LinkPanel : UIBase
                     Debug.LogError("닉네임 설정 실패");
                     return;
                 }
-                SaveNickname(profile.DisplayName);
+
                 Debug.Log("닉네임 설정 성공");
+
                 Debug.Log($"변경된 유저 닉네임 : {currentUser.DisplayName}");
+                _gameStartPanel.OnSetNicknameField?.Invoke(googleDisplayName);
             });
     }
 
@@ -196,7 +204,7 @@ public class LinkPanel : UIBase
     {
         string uid = CYH_FirebaseManager.User.UserId;
         DatabaseReference nicknameRef = CYH_FirebaseManager.DataReference.Child("UserData").Child(uid).Child("NickName");
-        
+
         nicknameRef.SetValueAsync(nickname).ContinueWithOnMainThread(task =>
         {
             if (task.IsCompletedSuccessfully)

@@ -52,6 +52,12 @@ public class LoginSceneUIManager : MonoBehaviour
             else if (ui is LinkPanel linkPanel)
             {
                 linkPanel.OnClickClosePopup = () => HideUI(LoginUIType.LinkPanel);
+                // 회원탈퇴 버튼
+                linkPanel.OnClickSignOut = () =>
+                {
+                    HideUI(LoginUIType.GameStartPanel);
+                    ShowUI(LoginUIType.Login);
+                };
             }
 
             else if (ui is AccountPanel accountPanel)

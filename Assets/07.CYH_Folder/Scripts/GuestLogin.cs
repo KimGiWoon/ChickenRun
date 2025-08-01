@@ -65,14 +65,14 @@ public class GuestLogin : MonoBehaviour
         });
     }
 
-    ///// <summary>
-    ///// 익명 유저 닉네임을 설정하는 메서드
-    ///// </summary>
-    ///// <param name="currentUser">닉네임을 설정할 유저</param>
+    /// <summary>
+    /// 익명 유저 닉네임을 설정하는 메서드
+    /// </summary>
+    /// <param name="currentUser">닉네임을 설정할 유저</param>
     //private void SetUserNickname(FirebaseUser currentUser)
     //{
     //    UserProfile profile = new UserProfile();
-    //    profile.DisplayName = CYH_FirebaseManager.CurrentUserNickname + UnityEngine.Random.Range(1000, 10000);
+    //    profile.DisplayName = $"게스트 + {UnityEngine.Random.Range(1000, 10000)}";
 
     //    currentUser.UpdateUserProfileAsync(profile)
     //        .ContinueWithOnMainThread(task =>
