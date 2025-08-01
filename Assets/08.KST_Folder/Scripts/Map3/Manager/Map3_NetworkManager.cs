@@ -118,7 +118,7 @@ namespace Kst
             if (currentPlayer >= maxPlayer)
             {
                 Debug.Log("모든 플레이어 입장 완료");
-                GameManager_Map1.Instance._totalPlayerCount = currentPlayer;
+                GameManager_Map3.Instance._totalPlayerCount = currentPlayer;
                 photonView.RPC(nameof(StartGame), RpcTarget.AllViaServer);
             }
         }

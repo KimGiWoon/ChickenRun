@@ -19194,7 +19194,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!212 &1600467208
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -19280,6 +19280,7 @@ MonoBehaviour:
   _moveSpeed: 5
   _attackDelayTime: 5
   _attackRangeImage: {fileID: 952633784}
+  _gameManager: {fileID: 0}
 --- !u!61 &1600467211
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -19686,7 +19687,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
-  m_VertexColorAlwaysGammaSpace: 0
+  m_VertexColorAlwaysGammaSpace: 1
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
@@ -19742,6 +19743,8 @@ MonoBehaviour:
   _angryEmoticon: {fileID: 4762743029832838104}
   _loveEmoticon: {fileID: 8436788690728707005}
   _weepEmoticon: {fileID: 4696826382083646982}
+  _networkManager: {fileID: 1817891484609328790}
+  _gameManager: {fileID: 2384339298976380112}
   _isOptionOpen: 0
   _isEmoticonPanelOpen: 0
   _emoticonTime: 3
@@ -49805,6 +49808,10 @@ PrefabInstance:
       propertyPath: _UIManager
       value: 
       objectReference: {fileID: 1666962170}
+    - target: {fileID: 1911278208677028778, guid: 4fd688e7c3e8f704087a4e74cdcdef4e, type: 3}
+      propertyPath: _gameManager
+      value: 
+      objectReference: {fileID: 2384339298976380112}
     - target: {fileID: 2768772013742965052, guid: 4fd688e7c3e8f704087a4e74cdcdef4e, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.48061514
@@ -49858,6 +49865,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4fd688e7c3e8f704087a4e74cdcdef4e, type: 3}
+--- !u!114 &1817891484609328790 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1911278208677028778, guid: 4fd688e7c3e8f704087a4e74cdcdef4e, type: 3}
+  m_PrefabInstance: {fileID: 1817891484609328789}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3256f702f011bf04c983e7aff0cd0881, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1846819535995200133
 GameObject:
   m_ObjectHideFlags: 0
@@ -50011,6 +50029,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1666962170}
     - target: {fileID: 8801339212465158334, guid: b307f28797ae07c45aa18c4e5d7d713e, type: 3}
+      propertyPath: _networkManager
+      value: 
+      objectReference: {fileID: 1817891484609328790}
+    - target: {fileID: 8801339212465158334, guid: b307f28797ae07c45aa18c4e5d7d713e, type: 3}
       propertyPath: _drillController
       value: 
       objectReference: {fileID: 1600467210}
@@ -50019,6 +50041,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b307f28797ae07c45aa18c4e5d7d713e, type: 3}
+--- !u!114 &2384339298976380112 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8801339212465158334, guid: b307f28797ae07c45aa18c4e5d7d713e, type: 3}
+  m_PrefabInstance: {fileID: 2384339298976380111}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b12b1a7960cc2604e9d0ca69960127a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2662748332008395694
 GameObject:
   m_ObjectHideFlags: 0

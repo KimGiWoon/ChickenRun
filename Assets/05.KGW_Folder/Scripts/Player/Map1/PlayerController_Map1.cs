@@ -11,6 +11,7 @@ public class PlayerController_Map1 : MonoBehaviourPun, IPunObservable
     [SerializeField] PlayerState_Map1 _playerstate;
     [SerializeField] SpriteRenderer _playerRenderer;
     [SerializeField] Animator _playerAni;
+    [SerializeField] PlayerEmoticonController_Map1 _playerEmoticonController;
 
     [Header("Correction Setting")]
     [SerializeField] float _correctionValue = 15f;
@@ -25,6 +26,7 @@ public class PlayerController_Map1 : MonoBehaviourPun, IPunObservable
     float _touchEndTime;
     bool _isGround;
     bool _isTouch;
+    public bool _isGoal = false;
     int _currentAnimatorHash;
     int _reciveAnimatorHash;
 
@@ -39,10 +41,12 @@ public class PlayerController_Map1 : MonoBehaviourPun, IPunObservable
         ManagerInit();
 
         // 조종 가능 유/무에 따른 레이어 설정 (충돌 관련 세팅)
-        if (photonView.IsMine) {
+        if (photonView.IsMine) 
+        {
             gameObject.layer = LayerMask.NameToLayer("Player");
         }
-        else {
+        else 
+        {
             gameObject.layer = LayerMask.NameToLayer("RemotePlayer");
             // 반 투명화
             TranslucentSetting();
@@ -51,14 +55,17 @@ public class PlayerController_Map1 : MonoBehaviourPun, IPunObservable
 
     private void Start()
     {
+        // 카메라 세팅 이벤트 구독
+        _gameManager.OnPlayerGoal += ChangeCamera;
+
         // 플레이어 시작위치 저장
         _gameManager.StartPosSave(transform);
 
         // 자기 자신의 카메라 설정
         if (photonView.IsMine) 
         {
-            Camera.main.GetComponent<CameraController>().SetTarget(transform);
             _gameManager._gameUIManager.SetPlayerPosition(transform);
+            ChangeCamera();
         }
     }
 
@@ -82,6 +89,13 @@ public class PlayerController_Map1 : MonoBehaviourPun, IPunObservable
         }
     }
 
+    private void OnDestroy()
+    {
+        // 카메라 세팅 이벤트 구독 취소
+        _gameManager.OnPlayerGoal -= ChangeCamera;
+    }
+
+    // 매니저 초기화
     private void ManagerInit()
     {
         if (_gameUIManager == null)
@@ -110,7 +124,7 @@ public class PlayerController_Map1 : MonoBehaviourPun, IPunObservable
             if (_gameUIManager._isEmoticonPanelOpen) return;
 
             // 결승점 통과 시 움직임 금지
-            if (_gameManager._isGoal) return;
+            if (_isGoal) return;
 
             _touchStartTime = Time.time;
             _isTouch = true;
@@ -165,6 +179,21 @@ public class PlayerController_Map1 : MonoBehaviourPun, IPunObservable
         }
     }
 
+    // 플레이어가 골인하면 카메라 전환
+    public void ChangeCamera()
+    {
+        if (_isGoal)
+        {
+            // 다른 플레이어의 카메라로 관찰
+            FindObjectOfType<CameraController_Map1>().OnViewingMode();
+        }
+        else
+        {
+            Camera.main.GetComponent<CameraController_Map1>().SetTarget(transform);
+            _gameManager._gameUIManager.SetPlayerPosition(transform);
+        }
+    }
+
     // 물리적 충돌
     private void OnCollisionEnter2D(Collision2D collision)
     {
@@ -207,20 +236,20 @@ public class PlayerController_Map1 : MonoBehaviourPun, IPunObservable
         // 결승점 도착
         if (collision.gameObject.layer == LayerMask.NameToLayer("Goal")) {
             // 골을 했으면 넘어가기
-            if (_gameManager._isGoal)
-                return;
+            if (_isGoal) return;
 
             // 내 플레이어만 처리
-            if (photonView.IsMine) {
-                string playerNickname = PhotonNetwork.LocalPlayer.NickName;
+            if (photonView.IsMine) 
+            {
+                string playerNickname = _playerEmoticonController._nickname;
                 SoundManager.Instance.PlaySFX(SoundManager.Sfxs.SFX_Goal);
+
+                Debug.Log("결승선 도착");
+                _isGoal = true;
+                _gameManager.StopStopWatch();
 
                 // 도착을 알림
                 photonView.RPC(nameof(ArrivePlayer), RpcTarget.AllViaServer, playerNickname);
-                Debug.Log("결승선 도착");
-                    _gameManager._isGoal = true;
-
-                _gameManager.StopStopWatch();
             }
         }
 
@@ -231,7 +260,7 @@ public class PlayerController_Map1 : MonoBehaviourPun, IPunObservable
     public void ArrivePlayer(string playerNickname)
     {
         Debug.Log($"{playerNickname}께서 결승점에 도착했습니다.");
-            _gameManager.PlayerReachedGoal(playerNickname);
+        _gameManager.PlayerReachedGoal(playerNickname);
     }
 
     // 플레이어 포톤 뷰 동기화

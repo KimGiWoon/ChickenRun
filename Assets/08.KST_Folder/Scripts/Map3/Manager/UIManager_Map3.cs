@@ -1,4 +1,5 @@
 using System.Collections;
+using Kst;
 using Photon.Pun;
 using TMPro;
 using UnityEngine;
@@ -29,7 +30,7 @@ public class UIManager_Map3 : MonoBehaviourPun
     [SerializeField] Button _backButton, _exitButton;
     [SerializeField] Slider _musicSlider, _effectSlider;
     [SerializeField] Toggle _camModeCheckToggle;
-    [SerializeField] CameraController _cameraController;
+    [SerializeField] CameraController_Map4 _cameraController; //TODO <김승태> 추후 수정부탁드립니다.
 
     [Header("Emoticon Panel UI Reference")]
     [SerializeField] PlayerEmoticonController_Map4 _playerEmoticonController;
@@ -47,13 +48,13 @@ public class UIManager_Map3 : MonoBehaviourPun
     // 맵타입 설정
     private void OnEnable()
     {
-        GameManager_Map4.Instance._currentMapType = "Map4";
+        GameManager_Map3.Instance._currentMapType = "Map4";
     }
 
     private void Start()
     {
         // 달걀 획득 UI 이벤트 구독
-        GameManager_Map4.Instance.OnEggCountChange += UpdateGetEggUI;
+        GameManager_Map3.Instance.OnEggCountChange += UpdateGetEggUI;
         // 시작할 시 획득한 달걀은 0이므로 UI설정
         UpdateGetEggUI(0);
 
@@ -64,13 +65,13 @@ public class UIManager_Map3 : MonoBehaviourPun
     private void Update()
     {
         // 플레이 타임 UI 출력
-        _playTimeText.text = GameManager_Map4.Instance.PlayTimeUpdate();
+        _playTimeText.text = GameManager_Map3.Instance.PlayTimeUpdate();
     }
 
     private void OnDestroy()
     {
         // 달걀 획득 UI 이벤트 해제
-        GameManager_Map4.Instance.OnEggCountChange -= UpdateGetEggUI;
+        GameManager_Map3.Instance.OnEggCountChange -= UpdateGetEggUI;
 
         // 메모리 누수 방지로 리셋
         _camModeCheckToggle.onValueChanged.RemoveListener(CamModeCheck);
@@ -235,7 +236,6 @@ public class UIManager_Map3 : MonoBehaviourPun
     {
         WaitForSeconds time = new WaitForSeconds(_routineTime);
         int count = 4;
-        GameManager_Map4.Instance._isGoal = false;
 
         yield return new WaitForSeconds(2f);
         _startPanel.SetActive(true);
@@ -260,8 +260,7 @@ public class UIManager_Map3 : MonoBehaviourPun
             {
                 SoundManager.Instance.PlayBGM(SoundManager.Bgms.BGM_InGame4);
                 _startPanel.SetActive(false);
-                GameManager_Map4.Instance.StartStopWatch();
-                GameManager_Map4.Instance._drillController.gameObject.SetActive(true);
+                GameManager_Map3.Instance.StartStopWatch();
                 _wall.SetActive(false);
                 break;
             }

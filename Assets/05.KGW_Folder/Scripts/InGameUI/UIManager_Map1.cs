@@ -37,7 +37,7 @@ public class UIManager_Map1 : MonoBehaviourPun
     [SerializeField] Slider _musicSlider;
     [SerializeField] Slider _effectSlider;
     [SerializeField] Toggle _camModeCheckToggle;
-    [SerializeField] CameraController _cameraController;
+    [SerializeField] CameraController_Map4 _cameraController;
 
     [Header("Emoticon Panel UI Reference")]
     [SerializeField] PlayerEmoticonController_Map1 _playerEmoticonController;
@@ -214,18 +214,26 @@ public class UIManager_Map1 : MonoBehaviourPun
     // 나가기 버튼 클릭
     private void OnExitPlayGame()
     {
+        string exitPlayer = PhotonNetwork.LocalPlayer.NickName;
+
         _gameManager.StopStopWatch();
         SoundManager.Instance.StopBGM(); 
         _networkManager._isStart = false;
 
-        ExitPlayer();
+        // 나감을 알림
+        photonView.RPC(nameof(ExitPlayer), RpcTarget.AllViaServer, exitPlayer);
     }
 
     // 방 나가기
-    private void ExitPlayer()
+    [PunRPC]
+    private void ExitPlayer(string playerNickname)
     {
-        // 로비로 이동
-        PhotonNetwork.LoadLevel("MainScene");
+        UnityEngine.Debug.Log($"{playerNickname}께서 나갔습니다.");
+        if (PhotonNetwork.LocalPlayer.NickName == playerNickname)
+        {
+            PhotonNetwork.LoadLevel("MainScene");
+            PhotonNetwork.LeaveRoom();
+        }
     }
 
     // 출발지점과 도착지점 위치 확인
