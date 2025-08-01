@@ -7,14 +7,14 @@ using UnityEngine;
 public class PlateSpawner : MonoBehaviourPunCallbacks
 {
     //오브젝트 풀 관련
-    // [SerializeField] private PhotonPooledObject[] _platePrefab;
     [SerializeField] private PooledObject[] _platePrefabs;
-    // private Dictionary<string, PhotonObjectPool> _platePools = new();
     private Dictionary<string, ObjectPool> _platePools = new();
     //스폰 관련
     [SerializeField] private float _spawnTiming = 2f;
     [SerializeField] private float _spawnX;
 
+
+    //TODO <김승태> : UImanager에서 게임 시작 시 StartSpawn 호출하도록 변경해야함.
     public void StartSpawn()
     {
         InitPools();
