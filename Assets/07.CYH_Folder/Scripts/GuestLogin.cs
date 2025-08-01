@@ -46,8 +46,6 @@ public class GuestLogin : MonoBehaviour
             FirebaseUser user = CYH_FirebaseManager.Auth.CurrentUser;
             //SetUserNickname(user);
 
-            CYH_FirebaseManager.Instance.OnFirebaseLoginSuccess();
-
             // 새로고침
             user.ReloadAsync();
 

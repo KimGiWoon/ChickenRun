@@ -142,9 +142,6 @@ public class LinkPanel : UIBase
                 // 구글 계정 닉네임으로 currentUser을 닉네임으로 변경
                 SetNickname(user, googleDisplayName);
 
-                // 포톤 재설정
-                CYH_FirebaseManager.Instance.OnFirebaseLoginSuccess();
-
                 // 새로고침
                 //user.ReloadAsync();
 
