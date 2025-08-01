@@ -94,7 +94,7 @@ public class CYH_FirebaseManager : Singleton<CYH_FirebaseManager>
 
         if (!PhotonNetwork.IsConnected)
         {
-            PhotonNetwork.AutomaticallySyncScene = true;
+            //PhotonNetwork.AutomaticallySyncScene = true;
             PhotonNetwork.ConnectUsingSettings();
             Debug.Log("[Photon] Firebase 로그인 이후 Photon 연결 시작");
         }
