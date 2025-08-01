@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using Kst;
+using Kst;
 using Photon.Pun;
 using TMPro;
 using UnityEngine;
@@ -31,7 +32,7 @@ public class UIManager_Map3 : MonoBehaviourPun
     [SerializeField] Button _backButton, _exitButton;
     [SerializeField] Slider _musicSlider, _effectSlider;
     [SerializeField] Toggle _camModeCheckToggle;
-    [SerializeField] CameraController _cameraController;
+    [SerializeField] CameraController_Map4 _cameraController; //TODO <김승태> 추후 수정부탁드립니다.
 
     [Header("Emoticon Panel UI Reference")]
     [SerializeField] PlayerEmoticonController_Map3 _playerEmoticonController;
@@ -57,6 +58,7 @@ public class UIManager_Map3 : MonoBehaviourPun
     {
         // 달걀 획득 UI 이벤트 구독
         GameManager_Map3.Instance.OnEggCountChange += UpdateGetEggUI;
+        GameManager_Map3.Instance.OnEggCountChange += UpdateGetEggUI;
         // 시작할 시 획득한 달걀은 0이므로 UI설정
         UpdateGetEggUI(0);
 
@@ -74,6 +76,7 @@ public class UIManager_Map3 : MonoBehaviourPun
     private void OnDestroy()
     {
         // 달걀 획득 UI 이벤트 해제
+        GameManager_Map3.Instance.OnEggCountChange -= UpdateGetEggUI;
         GameManager_Map3.Instance.OnEggCountChange -= UpdateGetEggUI;
 
         // 메모리 누수 방지로 리셋
@@ -241,7 +244,6 @@ public class UIManager_Map3 : MonoBehaviourPun
     {
         WaitForSeconds time = new WaitForSeconds(_routineTime);
         int count = 4;
-        GameManager_Map4.Instance._isGoal = false;
 
         yield return new WaitForSeconds(2f);
         _startPanel.SetActive(true);

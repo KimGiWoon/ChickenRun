@@ -8,6 +8,7 @@ public class NetworkManager_Map4 : MonoBehaviourPunCallbacks
 {
     [Header("Map4 UI Manager Reference")]
     [SerializeField] UIManager_Map4 _UIManager;
+    [SerializeField] GameManager_Map4 _gameManager;
 
     public bool _isStart = false;
     public int _currentPlayer;
@@ -80,8 +81,8 @@ public class NetworkManager_Map4 : MonoBehaviourPunCallbacks
         // 현재 인원 전달
         if (PhotonNetwork.IsMasterClient)
         {
-            GameManager_Map4.Instance._totalPlayerCount = _currentPlayer;
-            GameManager_Map4.Instance._alivePlayer = _currentPlayer;
+            _gameManager._totalPlayerCount = _currentPlayer;
+            _gameManager._alivePlayer = _currentPlayer;
         }
 
         if (_currentPlayer >= maxPlayer)
