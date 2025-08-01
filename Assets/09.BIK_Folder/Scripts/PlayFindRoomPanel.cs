@@ -34,6 +34,19 @@ public class PlayFindRoomPanel : UIBase
 
     #region mono funcs
 
+    private void Awake()
+    {
+        _roomButtons = new List<RoomButton>();
+
+        foreach (Transform child in _roomListRoot) {
+            RoomButton btn = child.GetComponent<RoomButton>();
+            if (btn != null) {
+                btn.gameObject.SetActive(false);
+                _roomButtons.Add(btn);
+            }
+        }
+    }
+
     private void Start()
     {
         _backButton.onClick.AddListener(() => _onBack?.Invoke());
@@ -80,18 +93,19 @@ public class PlayFindRoomPanel : UIBase
 
     private void RefreshRoomList(List<RoomInfo> rooms)
     {
-        Debug.Log($"방 목록을 새로고침합니다. 방 개수: {rooms.Count}");
-        for (int i = 0; i < rooms.Count; i++) {
-            if (i >= _roomButtons.Count) {
-                RoomButton newBtn = Instantiate(_roomButtonPrefab, _roomListRoot);
-                _roomButtons.Add(newBtn);
-            }
+        if (!gameObject.activeInHierarchy || _roomListRoot == null)
+            return;
 
+        Debug.Log($"방 목록을 새로고침합니다. 방 개수: {rooms.Count}");
+
+        int i = 0;
+        for (; i < rooms.Count && i < _roomButtons.Count; i++) {
             _roomButtons[i].gameObject.SetActive(true);
             _roomButtons[i].Initialize(rooms[i], OnJoinedRoom);
         }
 
-        for (int i = rooms.Count; i < _roomButtons.Count; i++) {
+        // 나머지 버튼은 끈다
+        for (; i < _roomButtons.Count; i++) {
             _roomButtons[i].gameObject.SetActive(false);
         }
     }
