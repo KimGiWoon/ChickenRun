@@ -59,11 +59,11 @@ public class PlayerSlot : MonoBehaviour, IPointerDownHandler, IPointerUpHandler,
                 _nicknameText.color = Common.ConvertColorTypeToUnityColor(colorType);
             }
             else {
-                _nicknameText.color = Color.black;
+                _nicknameText.color = Color.white;
             }
         }
         else {
-            _nicknameText.color = Color.black;
+            _nicknameText.color = Color.white;
         }
 
         // 준비 상태

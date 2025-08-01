@@ -53,6 +53,16 @@ public class PhotonManager : MonoBehaviourPunCallbacks
 
 
 
+    #region properties
+
+    public int PlayerCount => PhotonNetwork.CurrentRoom?.PlayerCount ?? 0;
+
+    #endregion // properties
+
+
+
+
+
     #region public funcs
 
     public void SetOnJoinedRoomCallback(Action callback)
@@ -239,7 +249,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks
             ExitGames.Client.Photon.Hashtable props = new ExitGames.Client.Photon.Hashtable {
             { "UID", uid },
             { "Nickname", nickname },
-            {"Color", ColorType.Black }
+            {"Color", ColorType.White }
         };
 
             PhotonNetwork.LocalPlayer.SetCustomProperties(props);

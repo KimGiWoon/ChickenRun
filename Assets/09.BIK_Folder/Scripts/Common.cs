@@ -7,7 +7,6 @@ public static class Common
     public static Color ConvertColorTypeToUnityColor(ColorType type)
     {
         return type switch {
-            ColorType.Black => Color.black,
             ColorType.White => Color.white,
             ColorType.Red => Color.red,
             ColorType.Blue => Color.blue,
@@ -44,8 +43,7 @@ public enum MapType
 
 public enum ColorType
 {
-    Black = 0,
-    White,
+    White = 0,
     Red,
     Blue,
     Green,
