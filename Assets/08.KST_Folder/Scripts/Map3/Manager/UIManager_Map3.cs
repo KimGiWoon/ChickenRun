@@ -1,11 +1,10 @@
 using System.Collections;
-using System.Collections.Generic;
 using Photon.Pun;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UIManager_Map4 : MonoBehaviourPun
+public class UIManager_Map3 : MonoBehaviourPun
 {
     [Header("Play Time UI Reference")]
     [SerializeField] TMP_Text _playTimeText;
@@ -14,33 +13,21 @@ public class UIManager_Map4 : MonoBehaviourPun
     [SerializeField] TMP_Text _eggCountText;
 
     [Header("Button UI Reference")]
-    [SerializeField] Button _optionButton;
-    [SerializeField] Button _emoticonButton;
+    [SerializeField] Button _optionButton, _emoticonButton;
 
     [Header("Start Panel Reference")]
     [SerializeField] GameObject _startPanel;
     [SerializeField] TMP_Text _countText;
     [SerializeField] float _routineTime = 1f;
-    [SerializeField] GameObject _wall;
+    [SerializeField] GameObject _wall; //TODO <김승태> 이 타이밍에 spwanPlate 호출하도록 변경하기.
 
     [Header("Goal Slider UI Reference")]
-    [SerializeField] Slider _playerPosSlider;
     [SerializeField] Transform _playerPosition;
-    [SerializeField] Transform _startPosition;
-    [SerializeField] Transform _endPosition;
-    [SerializeField] TMP_Text _distanceText;
-
-    [Header("Drill Slider UI Reference")]
-    [SerializeField] Slider _DrillPosSlider;
-    [SerializeField] Transform _DrillPosition;
-    [SerializeField] Transform _startDrillPosition;
 
     [Header("Option Panel UI Reference")]
     [SerializeField] GameObject _optionPanel;
-    [SerializeField] Button _backButton;
-    [SerializeField] Button _exitButton;
-    [SerializeField] Slider _musicSlider;
-    [SerializeField] Slider _effectSlider;
+    [SerializeField] Button _backButton, _exitButton;
+    [SerializeField] Slider _musicSlider, _effectSlider;
     [SerializeField] Toggle _camModeCheckToggle;
     [SerializeField] CameraController _cameraController;
 
@@ -48,20 +35,10 @@ public class UIManager_Map4 : MonoBehaviourPun
     [SerializeField] PlayerEmoticonController_Map4 _playerEmoticonController;
     [SerializeField] GameObject _emoticonPanel;
     [SerializeField] Sprite[] _emoticonSprite;
-    [SerializeField] Button _smileEmoticon;
-    [SerializeField] Button _quizEmoticon;
-    [SerializeField] Button _surpriseEmoticon;
-    [SerializeField] Button _angryEmoticon;
-    [SerializeField] Button _loveEmoticon;
-    [SerializeField] Button _weepEmoticon;
-
-    [Header("Manager Reference")]
-    [SerializeField] NetworkManager_Map4 _networkManager;
+    [SerializeField] Button _smileEmoticon, _quizEmoticon, _surpriseEmoticon, _angryEmoticon, _loveEmoticon, _weepEmoticon;
 
     Coroutine _panelRoutine;
     Coroutine _emoticonRoutine;
-    float _playerDistance;
-    float _drillDistance;
     public bool _isOptionOpen = false;
     public bool _isEmoticonPanelOpen = false;
     public float _emoticonTime = 3f;
@@ -80,8 +57,6 @@ public class UIManager_Map4 : MonoBehaviourPun
         // 시작할 시 획득한 달걀은 0이므로 UI설정
         UpdateGetEggUI(0);
 
-        SetPlayerDistance();
-        SetDrillDistance();
         InGameUIInit();
         SoundVolumeInit();
     }
@@ -90,12 +65,6 @@ public class UIManager_Map4 : MonoBehaviourPun
     {
         // 플레이 타임 UI 출력
         _playTimeText.text = GameManager_Map4.Instance.PlayTimeUpdate();
-
-        // 플레이어와 끝지점 거리 확인
-        PlayerPosUpdate();
-
-        // 드릴과 끝지점 거리 확인
-        DrillPosUpdate();
     }
 
     private void OnDestroy()
@@ -223,7 +192,7 @@ public class UIManager_Map4 : MonoBehaviourPun
     private void OnExitPlayGame()
     {
         string exitPlayer = PhotonNetwork.LocalPlayer.NickName;
-        GameManager_Map4.Instance._stopwatch.Stop();
+
         // 나감을 알림
         photonView.RPC(nameof(ExitPlayer), RpcTarget.AllViaServer, exitPlayer);
     }
@@ -233,52 +202,18 @@ public class UIManager_Map4 : MonoBehaviourPun
     private void ExitPlayer(string PlayerNickname)
     {
         Debug.Log($"{PlayerNickname}께서 나갔습니다.");
-        _networkManager._isStart = false;
-        SoundManager.Instance.StopBGM();
+
+        // 현재의 방을 나가기
+        //PhotonNetwork.LeaveRoom();
 
         // 로비 씬이 있으면 추가해서 씬 이동
         PhotonNetwork.LoadLevel("MainScene");
-    }
-
-    // 출발지점과 도착지점 위치 확인
-    private void SetPlayerDistance()
-    {
-        _playerDistance = Vector2.Distance(_startPosition.position, _endPosition.position);
-    }
-
-    // 플레이어의 위치와 거리 업데이트
-    private void PlayerPosUpdate()
-    {
-        _playerEndDistance = Vector2.Distance(_playerPosition.position, _endPosition.position);
-        float progress = Mathf.Clamp01(1 - (_playerEndDistance / _playerDistance));
-        _playerPosSlider.value = progress;
-        _distanceText.text = $"{((int)_playerEndDistance).ToString()}m";
     }
 
     // 플레이어 위치 세팅
     public void SetPlayerPosition(Transform player)
     {
         _playerPosition = player;
-    }
-
-    // 드릴의 출발지점과 도착지점 위치 확인
-    private void SetDrillDistance()
-    {
-        _drillDistance = Vector2.Distance(_startDrillPosition.position, _endPosition.position);
-    }
-
-    // 드릴의 위치와 거리 업데이트
-    private void DrillPosUpdate()
-    {
-        float endDistance = Vector2.Distance(_DrillPosition.position, _endPosition.position);
-        float progress = Mathf.Clamp01(1 - (endDistance / _drillDistance));
-        _DrillPosSlider.value = progress;
-    }
-
-    // 플레이어 위치 세팅
-    public void SetDrillPosition(Transform Drill)
-    {
-        _DrillPosition = Drill;
     }
 
     // 스타트 코루틴

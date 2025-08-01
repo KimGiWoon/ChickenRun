@@ -3,12 +3,22 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using UnityEngine;
+using Debug = UnityEngine.Debug;
 
-public class GameManager_Map2 : Singleton<GameManager_Map2>
+public class GameManager_Map2 : MonoBehaviour
 {
     [SerializeField] private Transform _startPos;
     [SerializeField] private Transform _goalPos;
 
+    private static GameManager_Map2 _instance;
+    public static GameManager_Map2 Instance
+    {
+        get
+        {
+            return _instance;
+        }
+    }
+    
     private Transform _player;
     private Stopwatch _stopwatch;
     private Map2Data _data;
@@ -38,9 +48,9 @@ public class GameManager_Map2 : Singleton<GameManager_Map2>
         }
     }
 
-    protected override void Awake()
+    public void Awake()
     {
-        base.Awake();
+        Init();
         _stopwatch = new Stopwatch();
         _data = new Map2Data("Map2Record");
         GameProgress = new Property<float>(0f);
@@ -59,6 +69,18 @@ public class GameManager_Map2 : Singleton<GameManager_Map2>
         }
     }
 
+    private void Init()
+    {
+        if (_instance == null)
+        {
+            _instance = this;
+        }
+        else 
+        { 
+            Destroy(gameObject);
+        }
+    }
+    
     public void OpenPanel(bool isOpen)
     {
         OnPanelOpened?.Invoke(isOpen);
@@ -99,7 +121,6 @@ public class GameManager_Map2 : Singleton<GameManager_Map2>
         OnEndGame?.Invoke(_data);
         // 게임 결과 UI 호출 
         yield return new WaitForSeconds(3f);
-        _stopwatch.Reset();
         OnTimeUp?.Invoke();
     }
     

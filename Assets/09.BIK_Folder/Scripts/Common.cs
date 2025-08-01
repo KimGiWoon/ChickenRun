@@ -37,7 +37,7 @@ public enum UIType
 public enum MapType
 {
     Map1 = 0,
-    //Map2,
+    Map2,
     //Map3,
     //Map4,
 }

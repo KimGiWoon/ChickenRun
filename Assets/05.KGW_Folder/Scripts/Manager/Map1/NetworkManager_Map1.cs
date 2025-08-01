@@ -8,31 +8,11 @@ using ExitGames.Client.Photon;
 
 public class NetworkManager_Map1 : MonoBehaviourPunCallbacks
 {
-    [Header("Map1 UI Manager Reference")]
+    [Header("Manager Reference")]
     [SerializeField] UIManager_Map1 _UIManager;
+    [SerializeField] GameManager_Map1 _gameManager;
 
     public bool _isStart = false;
-
-    static NetworkManager_Map1 instance;
-
-    public static NetworkManager_Map1 Instance
-    {
-        get
-        {
-            if (instance == null)    // 네트워크 매니저가 하이어라키창에 없으면 게임매니저 생성
-            {
-                GameObject gameObject = new GameObject("NetworkManager_Map1");
-                instance = gameObject.AddComponent<NetworkManager_Map1>();
-            }
-            return instance;
-        }
-    }
-    
-    private void Awake()
-    {
-        // 네트워크 매니저 생성
-        CreateNetworkManager();
-    }
 
     private void Start()
     {
@@ -45,14 +25,7 @@ public class NetworkManager_Map1 : MonoBehaviourPunCallbacks
         else
         {
             UnityEngine.Debug.Log("입장 완료");
-
-            // 닉네임을 커스텀 프로퍼티로 저장
-            string nickname = PhotonNetwork.LocalPlayer.NickName;
-            Hashtable hashtable = new Hashtable { { "Nickname", nickname } };
-
-            // 닉네임 정보를 포톤서버에 업로드
-            PhotonNetwork.LocalPlayer.SetCustomProperties(hashtable);
-
+    
             // 플레이어 생성
             PlayerSpawn();
 
@@ -65,20 +38,6 @@ public class NetworkManager_Map1 : MonoBehaviourPunCallbacks
 
     }
 
-    // 네트워크 매니저가 생성한게 있으면 생성하지 않고 중복으로 생성 시 삭제
-    public void CreateNetworkManager()
-    {
-        if (instance == null)
-        {
-            instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
-    }
-
     // 마스터 서버 접속
     public override void OnConnectedToMaster()
     {
@@ -88,25 +47,16 @@ public class NetworkManager_Map1 : MonoBehaviourPunCallbacks
     // 방 입장
     public override void OnJoinedRoom()
     {
-        UnityEngine.Debug.Log("입장 완료");
-        // TODO : 플레이어 닉네임 확인용
-        PhotonNetwork.LocalPlayer.NickName = $"Player{PhotonNetwork.LocalPlayer.ActorNumber}";
+        UnityEngine.Debug.Log("피씨로 입장 완료");
 
-        // 닉네임을 커스텀 프로퍼티로 저장
-        string nickname = PhotonNetwork.LocalPlayer.NickName;
-        Hashtable hashtable = new Hashtable { { "Nickname", nickname } };
-
-        // 닉네임 정보를 포톤서버에 업로드
-        PhotonNetwork.LocalPlayer.SetCustomProperties(hashtable);
-
+        // 플레이어 생성
         PlayerSpawn();
-    }
 
-    // 방을 나가기
-    public override void OnLeftRoom()
-    {
-        UnityEngine.Debug.Log("방을 나감");
-        //SceneManager.LoadScene("Room")
+        // 방에 들어온 플레이어 체크
+        if (PhotonNetwork.IsMasterClient)
+        {
+            CheckRoomPlayer();
+        }
     }
 
     // 플레이어 생성
@@ -128,14 +78,19 @@ public class NetworkManager_Map1 : MonoBehaviourPunCallbacks
         int currentPlayer = PhotonNetwork.CurrentRoom.PlayerCount;
         // 방에 입장 가능한 Max 플레이어
         int maxPlayer = PhotonNetwork.CurrentRoom.MaxPlayers;
-        int maxTest = 2;
 
         UnityEngine.Debug.Log($"입장 플레이어 : {currentPlayer}/{maxPlayer}");
 
-        if(currentPlayer >= maxPlayer)
+        // 현재 인원 전달
+        if (PhotonNetwork.IsMasterClient)
+        {
+            _gameManager._totalPlayerCount = currentPlayer;
+        }
+
+        if (currentPlayer >= maxPlayer)
         {
             UnityEngine.Debug.Log("모든 플레이어 입장 완료");
-            GameManager_Map1.Instance._totalPlayerCount = currentPlayer;
+            // 게임 시작
             photonView.RPC(nameof(StartGame), RpcTarget.AllViaServer);
         }
     }
@@ -144,6 +99,7 @@ public class NetworkManager_Map1 : MonoBehaviourPunCallbacks
     [PunRPC]
     private void StartGame()
     {
+        _isStart = true;
         _UIManager.photonView.RPC(nameof(_UIManager.StartGameRoutine), RpcTarget.AllViaServer);
     }
 
@@ -156,5 +112,10 @@ public class NetworkManager_Map1 : MonoBehaviourPunCallbacks
         {
             CheckRoomPlayer();
         }
+    }
+
+    public override void OnLeftRoom()
+    {
+        UnityEngine.Debug.Log("방을 나감");
     }
 }

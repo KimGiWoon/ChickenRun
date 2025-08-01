@@ -14,10 +14,10 @@ public class BounceTile : MonoBehaviour
         switch (tag)
         {
             case "BounceTile1" :
-                _power = 10f;
+                _power = 7f;
                 break;
             case "BounceTile2" :
-                _power = 7f;
+                _power = 11.5f;
                 break;
             case "BounceTile3" :
                 _power = 9f;
@@ -26,7 +26,7 @@ public class BounceTile : MonoBehaviour
                 _power = 13f;
                 break;
             case "BounceTile5" :
-                _power = 21f;
+                _power = 17f;
                 break;
         }
     }

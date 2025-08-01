@@ -1,16 +1,16 @@
-using System.Collections;
 using System.Collections.Generic;
 using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using ExitGames.Client.Photon;
 
 public class PlayerEmoticonController_Map4 : MonoBehaviourPunCallbacks
 {
     [SerializeField] public GameObject _SpeechBubble;
     [SerializeField] public Image _emoticonImage;
-    [SerializeField] TMP_Text _NicknameText;
+    [SerializeField] TMP_Text _nicknameText;
     [SerializeField] Sprite[] _emoticonSprite;
     [SerializeField] float _emoticonTime = 3f;
 
@@ -24,7 +24,19 @@ public class PlayerEmoticonController_Map4 : MonoBehaviourPunCallbacks
         // 키값을 가진 프로퍼티가 있는지 확인 후 있으면 아웃 변수에 저장
         if (photonView.Owner.CustomProperties.TryGetValue("Nickname", out object nickname))
         {
-            _NicknameText.text = nickname.ToString();
+            _nicknameText.text = nickname.ToString();
+        }
+
+        // 닉네임 컬러가 있는지 확인
+        if (photonView.Owner.CustomProperties.TryGetValue("Color", out object colors))
+        {
+            string colorHex = colors.ToString();
+
+            // RGBA 타입을 Color로 변환
+            if (ColorUtility.TryParseHtmlString(colorHex, out Color nicknameColor))
+            {
+                _nicknameText.color = nicknameColor;
+            }
         }
     }
 
@@ -72,19 +84,28 @@ public class PlayerEmoticonController_Map4 : MonoBehaviourPunCallbacks
     }
 
     // 이모티콘 표시 코루틴
-    private IEnumerator EmoticonPlayTimeCoroutine()
+    private System.Collections.IEnumerator EmoticonPlayTimeCoroutine()
     {
         yield return new WaitForSeconds(_emoticonTime);
         _SpeechBubble.SetActive(false);
     }
 
     // 플레이어의 커스텀 프로퍼티가 변경 확인
-    public override void OnPlayerPropertiesUpdate(Player targetPlayer, ExitGames.Client.Photon.Hashtable changedProps)
+    public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
     {
         // 프로퍼티의 소유자가 맞고 키값을 가지고 있는지 체크
         if (photonView.Owner == targetPlayer && changedProps.ContainsKey("Nickname"))
         {
-            _NicknameText.text = changedProps["Nickname"].ToString();
+            _nicknameText.text = changedProps["Nickname"].ToString();
+
+            if (changedProps.ContainsKey("Color"))
+            {
+                string colorHex = changedProps["Color"].ToString();
+                if (ColorUtility.TryParseHtmlString(colorHex, out Color parsedColor))
+                {
+                    _nicknameText.color = parsedColor;
+                }
+            }
         }
     }
 }
