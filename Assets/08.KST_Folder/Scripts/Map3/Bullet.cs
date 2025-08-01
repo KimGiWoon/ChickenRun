@@ -46,6 +46,8 @@ namespace Kst
                     SoundManager.Instance.PlaySFX(SoundManager.Sfxs.SFX_DropWater); //총알과 플레이트 충돌 시 사운드
                 }
 
+                //TODO <김승태> : 해당 시점에 파괴 이펙트 생성 (반납은 알아서 되니깐 상관  x)
+
                 //플레이트 반납 요청
                 PlateMover mover = plate.GetComponentInChildren<PlateMover>();
                 mover.ReturnPool();

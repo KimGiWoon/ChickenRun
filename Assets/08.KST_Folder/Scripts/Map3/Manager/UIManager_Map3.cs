@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using Kst;
-using Kst;
 using Photon.Pun;
 using TMPro;
 using UnityEngine;

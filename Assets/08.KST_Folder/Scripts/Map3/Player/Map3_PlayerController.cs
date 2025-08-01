@@ -45,7 +45,7 @@ namespace Kst
         {
             if (!photonView.IsMine) return;
 
-            Camera.main.GetComponent<CameraController>().SetTarget(transform);
+            Camera.main.GetComponent<CameraController_Map3>().SetTarget(transform);
             _gameManager._gameUIManager.SetPlayerPosition(transform);
         }
         void Update()

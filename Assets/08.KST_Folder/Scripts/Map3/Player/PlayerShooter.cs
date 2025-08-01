@@ -9,12 +9,14 @@ namespace Kst
         [SerializeField] ArrowAim _arrow;
         [SerializeField] Transform _shootPos;
         [SerializeField] PooledObject _bulletPrefab;
-        [SerializeField] private string _bulletPath = "Bullet";
+        [SerializeField] PooledObject _destoryEffectPrefab;
+        private ObjectPool _effectPool;
         private ObjectPool _bulletPool;
 
         void Start()
         {
             _bulletPool = new(null, _bulletPrefab, 10);
+            _effectPool = new(null, _destoryEffectPrefab, 10);
 
         }
 
