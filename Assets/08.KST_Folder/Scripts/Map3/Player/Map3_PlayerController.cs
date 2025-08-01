@@ -13,7 +13,7 @@ namespace Kst
         {
             if (!photonView.IsMine) return;
 
-            Camera.main.GetComponent<CameraController>().SetTarget(transform);
+            Camera.main.GetComponent<CameraController_Map4>().SetTarget(transform);
         }
 
         void FixedUpdate()

@@ -10,6 +10,9 @@ public class DrillController : MonoBehaviour
     [SerializeField] float _attackDelayTime;
     [SerializeField] GameObject _attackRangeImage;
 
+    [Header("Manager Reference")]
+    [SerializeField] GameManager_Map4 _gameManager;
+
     Coroutine _drillMoveRoutine;
     Vector2 _moveDirection;
     Vector3 _moveTarget;
@@ -23,7 +26,7 @@ public class DrillController : MonoBehaviour
 
     private void Init()
     {
-        GameManager_Map4.Instance._gameUIManager.SetDrillPosition(transform);
+        _gameManager._gameUIManager.SetDrillPosition(transform);
         _delayTime = new WaitForSeconds(_attackDelayTime);
         _moveDirection = Vector2.up;
     }

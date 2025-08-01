@@ -2,10 +2,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Photon.Pun;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 
-public class GameManager_Map2 : MonoBehaviour
+public class GameManager_Map2 : MonoBehaviourPun
 {
     [SerializeField] private Transform _startPos;
     [SerializeField] private Transform _goalPos;
@@ -54,6 +55,7 @@ public class GameManager_Map2 : MonoBehaviour
         _stopwatch = new Stopwatch();
         _data = new Map2Data("Map2Record");
         GameProgress = new Property<float>(0f);
+        PhotonNetwork.RunRpcCoroutines = true;
         SetTotalDistance();
     }
 
@@ -65,7 +67,7 @@ public class GameManager_Map2 : MonoBehaviour
         // 3분이 지나면 게임 종료
         if (_stopwatch.ElapsedMilliseconds >= 180000)
         {
-            StartCoroutine(EndGame());
+            photonView.RPC(nameof(EndGame), RpcTarget.AllViaServer);
         }
     }
 
@@ -114,6 +116,7 @@ public class GameManager_Map2 : MonoBehaviour
     }
 
     // 게임이 종료될 때 호출되는 메서드
+    [PunRPC]
     private IEnumerator EndGame()
     {
         _stopwatch.Stop();

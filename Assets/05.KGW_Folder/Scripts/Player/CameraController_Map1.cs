@@ -4,7 +4,7 @@ using Photon.Pun;
 using UnityEngine;
 using static UnityEngine.GraphicsBuffer;
 
-public class CameraController : MonoBehaviour
+public class CameraController_Map1 : MonoBehaviour
 {
     [Header("Camera Setting Reference")]
     [SerializeField] float _followSpeed;
@@ -12,7 +12,7 @@ public class CameraController : MonoBehaviour
 
     Transform _followTarget;
     Vector3 _offset = new Vector3(0, 2f, -10f);
-    List<PlayerController_Map4> _alivePlayers = new();
+    List<PlayerController_Map1> _observePlayers = new();
     int _index = 0;
     bool _isViewing = false;
 
@@ -28,11 +28,11 @@ public class CameraController : MonoBehaviour
         if (_isViewing && Input.GetMouseButtonDown(0))
         {
             // 살아있는 플레이어가 없으면 실행 안함
-            if (_alivePlayers.Count == 0) return;
+            if (_observePlayers.Count == 0) return;
 
             // 0번 인덱스에 있는 플레이어 부터 순회하면서 카메라 전환
-            _index = (_index + 1) % _alivePlayers.Count;
-            SetTarget(_alivePlayers[_index].transform);
+            _index = (_index + 1) % _observePlayers.Count;
+            SetTarget(_observePlayers[_index].transform);
         }
     }
 
@@ -67,22 +67,22 @@ public class CameraController : MonoBehaviour
     // 관람 모드
     public void OnViewingMode()
     {
-        _alivePlayers.Clear();
+        _observePlayers.Clear();
         _index = 0;
 
         // 살아 있는 플레이어 순회
-        foreach(var player in FindObjectsOfType<PlayerController_Map4>())
+        foreach(var player in FindObjectsOfType<PlayerController_Map1>())
         {
-            // 플레이어가 죽지 않았으면
-            if (!player._isDeath)
+            // 결승점에 들어가지 않은 플레이거가 있으면 관찰리스트에 추가
+            if (!player._isGoal)
             {
-                _alivePlayers.Add(player);
+                _observePlayers.Add(player);
             }
         }
 
-        if(_alivePlayers.Count > 0)
+        if(_observePlayers.Count > 0)
         {
-            SetTarget(_alivePlayers[_index].transform);
+            SetTarget(_observePlayers[_index].transform);
             _isViewing = true;
         }
     }

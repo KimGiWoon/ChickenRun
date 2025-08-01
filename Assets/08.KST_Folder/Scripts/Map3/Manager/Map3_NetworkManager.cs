@@ -7,12 +7,13 @@ namespace Kst
 {
     public class Map3_NetworkManager : MonoBehaviourPunCallbacks
     {
+        [SerializeField] PlateSpawner _plateSpawner;
+        [SerializeField] UIManager_Map3 _UIManager;
+        [SerializeField] GameManager_Map3 _gameManager;
         //스폰
         [SerializeField] private string playerPrefabName = "Map3_Player";
         [SerializeField] private Map3BtnUI _btnUI;
         [SerializeField] private Transform spawnPoint; // 플레이어 생성 위치
-        [SerializeField] PlateSpawner _plateSpawner;
-        [SerializeField] UIManager_Map3 _UIManager;
         private bool _isStart = false;
 
         void Start()
@@ -51,6 +52,7 @@ namespace Kst
             PhotonNetwork.JoinLobby(); // 먼저 로비 입장
         }
 
+        //TODO <김승태> 추후 OnJoinedLobby 제거 필요
         public override void OnJoinedLobby()
         {
             Debug.Log("Joined Lobby");
@@ -118,7 +120,8 @@ namespace Kst
             if (currentPlayer >= maxPlayer)
             {
                 Debug.Log("모든 플레이어 입장 완료");
-                GameManager_Map1.Instance._totalPlayerCount = currentPlayer;
+                _gameManager._totalPlayerCount = currentPlayer;
+
                 photonView.RPC(nameof(StartGame), RpcTarget.AllViaServer);
             }
         }
