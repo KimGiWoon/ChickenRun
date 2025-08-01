@@ -58,6 +58,7 @@ MonoBehaviour:
   - RPC_GiveEgg
   - AddScore
   - MinusScore
+  - EndGame
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

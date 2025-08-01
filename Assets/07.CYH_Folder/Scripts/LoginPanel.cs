@@ -112,8 +112,6 @@ public class LoginPanel : UIBase
                         return;
                     }
 
-                    CYH_FirebaseManager.Instance.OnFirebaseLoginSuccess();
-
                     // LoginPanel -> GameStartPanel 로 변경
                     if (user != null)
                     {
