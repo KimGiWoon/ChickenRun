@@ -28,7 +28,8 @@ public class AudioManager_Map2 : MonoBehaviour
         SFX_Goal,
         SFX_Count,
         SFX_Start,
-        SFX_DropWater
+        SFX_DropWater,
+        SFX_GooseJump
     }
 
     [Header("BGM, SFX Sound Files")]

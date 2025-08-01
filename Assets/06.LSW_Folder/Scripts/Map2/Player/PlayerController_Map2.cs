@@ -343,6 +343,7 @@ public class PlayerController_Map2 : MonoBehaviourPun, IPunObservable
             
             _currentAnimatorHash = Jump_Hash;
             _animator.Play(Jump_Hash);
+            AudioManager_Map2.Instance.PlaySFX(AudioManager_Map2.Sfxs.SFX_GooseJump);
 
             // 플래그 초기화
             _isGround = false;
@@ -358,6 +359,7 @@ public class PlayerController_Map2 : MonoBehaviourPun, IPunObservable
         {
             _rigid.AddForce(Vector2.up * power, ForceMode2D.Impulse);
             _isBounce = true;
+            AudioManager_Map2.Instance.PlaySFX(AudioManager_Map2.Sfxs.SFX_Jump);
         }
     }
     

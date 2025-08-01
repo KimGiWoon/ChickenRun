@@ -17,8 +17,8 @@ public class NetworkManager_Map2 : MonoBehaviourPunCallbacks
 
     private void Start()
     {
-        GameManager_Map2.Instance.OnTimeUp += () => PhotonNetwork.LeaveRoom();
-
+        GameManager_Map2.Instance.OnTimeUp += () => PhotonNetwork.LoadLevel("MainScene");
+        
         if (!PhotonNetwork.IsConnected)
         {
             PhotonNetwork.ConnectUsingSettings();
@@ -30,6 +30,7 @@ public class NetworkManager_Map2 : MonoBehaviourPunCallbacks
         Hashtable table = new Hashtable { { "Nickname", nickname } };
         PhotonNetwork.LocalPlayer.SetCustomProperties(table);
 
+        PhotonNetwork.AutomaticallySyncScene = false;
         PlayerSpawn();
         photonView.RPC(nameof(NotifyPlayer), RpcTarget.MasterClient);
     }

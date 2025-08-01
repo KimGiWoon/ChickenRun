@@ -22,7 +22,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks
 
         Instance = this;
         DontDestroyOnLoad(gameObject);
-
+        
         // Photon 초기화
         //if (!PhotonNetwork.IsConnected) {
         //    PhotonNetwork.AutomaticallySyncScene = true;
@@ -159,6 +159,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     public override void OnJoinedRoom()
     {
         Debug.Log("[Photon] 방 참가 완료");
+        PhotonNetwork.AutomaticallySyncScene = true;
 
         // PhotonKickRelay 프리팹 인스턴스 생성
         GameObject relayObj = PhotonNetwork.Instantiate("PhotonKickRelay", Vector3.zero, Quaternion.identity);
