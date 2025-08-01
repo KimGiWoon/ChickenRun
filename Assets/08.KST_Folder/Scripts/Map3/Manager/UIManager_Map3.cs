@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using Kst;
 using Photon.Pun;
@@ -43,6 +44,8 @@ public class UIManager_Map3 : MonoBehaviourPun
     public bool _isOptionOpen = false;
     public bool _isEmoticonPanelOpen = false;
     public float _emoticonTime = 3f;
+
+    public event Action OnGameStart;
 
     // 맵타입 설정
     private void OnEnable()
@@ -248,7 +251,7 @@ public class UIManager_Map3 : MonoBehaviourPun
             if (count == 1)
             {
                 SoundManager.Instance.PlaySFX(SoundManager.Sfxs.SFX_Start);
-                _countText.text = "올라가!";
+                _countText.text = "사격 개시";
             }
             else
             {
@@ -263,9 +266,9 @@ public class UIManager_Map3 : MonoBehaviourPun
             {
                 SoundManager.Instance.PlayBGM(SoundManager.Bgms.BGM_InGame4);
                 _startPanel.SetActive(false);
-                GameManager_Map4.Instance.StartStopWatch();
-                GameManager_Map4.Instance._drillController.gameObject.SetActive(true);
-                _wall.SetActive(false);
+                //TODO <김승태> 스포너 생성 시작 시점
+                OnGameStart?.Invoke();
+                // GameManager_Map3.Instance.PlateSpawner.StartSpawn();
                 break;
             }
         }

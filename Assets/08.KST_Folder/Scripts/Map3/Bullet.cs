@@ -42,6 +42,8 @@ namespace Kst
                         else
                             ScoreManager.Instance.photonView.RPC(nameof(ScoreManager.MinusScore), RpcTarget.All, _actorNum, plate.GetScore());
                     }
+                    //TODO <김승태> : SFX 변경 필요
+                    SoundManager.Instance.PlaySFX(SoundManager.Sfxs.SFX_DropWater); //총알과 플레이트 충돌 시 사운드
                 }
 
                 //플레이트 반납 요청

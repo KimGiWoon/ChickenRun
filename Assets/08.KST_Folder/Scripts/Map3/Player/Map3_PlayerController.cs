@@ -100,7 +100,10 @@ namespace Kst
             else if (_rb.velocity.x > 0.1f || _rb.velocity.x < -0.1f)
             {
                 _currentAnimatorHash = Move_Hash;
+                //TODO <김승태> : SFX 변경 필요
                 _animator.Play(Move_Hash);
+                // 루프용 SFX로 변경 필요. -> SoundManager의 구조 변화 필요.
+                // SoundManager.Instance.PlaySFX(SoundManager.Sfxs.SFX_Jump);
             }
         }
 

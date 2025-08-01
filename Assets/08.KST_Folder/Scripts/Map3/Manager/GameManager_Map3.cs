@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Diagnostics;
 using Photon.Pun;
 using UnityEngine;
@@ -12,6 +13,7 @@ namespace Kst
 
         [SerializeField] public UIManager_Map3 _gameUIManager;
         [SerializeField] public float _GamePlayTime;
+        public PlateSpawner PlateSpawner;
         public Stopwatch _stopwatch;
         public string _currentMapType;
         public float _totalPlayTime;
@@ -33,10 +35,31 @@ namespace Kst
 
             _stopwatch = new Stopwatch();
         }
+        void OnEnable()
+        {
+            _gameUIManager.OnGameStart += StartToSpawn;
+        }
+        void OnDisable()
+        {
+            _gameUIManager.OnGameStart -= StartToSpawn;
+        }
 
         void Update()
         {
             PlayTimeOverCheck();
+        }
+
+        // IEnumerator DelaySubscribe()
+        // {
+        //     //scoreManager가 생성되기 전까지는 대기
+        //     yield return new WaitUntil(() => _gameUIManager != null);
+        //     ScoreManager.Instance.OnScoreChanged += RefreshScoreUI;
+        //     ScoreManager.Instance.OnEggChanged += RefreshEggUI;
+        // }
+
+        void StartToSpawn()
+        {
+            PlateSpawner.StartSpawn();
         }
 
         private void PlayTimeOverCheck()

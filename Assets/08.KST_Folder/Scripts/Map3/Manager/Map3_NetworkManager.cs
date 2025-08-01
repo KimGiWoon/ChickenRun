@@ -99,7 +99,7 @@ namespace Kst
                 Map3_PlayerController player = go.GetComponent<Map3_PlayerController>();
                 _btnUI.Init(player);
             }
-            _plateSpawner.StartSpawn();
+            _plateSpawner.StartSpawn(); //TODO <김승태> : 삭제 요망
         }
 
         // 입장 플레이어 체크
