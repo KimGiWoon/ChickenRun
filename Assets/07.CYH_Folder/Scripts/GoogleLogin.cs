@@ -91,10 +91,10 @@ public class GoogleLogin : MonoBehaviour
             Debug.LogFormat("User signed in successfully: {0} ({1})",
                 result.User.DisplayName, result.User.UserId);
 
-            CYH_FirebaseManager.Instance.OnFirebaseLoginSuccess();
-
             // 구글 로그인 한 계정을 CurrentUser로 설정
             FirebaseUser user = CYH_FirebaseManager.Auth.CurrentUser;
+            
+            CYH_FirebaseManager.Instance.OnFirebaseLoginSuccess();
 
             // LoginPanel -> GameStartPanel 로 변경
             if (user != null)

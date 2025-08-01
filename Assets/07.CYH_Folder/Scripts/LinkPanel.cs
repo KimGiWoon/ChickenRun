@@ -1,8 +1,9 @@
 using Firebase.Auth;
+using Firebase.Database;
 using Firebase.Extensions;
 using Google;
 using System;
-using TMPro;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -17,12 +18,11 @@ public class LinkPanel : UIBase
     [SerializeField] private Button _emailButton;
     [SerializeField] private Button _closeButton;
 
-    [SerializeField] private TMP_Text _errorText;
-
-    private GameStartPanel _gameStartPanel;
+    [SerializeField] private GameStartPanel _gameStartPanel;
 
     public Action OnClickLinkWithEmail { get; set; }
     public Action OnClickClosePopup { get; set; }
+    public Action OnClickSignOut { get; set; }
 
 
     private void Start()
@@ -32,20 +32,6 @@ public class LinkPanel : UIBase
         _closeButton.onClick.AddListener(() => OnClickClosePopup?.Invoke());
     }
 
-    /// <summary>
-    /// 익명 계정을 이메일 가입 계정으로 전환
-    /// </summary>
-    private void OnClick_LinkWithEmail()
-    {
-        FirebaseUser user = CYH_FirebaseManager.Auth.CurrentUser;
-        if (user == null || !user.IsAnonymous)
-        {
-            Debug.LogWarning("익명 로그인 유저x");
-            return;
-        }
-    }
-
-    /// <summary>
     /// 익명 계정을 이메일 가입 계정으로 전환
     /// </summary>
     //private void OnClick_LinkWithEmail_Set()
@@ -85,7 +71,7 @@ public class LinkPanel : UIBase
 
     //        user.ReloadAsync();
 
-    //        PopupManager.Instance.ShowOKPopup("이메일 계정으로 전환 성공", "OK", () => PopupManager.Instance.HidePopup());
+    //        PopupManager.Instance.ShowOKPopup("이메일 계정으로 전환 성공\r\n 다시 로그인 해주세요.", "OK", () => PopupManager.Instance.HidePopup());
 
     //        Debug.Log("이메일 가입 성공");
     //        Debug.Log("------유저 정보------");
@@ -115,7 +101,7 @@ public class LinkPanel : UIBase
             if (task.IsCanceled || task.IsFaulted)
             {
                 Debug.LogError($"구글 로그인 실패 / 원인: {task.Exception}");
-                
+
                 PopupManager.Instance.ShowOKPopup("구글 로그인 실패", "OK", () => PopupManager.Instance.HidePopup());
                 return;
             }
@@ -141,79 +127,100 @@ public class LinkPanel : UIBase
 
                 Firebase.Auth.AuthResult linkedUser = linkTask.Result;
 
-                PopupManager.Instance.ShowOKPopup("구글 계정으로 전환 성공", "OK", () => PopupManager.Instance.HidePopup());
+                string googleDisplayName = googleUser.DisplayName;
+                Debug.Log($"구글 계정 닉네임 : {googleDisplayName}");
 
-                FirebaseUser user = linkedUser.User ?? FirebaseAuth.DefaultInstance.CurrentUser;
+                if (CYH_FirebaseManager.Auth.CurrentUser == null)
+                {
+                    Debug.Log("현재 유저 상태: CurrentUser is null");
+                }
+                else
+                {
+                    Debug.Log("현재 유저 상태: CurrentUser");
+                }
+
+                // 구글 계정 닉네임으로 currentUser을 닉네임으로 변경
+                SetNickname(user, googleDisplayName);
+
+                // 포톤 재설정
+                CYH_FirebaseManager.Instance.OnFirebaseLoginSuccess();
+
+                // 새로고침
+                //user.ReloadAsync();
 
                 Debug.Log("------유저 정보------");
                 Debug.Log($"유저 이름 : {user.DisplayName}");
                 Debug.Log($"유저 ID: {user.UserId}");
                 Debug.Log($"이메일 : {user.Email}");
 
-                _gameStartPanel.SetNicknameField();
+                StartCoroutine(WaitForReloadAndLog(user));
 
+                PopupManager.Instance.ShowOKPopup("구글 계정으로 전환 성공\r\n 다시 로그인 해주세요.", "OK", () =>
+                {
+                    PopupManager.Instance.HidePopup();
+                    // SignOut
+                    CYH_FirebaseManager.Auth.SignOut();
+                    // LoginPanel ShowUI, GameStartPanel HideUI
+                    OnClickSignOut?.Invoke();
+                });
             });
         });
     }
 
-    //private void OnClick_LinkWithGoogle()
-    //{
-    //    GoogleSignIn.DefaultInstance.SignIn().ContinueWithOnMainThread(task =>
-    //    {
-    //        if (task.IsCanceled || task.IsFaulted)
-    //        {
-    //            PopupManager.Instance.ShowOKPopup("구글 계정 로그인 실패", "OK", () => PopupManager.Instance.HidePopup());
-    //            return;
-    //        }
-
-    //        GoogleSignInUser googleUser = task.Result;
-    //        string idToken = googleUser.IdToken;
-
-    //        Credential credential = GoogleAuthProvider.GetCredential(idToken, null);
-
-    //        // 현재 로그인된 익명 계정을 구글 계정으로 전환
-    //        CYH_FirebaseManager.Auth.CurrentUser.LinkWithCredentialAsync(credential).ContinueWithOnMainThread(linkTask =>
-    //        {
-    //            if (linkTask.IsCanceled || linkTask.IsFaulted)
-    //            {
-    //                PopupManager.Instance.ShowOKPopup("구글 계정으로 전환 실패", "OK", () => PopupManager.Instance.HidePopup());
-    //                return;
-    //            }
-
-    //            Firebase.Auth.AuthResult linkedUser = linkTask.Result;
-
-    //            PopupManager.Instance.ShowOKPopup("구글 계정으로 전환 성공", "OK", () => PopupManager.Instance.HidePopup());
-
-    //            Debug.Log("완료");
-    //        });
-    //    });
-    //}
-
 
     /// <summary>
-    /// 계정 전환 시 유저 닉네임을 설정하는 메서드
+    /// 익명계정에서 구글계정으로 전환된 유저의 DisplayName을 구글계정 DisplayName으로 전환하는 메서드 
     /// </summary>
-    /// <param name="currentUser">닉네임을 설정할 유저</param>
-    //private void SetUserNickname(FirebaseUser currentUser)
-    //{
-    //    UserProfile profile = new UserProfile();
-    //    profile.DisplayName = _nicknameField.text;
+    /// <param name="currentUser">닉네임을 변경할 유저</param>
+    /// <param name="googleDisplayName">새로 설정할 닉네임(구글 계정 닉네임)</param>
+    private void SetNickname(FirebaseUser currentUser, string googleDisplayName)
+    {
+        UserProfile profile = new UserProfile();
+        profile.DisplayName = googleDisplayName;
 
-    //    currentUser.UpdateUserProfileAsync(profile)
-    //        .ContinueWithOnMainThread(task =>
-    //        {
-    //            if (task.IsCanceled)
-    //            {
-    //                Debug.LogError("닉네임 설정 취소");
-    //                return;
-    //            }
+        currentUser.UpdateUserProfileAsync(profile)
+            .ContinueWithOnMainThread(task =>
+            {
+                if (task.IsCanceled)
+                {
+                    Debug.LogError("닉네임 설정 취소");
+                    return;
+                }
 
-    //            if (task.IsFaulted)
-    //            {
-    //                Debug.LogError("닉네임 설정 실패");
-    //                return;
-    //            }
-    //            Debug.Log("닉네임 설정 성공");
-    //        });
-    //}
+                if (task.IsFaulted)
+                {
+                    Debug.LogError("닉네임 설정 실패");
+                    return;
+                }
+
+                Debug.Log("닉네임 설정 성공");
+
+                Debug.Log($"변경된 유저 닉네임 : {currentUser.DisplayName}");
+                _gameStartPanel.OnSetNicknameField?.Invoke(googleDisplayName);
+            });
+    }
+
+    private void SaveNickname(string nickname)
+    {
+        string uid = CYH_FirebaseManager.User.UserId;
+        DatabaseReference nicknameRef = CYH_FirebaseManager.DataReference.Child("UserData").Child(uid).Child("NickName");
+
+        nicknameRef.SetValueAsync(nickname).ContinueWithOnMainThread(task =>
+        {
+            if (task.IsCompletedSuccessfully)
+            {
+                Debug.Log("닉네임 저장 성공");
+            }
+            else
+            {
+                Debug.LogError("닉네임 저장 실패");
+            }
+        });
+    }
+
+    private IEnumerator WaitForReloadAndLog(FirebaseUser user)
+    {
+        var reloadTask = user.ReloadAsync();
+        yield return new WaitUntil(() => reloadTask.IsCompleted);
+    }
 }
