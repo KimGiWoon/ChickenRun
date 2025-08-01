@@ -143,7 +143,7 @@ public class LinkPanel : UIBase
                 SetNickname(user, googleDisplayName);
 
                 // 포톤 재설정
-                //CYH_FirebaseManager.Instance.OnFirebaseLoginSuccess();
+                CYH_FirebaseManager.Instance.OnFirebaseLoginSuccess();
 
                 // 새로고침
                 //user.ReloadAsync();

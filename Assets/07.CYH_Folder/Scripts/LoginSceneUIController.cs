@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -5,7 +6,7 @@ public class LoginSceneUIManager : MonoBehaviour
 {
     private enum LoginUIType
     {
-        Login,
+        LoginPanel,
         SocialPanel,
         SignUpPanel,
         LinkPanel,
@@ -18,9 +19,31 @@ public class LoginSceneUIManager : MonoBehaviour
     [SerializeField] private GuestLogin _guestLogin;
 
 
-    private void Start()
+    private IEnumerator Start()
     {
-        ShowUI(LoginUIType.Login);
+        // FirebaseManager Init 끝난 후 실행
+        while (!CYH_FirebaseManager.Instance.IsFirebaseReady)
+        {
+            yield return null;
+        }
+
+        // CurrentUser 존재 o ->  GameStartPanel
+        if (CYH_FirebaseManager.Instance.IsLoggedIn())
+        {
+            Debug.Log($"IsLoggedIn : {CYH_FirebaseManager.Instance.IsLoggedIn()}");
+            ShowUI(LoginUIType.GameStartPanel);
+            HideUI(LoginUIType.LoginPanel);
+            Debug.Log("CurrentUser 있음 -> GameStartPanel");
+        }
+        // CurrentUser 존재 x -> Login
+        else
+        {
+            Debug.Log($"IsLoggedIn : {CYH_FirebaseManager.Instance.IsLoggedIn()}");
+            ShowUI(LoginUIType.LoginPanel);
+            Debug.Log("CurrentUser 없음 -> LoginPanel");
+        }
+
+        //ShowUI(LoginUIType.Login);
 
         foreach (var ui in _uiList)
         {
@@ -56,7 +79,7 @@ public class LoginSceneUIManager : MonoBehaviour
                 linkPanel.OnClickSignOut = () =>
                 {
                     HideUI(LoginUIType.GameStartPanel);
-                    ShowUI(LoginUIType.Login);
+                    ShowUI(LoginUIType.LoginPanel);
                 };
             }
 
@@ -74,7 +97,7 @@ public class LoginSceneUIManager : MonoBehaviour
                 gameStartPanel.OnClickSignOut = () =>
                 {
                     HideUI(LoginUIType.GameStartPanel);
-                    ShowUI(LoginUIType.Login);
+                    ShowUI(LoginUIType.LoginPanel);
                     PopupManager.Instance.ShowOKPopup("로그아웃 성공", "OK", () => PopupManager.Instance.HidePopup());
                 };
 
@@ -82,7 +105,7 @@ public class LoginSceneUIManager : MonoBehaviour
                 gameStartPanel.OnClickDeleteAccount = () =>
                 {
                     HideUI(LoginUIType.GameStartPanel);
-                    ShowUI(LoginUIType.Login);
+                    ShowUI(LoginUIType.LoginPanel);
                     PopupManager.Instance.ShowOKPopup("회원 탈퇴 성공", "OK", () => PopupManager.Instance.HidePopup());
                 };
             }
@@ -92,7 +115,7 @@ public class LoginSceneUIManager : MonoBehaviour
         _googleLogin.LoginCompleted = () =>
         {
             ShowUI(LoginUIType.GameStartPanel);
-            HideUI(LoginUIType.Login);
+            HideUI(LoginUIType.LoginPanel);
             HideUI(LoginUIType.SocialPanel);
         };
 
@@ -101,7 +124,7 @@ public class LoginSceneUIManager : MonoBehaviour
         {
             Debug.Log("게스트 로그인 성공 후 ShowUI");
             ShowUI(LoginUIType.GameStartPanel);
-            HideUI(LoginUIType.Login);
+            HideUI(LoginUIType.LoginPanel);
             HideUI(LoginUIType.SocialPanel);
         };
     }
@@ -131,6 +154,6 @@ public class LoginSceneUIManager : MonoBehaviour
     private void ShowGameStartUI()
     {
         ShowUI(LoginUIType.GameStartPanel);
-        HideUI(LoginUIType.Login);
+        HideUI(LoginUIType.LoginPanel);
     }
 }
