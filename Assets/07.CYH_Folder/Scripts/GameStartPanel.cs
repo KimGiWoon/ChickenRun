@@ -22,7 +22,13 @@ public class GameStartPanel : UIBase
     {
         _gameStartButton.onClick.AddListener(() => OnClickGameStart?.Invoke());
         // 로비 씬으로 전환
-        _gameStartButton.onClick.AddListener(() => SceneManager.LoadScene("MainScene"));
+        _gameStartButton.onClick.AddListener(() =>
+        {
+            SceneManager.LoadScene("MainScene");
+            
+            // 포톤 초기화
+            CYH_FirebaseManager.Instance.OnFirebaseLoginSuccess();
+        });
 
         _signOutButton.onClick.AddListener(() =>
         {
