@@ -140,6 +140,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1824826443453246442, guid: 81c6ab81374ca0b45bab1137e714ebf6, type: 3}
+      propertyPath: sceneViewId
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 5568560184835631956, guid: 81c6ab81374ca0b45bab1137e714ebf6, type: 3}
       propertyPath: m_Name
       value: GameManager_Map1
@@ -456,7 +460,7 @@ MonoBehaviour:
   _musicSlider: {fileID: 1006014956}
   _effectSlider: {fileID: 399176343}
   _camModeCheckToggle: {fileID: 362436658}
-  _cameraController: {fileID: 1977737903}
+  _cameraController: {fileID: 0}
   _playerEmoticonController: {fileID: 0}
   _emoticonPanel: {fileID: 6584174691616066070}
   _emoticonSprite:
@@ -472,7 +476,8 @@ MonoBehaviour:
   _angryEmoticon: {fileID: 1206015034808465819}
   _loveEmoticon: {fileID: 2860198461515788798}
   _weepEmoticon: {fileID: 1408064759821628485}
-  _gameManager_Map1: {fileID: 1614085353}
+  _networkManager: {fileID: 0}
+  _gameManager: {fileID: 0}
   _isOptionOpen: 0
   _isEmoticonPanelOpen: 0
   _emoticonTime: 3
@@ -672,7 +677,7 @@ GameObject:
   - component: {fileID: 1977737902}
   - component: {fileID: 1977737901}
   - component: {fileID: 1977737900}
-  - component: {fileID: 1977737903}
+  - component: {fileID: 1977737905}
   - component: {fileID: 1977737904}
   m_Layer: 0
   m_Name: Main Camera
@@ -755,20 +760,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1977737903
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1977737899}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4946099e52f4ed41baf9f75c025e89a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _followSpeed: 3
-  _isDelayMove: 1
 --- !u!114 &1977737904
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -789,6 +780,20 @@ MonoBehaviour:
   m_CropFrameX: 0
   m_CropFrameY: 0
   m_StretchFill: 0
+--- !u!114 &1977737905
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1977737899}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 80730aa2940d68b489c40b4abf1ee161, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _followSpeed: 3
+  _isDelayMove: 1
 --- !u!1 &2120181850
 GameObject:
   m_ObjectHideFlags: 0

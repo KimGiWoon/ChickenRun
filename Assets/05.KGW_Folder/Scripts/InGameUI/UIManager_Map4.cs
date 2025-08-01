@@ -42,7 +42,7 @@ public class UIManager_Map4 : MonoBehaviourPun
     [SerializeField] Slider _musicSlider;
     [SerializeField] Slider _effectSlider;
     [SerializeField] Toggle _camModeCheckToggle;
-    [SerializeField] CameraController _cameraController;
+    [SerializeField] CameraController_Map4 _cameraController;
 
     [Header("Emoticon Panel UI Reference")]
     [SerializeField] PlayerEmoticonController_Map4 _playerEmoticonController;
@@ -57,6 +57,7 @@ public class UIManager_Map4 : MonoBehaviourPun
 
     [Header("Manager Reference")]
     [SerializeField] NetworkManager_Map4 _networkManager;
+    [SerializeField] GameManager_Map4 _gameManager;
 
     Coroutine _panelRoutine;
     Coroutine _emoticonRoutine;
@@ -70,13 +71,13 @@ public class UIManager_Map4 : MonoBehaviourPun
     // 맵타입 설정
     private void OnEnable()
     {
-        GameManager_Map4.Instance._currentMapType = "Map4";
+        _gameManager._currentMapType = "Map4";
     }
 
     private void Start()
     {
         // 달걀 획득 UI 이벤트 구독
-        GameManager_Map4.Instance.OnEggCountChange += UpdateGetEggUI;
+        _gameManager.OnEggCountChange += UpdateGetEggUI;
         // 시작할 시 획득한 달걀은 0이므로 UI설정
         UpdateGetEggUI(0);
 
@@ -89,7 +90,7 @@ public class UIManager_Map4 : MonoBehaviourPun
     private void Update()
     {
         // 플레이 타임 UI 출력
-        _playTimeText.text = GameManager_Map4.Instance.PlayTimeUpdate();
+        _playTimeText.text = _gameManager.PlayTimeUpdate();
 
         // 플레이어와 끝지점 거리 확인
         PlayerPosUpdate();
@@ -101,7 +102,7 @@ public class UIManager_Map4 : MonoBehaviourPun
     private void OnDestroy()
     {
         // 달걀 획득 UI 이벤트 해제
-        GameManager_Map4.Instance.OnEggCountChange -= UpdateGetEggUI;
+        _gameManager.OnEggCountChange -= UpdateGetEggUI;
 
         // 메모리 누수 방지로 리셋
         _camModeCheckToggle.onValueChanged.RemoveListener(CamModeCheck);
@@ -223,7 +224,7 @@ public class UIManager_Map4 : MonoBehaviourPun
     private void OnExitPlayGame()
     {
         string exitPlayer = PhotonNetwork.LocalPlayer.NickName;
-        GameManager_Map4.Instance._stopwatch.Stop();
+        _gameManager._stopwatch.Stop();
         // 나감을 알림
         photonView.RPC(nameof(ExitPlayer), RpcTarget.AllViaServer, exitPlayer);
     }
@@ -300,7 +301,6 @@ public class UIManager_Map4 : MonoBehaviourPun
     {
         WaitForSeconds time = new WaitForSeconds(_routineTime);
         int count = 4;
-        GameManager_Map4.Instance._isGoal = false;
 
         yield return new WaitForSeconds(2f);
         _startPanel.SetActive(true);
@@ -325,8 +325,7 @@ public class UIManager_Map4 : MonoBehaviourPun
             {
                 SoundManager.Instance.PlayBGM(SoundManager.Bgms.BGM_InGame4);
                 _startPanel.SetActive(false);
-                GameManager_Map4.Instance.StartStopWatch();
-                GameManager_Map4.Instance._drillController.gameObject.SetActive(true);
+                _gameManager.StartStopWatch();
                 _wall.SetActive(false);
                 break;
             }

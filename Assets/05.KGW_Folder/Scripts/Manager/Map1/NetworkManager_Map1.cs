@@ -47,7 +47,7 @@ public class NetworkManager_Map1 : MonoBehaviourPunCallbacks
     // 방 입장
     public override void OnJoinedRoom()
     {
-        UnityEngine.Debug.Log("피씨로 입장 완료");
+        UnityEngine.Debug.Log("입장 완료");
 
         // 플레이어 생성
         PlayerSpawn();
@@ -112,10 +112,5 @@ public class NetworkManager_Map1 : MonoBehaviourPunCallbacks
         {
             CheckRoomPlayer();
         }
-    }
-
-    public override void OnLeftRoom()
-    {
-        UnityEngine.Debug.Log("방을 나감");
     }
 }

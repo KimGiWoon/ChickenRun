@@ -121,6 +121,7 @@ namespace Kst
             {
                 Debug.Log("모든 플레이어 입장 완료");
                 _gameManager._totalPlayerCount = currentPlayer;
+
                 photonView.RPC(nameof(StartGame), RpcTarget.AllViaServer);
             }
         }

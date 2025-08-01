@@ -317,7 +317,9 @@ MonoBehaviour:
   _playerstate: {fileID: 4597169990468525147}
   _playerRenderer: {fileID: 5085655038668472634}
   _playerAni: {fileID: 8357870223618436093}
+  _playerEmoticonController: {fileID: 7027478169643268064}
   _correctionValue: 20
+  _isGoal: 0
 --- !u!114 &4597169990468525147
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -358,6 +360,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 8cacdcbb0fc41d544ac1812f264b2e20, type: 3}
   - {fileID: 21300000, guid: c9a4b45888520e04db3ab3df78677557, type: 3}
   _emoticonTime: 3
+  _nickname: 
 --- !u!1 &4043092197667217649
 GameObject:
   m_ObjectHideFlags: 0
