@@ -200,7 +200,6 @@ public void CreateGameManager()
         UnityEngine.Debug.Log("모든 플레이어가 방을 나갑니다.");
         _networkManager._isStart = false;
         SoundManager.Instance.StopBGM();
-        _stopwatch?.Reset();
 
         // 로비 씬이 있으면 추가해서 씬 이동
         PhotonNetwork.LoadLevel("MainScene");

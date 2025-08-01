@@ -8,8 +8,9 @@ using ExitGames.Client.Photon;
 
 public class NetworkManager_Map1 : MonoBehaviourPunCallbacks
 {
-    [Header("Map1 UI Manager Reference")]
+    [Header("Manager Reference")]
     [SerializeField] UIManager_Map1 _UIManager;
+    [SerializeField] GameManager_Map1 _gameManager;
 
     public bool _isStart = false;
 
@@ -83,7 +84,7 @@ public class NetworkManager_Map1 : MonoBehaviourPunCallbacks
         // 현재 인원 전달
         if (PhotonNetwork.IsMasterClient)
         {
-            GameManager_Map1.Instance._totalPlayerCount = currentPlayer;
+            _gameManager._totalPlayerCount = currentPlayer;
         }
 
         if (currentPlayer >= maxPlayer)
@@ -111,5 +112,10 @@ public class NetworkManager_Map1 : MonoBehaviourPunCallbacks
         {
             CheckRoomPlayer();
         }
+    }
+
+    public override void OnLeftRoom()
+    {
+        UnityEngine.Debug.Log("방을 나감");
     }
 }

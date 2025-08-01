@@ -235,7 +235,6 @@ public class UIManager_Map4 : MonoBehaviourPun
         Debug.Log($"{PlayerNickname}께서 나갔습니다.");
         _networkManager._isStart = false;
         SoundManager.Instance.StopBGM();
-        GameManager_Map4.Instance._stopwatch?.Reset();
 
         // 로비 씬이 있으면 추가해서 씬 이동
         PhotonNetwork.LoadLevel("MainScene");

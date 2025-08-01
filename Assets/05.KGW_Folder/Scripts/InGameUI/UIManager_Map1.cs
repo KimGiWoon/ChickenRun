@@ -9,7 +9,7 @@ using UnityEngine.UI;
 public class UIManager_Map1 : MonoBehaviourPun
 {
     [Header("Play Time UI Reference")]
-    [SerializeField] TMP_Text _playTimeText;
+    [SerializeField] public TMP_Text _playTimeText;
 
     [Header("Egg Count UI Reference")]
     [SerializeField] TMP_Text _eggCountText;
@@ -52,6 +52,7 @@ public class UIManager_Map1 : MonoBehaviourPun
 
     [Header("Manager Reference")]
     [SerializeField] NetworkManager_Map1 _networkManager;
+    [SerializeField] GameManager_Map1 _gameManager;
 
     Coroutine _panelRoutine;
     Coroutine _emoticonRoutine;
@@ -63,13 +64,13 @@ public class UIManager_Map1 : MonoBehaviourPun
     // 맵타입 설정
     private void OnEnable()
     {
-        GameManager_Map1.Instance._currentMapType = "Map1";
+        _gameManager._currentMapType = "Map1";
     }
 
     private void Start()
     {
         // 달걀 획득 UI 이벤트 구독
-        GameManager_Map1.Instance.OnEggCountChange += UpdateGetEggUI;
+        _gameManager.OnEggCountChange += UpdateGetEggUI;
         // 시작할 시 획득한 달걀은 0이므로 UI설정
         UpdateGetEggUI(0);
 
@@ -81,7 +82,8 @@ public class UIManager_Map1 : MonoBehaviourPun
     private void Update()
     {
         // 플레이 타임 UI 출력
-        _playTimeText.text = GameManager_Map1.Instance.PlayTimeUpdate();
+        string playTime = _gameManager.PlayTimeUpdate();
+        _playTimeText.text = playTime;
 
         // 플레이어와 결승선의 거리 확인
         PlayerPosUpdate();
@@ -90,7 +92,7 @@ public class UIManager_Map1 : MonoBehaviourPun
     private void OnDestroy()
     {
         // 달걀 획득 UI 이벤트 해제
-        GameManager_Map1.Instance.OnEggCountChange -= UpdateGetEggUI;
+        _gameManager.OnEggCountChange -= UpdateGetEggUI;
 
         // 메모리 누수 방지로 리셋
         _camModeCheckToggle.onValueChanged.RemoveListener(CamModeCheck);
@@ -142,8 +144,8 @@ public class UIManager_Map1 : MonoBehaviourPun
         _effectSlider.value = SettingManager.Instance.SFX.Value;
 
         // 사운드 초기값 중간 세팅
-        _musicSlider.value = 0.1f;
-        _effectSlider.value = 0.2f;
+        //_musicSlider.value = 0.1f;
+        //_effectSlider.value = 0.2f;
     }
 
     // 옵션 창 오픈
@@ -163,6 +165,7 @@ public class UIManager_Map1 : MonoBehaviourPun
     // 이모티콘 패널 오픈
     private void OnEmoticonPanel()
     {
+
         if (!_isEmoticonPanelOpen)
         {
             _emoticonPanel.SetActive(true);
@@ -211,22 +214,17 @@ public class UIManager_Map1 : MonoBehaviourPun
     // 나가기 버튼 클릭
     private void OnExitPlayGame()
     {
-        string exitPlayer = PhotonNetwork.LocalPlayer.NickName;
-        GameManager_Map1.Instance._stopwatch.Stop();
-        // 나감을 알림
-        photonView.RPC(nameof(ExitPlayer), RpcTarget.AllViaServer, exitPlayer);
+        _gameManager.StopStopWatch();
+        SoundManager.Instance.StopBGM(); 
+        _networkManager._isStart = false;
+
+        ExitPlayer();
     }
 
     // 방 나가기
-    [PunRPC]
-    private void ExitPlayer(string PlayerNickname)
+    private void ExitPlayer()
     {
-        UnityEngine.Debug.Log($"{PlayerNickname}께서 나갔습니다.");
-        _networkManager._isStart = false;
-        SoundManager.Instance.StopBGM();
-        GameManager_Map1.Instance._stopwatch?.Reset();
-
-        // 로비 씬이 있으면 추가해서 씬 이동
+        // 로비로 이동
         PhotonNetwork.LoadLevel("MainScene");
     }
 
@@ -269,7 +267,6 @@ public class UIManager_Map1 : MonoBehaviourPun
     {
         WaitForSeconds time = new WaitForSeconds(_routineTime);
         int count = 4;
-        GameManager_Map1.Instance._isGoal = false;
 
         yield return new WaitForSeconds(4f);
         _startPanel.SetActive(true);
@@ -294,7 +291,7 @@ public class UIManager_Map1 : MonoBehaviourPun
             {
                 SoundManager.Instance.PlayBGM(SoundManager.Bgms.BGM_InGame1);
                 _startPanel.SetActive(false);
-                GameManager_Map1.Instance.StartStopWatch();
+                _gameManager.StartStopWatch();
                 _wall.SetActive(false);
                 break;
             }
