@@ -472,6 +472,7 @@ MonoBehaviour:
   _angryEmoticon: {fileID: 1206015034808465819}
   _loveEmoticon: {fileID: 2860198461515788798}
   _weepEmoticon: {fileID: 1408064759821628485}
+  _gameManager_Map1: {fileID: 1614085353}
   _isOptionOpen: 0
   _isEmoticonPanelOpen: 0
   _emoticonTime: 3
@@ -581,6 +582,17 @@ MonoBehaviour:
   sceneViewId: 2
   InstantiationId: 0
   isRuntimeInstantiated: 0
+--- !u!114 &1614085353 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7472974193570990470, guid: 81c6ab81374ca0b45bab1137e714ebf6, type: 3}
+  m_PrefabInstance: {fileID: 201157817}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba0436e62a667034885411dbe4bc7ebb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1822196131
 GameObject:
   m_ObjectHideFlags: 0
@@ -1089,6 +1101,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 916955436498634420, guid: 3417d7b8f169d224788f20616e925727, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2259857948683702191, guid: 3417d7b8f169d224788f20616e925727, type: 3}
       propertyPath: m_LocalPosition.x
       value: 4.0345535
@@ -1343,6 +1359,10 @@ PrefabInstance:
       propertyPath: _UIManager
       value: 
       objectReference: {fileID: 1496947165}
+    - target: {fileID: 7618825147066060082, guid: e45c401bbc19dc842996bb6a3cf7e069, type: 3}
+      propertyPath: _gameManager_Map1
+      value: 
+      objectReference: {fileID: 1614085353}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

@@ -55,6 +55,9 @@ public class UIManager_Map4 : MonoBehaviourPun
     [SerializeField] Button _loveEmoticon;
     [SerializeField] Button _weepEmoticon;
 
+    [Header("Manager Reference")]
+    [SerializeField] NetworkManager_Map4 _networkManager;
+
     Coroutine _panelRoutine;
     Coroutine _emoticonRoutine;
     float _playerDistance;
@@ -220,7 +223,7 @@ public class UIManager_Map4 : MonoBehaviourPun
     private void OnExitPlayGame()
     {
         string exitPlayer = PhotonNetwork.LocalPlayer.NickName;
-
+        GameManager_Map4.Instance._stopwatch.Stop();
         // 나감을 알림
         photonView.RPC(nameof(ExitPlayer), RpcTarget.AllViaServer, exitPlayer);
     }
@@ -230,9 +233,8 @@ public class UIManager_Map4 : MonoBehaviourPun
     private void ExitPlayer(string PlayerNickname)
     {
         Debug.Log($"{PlayerNickname}께서 나갔습니다.");
-
-        // 현재의 방을 나가기
-        //PhotonNetwork.LeaveRoom();
+        _networkManager._isStart = false;
+        SoundManager.Instance.StopBGM();
 
         // 로비 씬이 있으면 추가해서 씬 이동
         PhotonNetwork.LoadLevel("MainScene");
