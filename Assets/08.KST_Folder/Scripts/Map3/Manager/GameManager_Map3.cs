@@ -10,13 +10,13 @@ namespace Kst
         private static GameManager_Map3 _instance;
         public static GameManager_Map3 Instance { get { return _instance; } set { _instance = value; } }
 
+        [SerializeField] public UIManager_Map3 _gameUIManager;
         [SerializeField] public float _GamePlayTime;
-        public bool _isFirstPlayer = false;
         public Stopwatch _stopwatch;
         public string _currentMapType;
         public float _totalPlayTime;
-        public int _totalPlayerCount;
         int _totalEggCount = 0;
+        public int _totalPlayerCount;
         Map3Data _data;
 
         //이벤트
@@ -30,6 +30,8 @@ namespace Kst
                 _instance = this;
             else
                 Destroy(gameObject);
+
+            _stopwatch = new Stopwatch();
         }
 
         void Update()

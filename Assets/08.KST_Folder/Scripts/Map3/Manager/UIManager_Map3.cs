@@ -1,4 +1,5 @@
 using System.Collections;
+using Kst;
 using Photon.Pun;
 using TMPro;
 using UnityEngine;
@@ -32,7 +33,7 @@ public class UIManager_Map3 : MonoBehaviourPun
     [SerializeField] CameraController _cameraController;
 
     [Header("Emoticon Panel UI Reference")]
-    [SerializeField] PlayerEmoticonController_Map4 _playerEmoticonController;
+    [SerializeField] PlayerEmoticonController_Map3 _playerEmoticonController;
     [SerializeField] GameObject _emoticonPanel;
     [SerializeField] Sprite[] _emoticonSprite;
     [SerializeField] Button _smileEmoticon, _quizEmoticon, _surpriseEmoticon, _angryEmoticon, _loveEmoticon, _weepEmoticon;
@@ -42,18 +43,17 @@ public class UIManager_Map3 : MonoBehaviourPun
     public bool _isOptionOpen = false;
     public bool _isEmoticonPanelOpen = false;
     public float _emoticonTime = 3f;
-    public float _playerEndDistance;
 
     // 맵타입 설정
     private void OnEnable()
     {
-        GameManager_Map4.Instance._currentMapType = "Map4";
+        GameManager_Map3.Instance._currentMapType = "Map4";
     }
 
     private void Start()
     {
         // 달걀 획득 UI 이벤트 구독
-        GameManager_Map4.Instance.OnEggCountChange += UpdateGetEggUI;
+        GameManager_Map3.Instance.OnEggCountChange += UpdateGetEggUI;
         // 시작할 시 획득한 달걀은 0이므로 UI설정
         UpdateGetEggUI(0);
 
@@ -64,13 +64,14 @@ public class UIManager_Map3 : MonoBehaviourPun
     private void Update()
     {
         // 플레이 타임 UI 출력
-        _playTimeText.text = GameManager_Map4.Instance.PlayTimeUpdate();
+        if (GameManager_Map3.Instance == null) Debug.Log("게임 매니저 인스턴스 null");
+        _playTimeText.text = GameManager_Map3.Instance.PlayTimeUpdate();
     }
 
     private void OnDestroy()
     {
         // 달걀 획득 UI 이벤트 해제
-        GameManager_Map4.Instance.OnEggCountChange -= UpdateGetEggUI;
+        GameManager_Map3.Instance.OnEggCountChange -= UpdateGetEggUI;
 
         // 메모리 누수 방지로 리셋
         _camModeCheckToggle.onValueChanged.RemoveListener(CamModeCheck);
@@ -158,7 +159,7 @@ public class UIManager_Map3 : MonoBehaviourPun
     // 플레이어 이모티콘 컨트롤러 가져오기
     public void GetPlayerEmoticonController(GameObject emoticonController)
     {
-        _playerEmoticonController = emoticonController.GetComponent<PlayerEmoticonController_Map4>();
+        _playerEmoticonController = emoticonController.GetComponent<PlayerEmoticonController_Map3>();
     }
 
     // 이모티콘 표시
@@ -181,10 +182,12 @@ public class UIManager_Map3 : MonoBehaviourPun
         _emoticonRoutine = StartCoroutine(EmoticonPlayTimeCoroutine());
 
         PhotonView playerView = PhotonView.Get(_playerPosition.gameObject);
+        Debug.Log($"플레이어 뷰 : {playerView}");
         if (playerView != null && playerView.IsMine)
         {
             // 자신을 제외한 플레이어에게 이모티콘 표시
             playerView.RPC(nameof(_playerEmoticonController.EmoticonPlay), RpcTarget.Others, index);
+            Debug.Log("뿌려주기 실행");
         }
     }
 

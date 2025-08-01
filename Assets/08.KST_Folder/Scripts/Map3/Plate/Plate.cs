@@ -26,7 +26,7 @@ namespace Kst
         }
 
         public bool IsEggPlate() => _type == PlateType.NormalEgg;
-        public int GetEggAmount() => _type == PlateType.NormalEgg ? 2 : 0;
+        public int GetEggAmount() => _type == PlateType.NormalEgg ? 1 : 0;
 
     }
 }
