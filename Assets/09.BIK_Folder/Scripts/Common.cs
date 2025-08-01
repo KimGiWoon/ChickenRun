@@ -19,6 +19,12 @@ public static class Common
             _ => Color.white,
         };
     }
+
+    public static string ConvertColorTypeToHex(ColorType type)
+    {
+        Color color = ConvertColorTypeToUnityColor(type);
+        return ColorUtility.ToHtmlStringRGBA(color);
+    }
 }
 
 
