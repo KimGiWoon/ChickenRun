@@ -50,6 +50,18 @@ public class PlayMakeRoomPanel : UIBase
         UpdateMaxPlayers(0); // 초기 표시
     }
 
+    private void OnEnable()
+    {
+        if (Photon.Pun.PhotonNetwork.InRoom) {
+            _leftArrowButton.gameObject.SetActive(false);
+            _rightArrowButton.gameObject.SetActive(false);
+        }
+        else {
+            _leftArrowButton.gameObject.SetActive(true);
+            _rightArrowButton.gameObject.SetActive(true);
+        }
+    }
+
     #endregion // mono funcs
 
 

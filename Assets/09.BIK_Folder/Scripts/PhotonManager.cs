@@ -53,6 +53,16 @@ public class PhotonManager : MonoBehaviourPunCallbacks
 
 
 
+    #region properties
+
+    public int PlayerCount => PhotonNetwork.CurrentRoom?.PlayerCount ?? 0;
+
+    #endregion // properties
+
+
+
+
+
     #region public funcs
 
     public void SetOnJoinedRoomCallback(Action callback)
@@ -107,7 +117,11 @@ public class PhotonManager : MonoBehaviourPunCallbacks
 
     public void JoinRandomRoomOrCreate()
     {
-        PhotonNetwork.JoinRandomRoom();
+        ExitGames.Client.Photon.Hashtable expectedProperties = new ExitGames.Client.Photon.Hashtable {
+        { "Password", "" } // 비밀번호 없는 방만
+    };
+
+        PhotonNetwork.JoinRandomRoom(expectedProperties, 0);
     }
 
     #endregion // public funcs
@@ -206,9 +220,25 @@ public class PhotonManager : MonoBehaviourPunCallbacks
 
     public override void OnJoinRandomFailed(short returnCode, string message)
     {
-        Debug.Log("[Photon] 빠른 매치 실패 → 새 방 생성");
-        string randomRoomName = "Quick_" + UnityEngine.Random.Range(1000, 9999);
-        CreateRoom(randomRoomName, "", 8);
+        Debug.Log("[Photon] 랜덤 참가 실패. 새로운 방 생성");
+
+        string displayName = "QuickMatch_" + UnityEngine.Random.Range(1000, 9999);
+        ExitGames.Client.Photon.Hashtable customProps = new ExitGames.Client.Photon.Hashtable {
+        { "RoomName", displayName },
+        { "Password", "" },
+        { "Map", MapType.Map1.ToString() },
+        { "MaxPlayersView", 4 }
+    };
+
+        RoomOptions options = new RoomOptions {
+            MaxPlayers = 4,
+            IsVisible = true,
+            IsOpen = true,
+            CustomRoomProperties = customProps,
+            CustomRoomPropertiesForLobby = new[] { "RoomName", "Password", "Map", "MaxPlayersView" }
+        };
+
+        PhotonNetwork.CreateRoom(displayName, options);
     }
 
     public override void OnLeftRoom()
@@ -236,12 +266,11 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         if (CYH_FirebaseManager.User != null) {
             string uid = CYH_FirebaseManager.User.UserId;
             string nickname = CYH_FirebaseManager.User.DisplayName;
-            string colorHex = ColorUtility.ToHtmlStringRGBA(Color.black);
 
             ExitGames.Client.Photon.Hashtable props = new ExitGames.Client.Photon.Hashtable {
             { "UID", uid },
             { "Nickname", nickname },
-            {"Color", colorHex }
+            { "Color", Common.ConvertColorTypeToHex(ColorType.White)}
         };
 
             PhotonNetwork.LocalPlayer.SetCustomProperties(props);

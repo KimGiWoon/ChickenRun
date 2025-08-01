@@ -7,7 +7,6 @@ public static class Common
     public static Color ConvertColorTypeToUnityColor(ColorType type)
     {
         return type switch {
-            ColorType.Black => Color.black,
             ColorType.White => Color.white,
             ColorType.Red => Color.red,
             ColorType.Blue => Color.blue,
@@ -19,6 +18,12 @@ public static class Common
             ColorType.Cyan => Color.cyan,
             _ => Color.white,
         };
+    }
+
+    public static string ConvertColorTypeToHex(ColorType type)
+    {
+        Color color = ConvertColorTypeToUnityColor(type);
+        return ColorUtility.ToHtmlStringRGBA(color);
     }
 }
 
@@ -44,8 +49,7 @@ public enum MapType
 
 public enum ColorType
 {
-    Black = 0,
-    White,
+    White = 0,
     Red,
     Blue,
     Green,
