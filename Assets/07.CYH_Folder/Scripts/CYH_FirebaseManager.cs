@@ -105,7 +105,7 @@ public class CYH_FirebaseManager : Singleton<CYH_FirebaseManager>
         user = auth.CurrentUser;
 
         // 데이터베이스에 유저 닉네임 데이터 생성
-        Utility.SaveNickname(user);
+        Utility.SaveNickname();
 
         if (!PhotonNetwork.IsConnected)
         {
