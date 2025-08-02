@@ -2,6 +2,7 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 using ExitGames.Client.Photon;
+using Cinemachine;
 
 namespace Kst
 {
@@ -15,6 +16,7 @@ namespace Kst
         [SerializeField] private Map3BtnUI _btnUI;
         [SerializeField] private Transform spawnPoint; // 플레이어 생성 위치
         private bool _isStart = false;
+        [SerializeField] private Cinemachine.CinemachineVirtualCamera _virtualCam;
 
         void Start()
         {
@@ -98,7 +100,10 @@ namespace Kst
             {
                 Map3_PlayerController player = go.GetComponent<Map3_PlayerController>();
                 _btnUI.Init(player);
-            }
+
+                _virtualCam.Follow = go.transform;
+                _virtualCam.LookAt = go.transform;
+            }       
             _plateSpawner.StartSpawn(); //TODO <김승태> : 삭제 요망
         }
 
