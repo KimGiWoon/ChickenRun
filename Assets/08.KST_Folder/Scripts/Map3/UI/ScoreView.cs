@@ -42,7 +42,7 @@ namespace Kst
         }
         void RefreshEggUI(int egg)
         {
-            _eggText.text = $"{egg}";
+            _eggText.text = $"x {egg}";
             Debug.Log("UI 초기화 실행");
         }
     }

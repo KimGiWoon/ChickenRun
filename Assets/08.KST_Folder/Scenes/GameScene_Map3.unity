@@ -1238,8 +1238,8 @@ GameObject:
   - component: {fileID: 747629079}
   - component: {fileID: 747629078}
   - component: {fileID: 747629077}
-  - component: {fileID: 747629080}
   - component: {fileID: 747629081}
+  - component: {fileID: 747629082}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1321,20 +1321,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &747629080
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 747629076}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4946099e52f4ed41baf9f75c025e89a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _followSpeed: 2
-  _isDelayMove: 1
 --- !u!114 &747629081
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1355,6 +1341,20 @@ MonoBehaviour:
   m_CropFrameX: 0
   m_CropFrameY: 0
   m_StretchFill: 0
+--- !u!114 &747629082
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 747629076}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0eeacab414c9af42bcf2e9bd6e786bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _followSpeed: 0
+  _isDelayMove: 0
 --- !u!1001 &786750009
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2094,6 +2094,52 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dir: 0
+--- !u!1 &1652945964
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1652945966}
+  - component: {fileID: 1652945965}
+  m_Layer: 0
+  m_Name: EffectPoolManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1652945965
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1652945964}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 58df41ffbb72ba444b6d5db277951c2c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _dontDestroyOnLoad: 1
+  _destoryEffectPrefab: {fileID: -4516435647264143152, guid: 028c4c70cfb4d5a46b4f14b185a3c0cd, type: 3}
+--- !u!4 &1652945966
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1652945964}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 3.968022, y: -0.33588615, z: 3.9043062}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1807265685
 GameObject:
   m_ObjectHideFlags: 0
@@ -2323,7 +2369,7 @@ MonoBehaviour:
   _musicSlider: {fileID: 373279754}
   _effectSlider: {fileID: 373279753}
   _camModeCheckToggle: {fileID: 373279751}
-  _cameraController: {fileID: 747629080}
+  _cameraController: {fileID: 0}
   _playerEmoticonController: {fileID: 0}
   _emoticonPanel: {fileID: 786750017}
   _emoticonSprite:
@@ -2457,6 +2503,7 @@ SceneRoots:
   - {fileID: 548715611}
   - {fileID: 741950610}
   - {fileID: 691015402}
+  - {fileID: 1652945966}
   - {fileID: 294647052}
   - {fileID: 1427744985}
   - {fileID: 1183502410}

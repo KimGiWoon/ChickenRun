@@ -7,13 +7,6 @@ public class DestoryEffect : MonoBehaviour
     [SerializeField] private Animator _animator;
     public readonly int Idle_Hash = Animator.StringToHash("Destory");
 
-    void OnEnable()
-    {
-        _animator.Play(Idle_Hash);
-    }
-
-    public void ReturnPool()
-    {
-        _pooledObj.ReturnPool();
-    }
+    void OnEnable() => _animator.Play(Idle_Hash);
+    public void EffectReturnPool() => _pooledObj.ReturnPool();
 }

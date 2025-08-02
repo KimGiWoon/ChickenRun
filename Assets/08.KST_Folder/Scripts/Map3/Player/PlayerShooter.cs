@@ -9,16 +9,9 @@ namespace Kst
         [SerializeField] ArrowAim _arrow;
         [SerializeField] Transform _shootPos;
         [SerializeField] PooledObject _bulletPrefab;
-        [SerializeField] PooledObject _destoryEffectPrefab;
-        private ObjectPool _effectPool;
         private ObjectPool _bulletPool;
 
-        void Start()
-        {
-            _bulletPool = new(null, _bulletPrefab, 10);
-            _effectPool = new(null, _destoryEffectPrefab, 10);
-
-        }
+        void Start() => _bulletPool = new(null, _bulletPrefab, 10);
 
         public void OnAttackBtn()
         {
@@ -38,7 +31,7 @@ namespace Kst
 
             bullet.transform.SetPositionAndRotation(shootPos, Quaternion.identity);
             if (bullet.TryGetComponent(out Bullet b))
-                b.Init(dir,actorNum);
+                b.Init(dir, actorNum);
         }
     }
 }

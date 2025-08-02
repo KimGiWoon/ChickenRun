@@ -22,7 +22,7 @@ namespace Kst
         Map3Data _data;
 
         //이벤트
-        public event Action<int> OnEggCountChange;
+        // public event Action<int> OnEggCountChange;
         public event Action<Map3Data> OnEndGame;
 
 
@@ -95,11 +95,11 @@ namespace Kst
         }
 
         // 달걀 획득
-        public void GetEgg(int eggCount)
-        {
-            _totalEggCount += eggCount;
-            OnEggCountChange?.Invoke(_totalEggCount);   // 이벤트 호출
-        }
+        // public void GetEgg(int eggCount)
+        // {
+        //     _totalEggCount += eggCount;
+        //     // OnEggCountChange?.Invoke(_totalEggCount);   // 이벤트 호출
+        // }
 
         // 스탑워치 시작
         public void StartStopWatch()

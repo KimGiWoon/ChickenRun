@@ -31,7 +31,7 @@ public class UIManager_Map3 : MonoBehaviourPun
     [SerializeField] Button _backButton, _exitButton;
     [SerializeField] Slider _musicSlider, _effectSlider;
     [SerializeField] Toggle _camModeCheckToggle;
-    [SerializeField] CameraController_Map4 _cameraController; //TODO <김승태> 추후 수정부탁드립니다.
+    [SerializeField] CameraController_Map3 _cameraController; //TODO <김승태> 추후 수정부탁드립니다.
 
     [Header("Emoticon Panel UI Reference")]
     [SerializeField] PlayerEmoticonController_Map3 _playerEmoticonController;
@@ -50,16 +50,16 @@ public class UIManager_Map3 : MonoBehaviourPun
     // 맵타입 설정
     private void OnEnable()
     {
-        GameManager_Map3.Instance._currentMapType = "Map4";
+        GameManager_Map3.Instance._currentMapType = "Map3";
     }
 
     private void Start()
     {
-        // 달걀 획득 UI 이벤트 구독
-        GameManager_Map3.Instance.OnEggCountChange += UpdateGetEggUI;
-        GameManager_Map3.Instance.OnEggCountChange += UpdateGetEggUI;
+        // // 달걀 획득 UI 이벤트 구독
+        // GameManager_Map3.Instance.OnEggCountChange += UpdateGetEggUI;
+        // GameManager_Map3.Instance.OnEggCountChange += UpdateGetEggUI;
         // 시작할 시 획득한 달걀은 0이므로 UI설정
-        UpdateGetEggUI(0);
+        // UpdateGetEggUI(0);
 
         InGameUIInit();
         SoundVolumeInit();
@@ -74,9 +74,9 @@ public class UIManager_Map3 : MonoBehaviourPun
 
     private void OnDestroy()
     {
-        // 달걀 획득 UI 이벤트 해제
-        GameManager_Map3.Instance.OnEggCountChange -= UpdateGetEggUI;
-        GameManager_Map3.Instance.OnEggCountChange -= UpdateGetEggUI;
+        // // 달걀 획득 UI 이벤트 해제
+        // GameManager_Map3.Instance.OnEggCountChange -= UpdateGetEggUI;
+        // GameManager_Map3.Instance.OnEggCountChange -= UpdateGetEggUI;
 
         // 메모리 누수 방지로 리셋
         _camModeCheckToggle.onValueChanged.RemoveListener(CamModeCheck);
@@ -87,10 +87,10 @@ public class UIManager_Map3 : MonoBehaviourPun
     }
 
     // 달걀 획득 UI
-    private void UpdateGetEggUI(int totalEgg)
-    {
-        _eggCountText.text = $"x {totalEgg}";
-    }
+    // private void UpdateGetEggUI(int totalEgg)
+    // {
+    //     _eggCountText.text = $"x {totalEgg}";
+    // }
 
     // 버튼, 토글 UI 초기화
     private void InGameUIInit()
