@@ -805,7 +805,7 @@ GameObject:
   - component: {fileID: 3813691539438317447}
   - component: {fileID: 5605449780217799788}
   m_Layer: 5
-  m_Name: NicknameChangePanel
+  m_Name: ChangeNicknamePanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

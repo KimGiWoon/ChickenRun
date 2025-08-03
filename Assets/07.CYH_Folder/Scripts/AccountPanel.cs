@@ -45,16 +45,6 @@ public class AccountPanel : UIBase
         });
     }
 
-    /// <summary>
-    /// 안내 메세지 팝업을 띄우고 닫는 메서드
-    /// </summary>
-    /// <param name="message">팝업에 표시할 안내 메세지</param>
-    private void ShowPopup(string message)
-    {
-        //Debug.LogError(message);
-        PopupManager.Instance.ShowOKPopup(message, "OK", () => PopupManager.Instance.HidePopup());
-    }
-
     #region deleteAccount
 
     private void OnClick_DelteButton()

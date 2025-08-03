@@ -52,12 +52,17 @@ public class AccountUIController : MonoBehaviour
             {
                 // 팝업 닫기 버튼
                 nicknameChangePanel.OnClickClosePopup = () => HideUI(AccountUIType.AccountPanel);
+
+                // 닉네임 변경 버튼
                 nicknameChangePanel.OnClickNicknameChange =() => HideUI(AccountUIType.NicknameChangePanel);
             }
             else if (ui is PasswordChangePanel passwordChangePanel)
             {
                 // 팝업 닫기 버튼
                 passwordChangePanel.OnClickClosePopup = () => HideUI(AccountUIType.AccountPanel);
+               
+                // 비밀번호 변경 버튼
+                passwordChangePanel.OnClickPasswordChange = () => HideUI(AccountUIType.PasswordChangePanel);
             }
         }
     }

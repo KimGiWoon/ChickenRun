@@ -12,6 +12,7 @@ public class NicknameChangePanel : UIBase
 {
     [SerializeField] private Button _closePopupButton;
     [SerializeField] private Button _nicknameChangeButton;
+
     [SerializeField] private TMP_InputField _nicknameField;
 
     [SerializeField] private string _currentNickname;
