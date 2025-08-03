@@ -17,7 +17,6 @@ static partial class Utility
         string uid = CYH_FirebaseManager.User.UserId;
         string userNickname = CYH_FirebaseManager.Auth.CurrentUser.DisplayName;
 
-
         Dictionary<string, object> dictionary = new Dictionary<string, object>();
         dictionary[$"UserData/{uid}/NickName"] = userNickname;
         dictionary[$"RankData/{uid}/NickName"] = userNickname;

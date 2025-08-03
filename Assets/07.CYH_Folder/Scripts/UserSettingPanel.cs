@@ -6,7 +6,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class AccountPanel : UIBase
+public class UserSettingPanel : UIBase
 {
     [SerializeField] TMP_InputField _nicknameField;
 
@@ -18,7 +18,6 @@ public class AccountPanel : UIBase
     [SerializeField] private string _checkedNickname;
     [SerializeField] private bool isEmailUser;
 
-    //FirebaseUser currentUser = CYH_FirebaseManager.Auth.CurrentUser;
     public Action OnClickChangePassword { get; set; }
     public Action OnClickClosePopup { get; set; }
 
