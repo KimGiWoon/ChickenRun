@@ -252,7 +252,7 @@ public class UIManager_Map3 : MonoBehaviourPun
             if (count == 1)
             {
                 SoundManager.Instance.PlaySFX(SoundManager.Sfxs.SFX_Start);
-                _countText.text = "사격 개시";
+                _countText.text = "사격\n개시";
             }
             else
             {

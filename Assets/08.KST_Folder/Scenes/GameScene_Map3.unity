@@ -1242,9 +1242,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _gameUIManager: {fileID: 1909447668}
   _GamePlayTime: 100
-  PlateSpawner: {fileID: 0}
-  _currentMapType: 
-  _totalPlayTime: 0
+  PlateSpawner: {fileID: 1427744986}
+  _currentMapType: Map3
+  _totalPlayTime: 200
   _totalPlayerCount: 0
 --- !u!4 &691015402
 Transform:
@@ -1271,6 +1271,7 @@ GameObject:
   m_Component:
   - component: {fileID: 741950610}
   - component: {fileID: 741950609}
+  - component: {fileID: 741950611}
   m_Layer: 0
   m_Name: NetworkManager
   m_TagString: Untagged
@@ -1312,6 +1313,28 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &741950611
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 741950608}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 5
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &747629076
 GameObject:
   m_ObjectHideFlags: 0
@@ -2977,9 +3000,9 @@ SceneRoots:
   - {fileID: 121145573}
   - {fileID: 548715611}
   - {fileID: 741950610}
-  - {fileID: 691015402}
-  - {fileID: 1652945966}
   - {fileID: 294647052}
+  - {fileID: 1652945966}
+  - {fileID: 691015402}
   - {fileID: 1427744985}
   - {fileID: 1183502410}
   - {fileID: 1416851890}
