@@ -25,7 +25,9 @@ public class GameStartPanel : UIBase
         // 로비 씬으로 전환
         _gameStartButton.onClick.AddListener(() =>
         {
-            SceneManager.LoadScene("MainScene");
+            //TODO: <최연호> 테스트씬 삭제
+            //SceneManager.LoadScene("MainScene");
+            SceneManager.LoadScene("[CYH] MainScene");
             
             // 포톤 초기화
             CYH_FirebaseManager.Instance.OnFirebaseLoginSuccess();

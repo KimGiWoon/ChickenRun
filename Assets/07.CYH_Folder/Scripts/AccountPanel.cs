@@ -2,8 +2,8 @@ using Firebase.Auth;
 using Firebase.Extensions;
 using System;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class AccountPanel : UIBase
 {
@@ -22,11 +22,15 @@ public class AccountPanel : UIBase
     private void Start()
     {
         // 팝업 닫기 버튼
-        _closePopupButton.onClick.AddListener(() => OnClickClosePopup?.Invoke());
+        _closePopupButton.onClick.AddListener(() =>
+        {
+            OnClickClosePopup?.Invoke();
+            Debug.Log("닫기 버튼 클릭");
+        });
 
         // 닉네임 변경 버튼
         _nicknameChaneButton.onClick.AddListener(() => OnClickNicknameChange?.Invoke());
-        
+
         // 패스워드 변경 버튼
         _passwordChangeButton.onClick.AddListener(() => OnClickPasswordChange?.Invoke());
 
@@ -41,7 +45,7 @@ public class AccountPanel : UIBase
         {
             CYH_FirebaseManager.Auth.SignOut();
             OnClickSignOut?.Invoke();
-            SceneManager.LoadScene("LoginScene");
+            SceneManager.LoadScene("[CYH] LoginScene");
         });
     }
 
@@ -50,12 +54,17 @@ public class AccountPanel : UIBase
     private void OnClick_DelteButton()
     {
         PopupManager.Instance.ShowOKCancelPopup("정말로 탈퇴하시겠습니까?\r\n모든 기록이 삭제될 수 있습니다.\r\n",
-            "탈퇴", () => DeleteUser(), 
-            "취소", () => 
-            { 
+            "탈퇴", () =>
+            {
+                DeleteUser();
+                CYH_FirebaseManager.Auth.SignOut();
                 PopupManager.Instance.HidePopup();
-                SceneManager.LoadScene("LoginScene");
-            });
+                //TODO: <최연호> 테스트씬 삭제
+                //SceneManager.LoadScene("LoginScene");
+                SceneManager.LoadScene("[CYH] LoginScene");
+            },
+            "취소", () => PopupManager.Instance.HidePopup()
+           );
     }
 
     private void DeleteUser()
