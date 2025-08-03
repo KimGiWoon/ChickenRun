@@ -33,6 +33,9 @@ public class SignUpPanel : UIBase
 
     private void Start()
     {
+        // 닉네임 글자 수 제한 (6글자)
+        _nicknameField.characterLimit = 6;
+
         _nicknameCheckButton.onClick.AddListener(NicknameCheck);
         _emailCheckButton.onClick.AddListener(EmailCheck);
         _closePopupButton.onClick.AddListener(() => OnClickClosePopup?.Invoke());

@@ -21,6 +21,7 @@ public class GameStartPanel : UIBase
     private void Start()
     {
         _gameStartButton.onClick.AddListener(() => OnClickGameStart?.Invoke());
+       
         // 로비 씬으로 전환
         _gameStartButton.onClick.AddListener(() =>
         {

@@ -147,7 +147,7 @@ GameObject:
   - component: {fileID: 247804617875056125}
   - component: {fileID: 9014418722740865386}
   m_Layer: 5
-  m_Name: ChangePasswordButton
+  m_Name: PasswordChangeButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -168,9 +168,9 @@ RectTransform:
   - {fileID: 6374109538018816615}
   m_Father: {fileID: 6201651922215720132}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 50, y: -85}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 700, y: 170}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2787367599329742068
@@ -945,9 +945,9 @@ RectTransform:
   - {fileID: 6581071302361677727}
   m_Father: {fileID: 7801404818989319896}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 500, y: -407.5}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: -5.8, y: 111.5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &5408641442654947530
@@ -982,9 +982,9 @@ RectTransform:
   - {fileID: 1518980995113508179}
   m_Father: {fileID: 7801404818989319896}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 500, y: -188.65001}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &5555437780855953363
@@ -997,7 +997,6 @@ GameObject:
   m_Component:
   - component: {fileID: 6722953097493766535}
   - component: {fileID: 8908506794951755155}
-  - component: {fileID: 2946797647739079195}
   - component: {fileID: 2819537827848005305}
   m_Layer: 5
   m_Name: AccountPanel
@@ -1005,7 +1004,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &6722953097493766535
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1034,36 +1033,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5555437780855953363}
   m_CullTransparentMesh: 1
---- !u!114 &2946797647739079195
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5555437780855953363}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 0}
-  m_Type: 1
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
 --- !u!114 &2819537827848005305
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1076,6 +1045,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 919d8fe1d4a1e9546bc2763a2a8a5778, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _closePopupButton: {fileID: 1668402508771816617}
+  _nicknameChaneButton: {fileID: 6828656055188263420}
+  _passwordChangeButton: {fileID: 9014418722740865386}
+  _deleteAccountButton: {fileID: 6566062568384533408}
+  _signoutButton: {fileID: 1425173656608341011}
 --- !u!1 &5688653399727521486
 GameObject:
   m_ObjectHideFlags: 0
@@ -1230,9 +1204,9 @@ RectTransform:
   - {fileID: 1269249628379751044}
   m_Father: {fileID: 7801404818989319896}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 500, y: -773.10004}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 393.5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &7727821682131353546
@@ -1429,9 +1403,9 @@ RectTransform:
   - {fileID: 4692973261838106694}
   m_Father: {fileID: 6201651922215720132}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 50, y: -311.2}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 700, y: 170}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8497812792767631051
@@ -1681,9 +1655,9 @@ RectTransform:
   - {fileID: 8235680110216796517}
   m_Father: {fileID: 7801404818989319896}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 500, y: -1252.15}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 338.4}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &7516999464643520365
