@@ -77,6 +77,8 @@ namespace Kst
             _data.EggCount = _totalEggCount;
             OnEndGame?.Invoke(_data);
             UnityEngine.Debug.Log("게임 플레이 시간이 지났습니다.");
+
+            PlateSpawner.StopSpawn();
             photonView.RPC(nameof(GameClearLeaveRoom), RpcTarget.AllViaServer);
         }
 

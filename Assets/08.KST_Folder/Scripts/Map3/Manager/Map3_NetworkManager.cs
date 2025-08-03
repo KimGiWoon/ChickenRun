@@ -83,6 +83,11 @@ namespace Kst
 
             PlayerSpawn();
 
+            if (PhotonNetwork.IsMasterClient)
+            {
+                CheckRoomPlayer();
+            }
+
             // GameObject go = PhotonNetwork.Instantiate(playerPrefabName, spawnPoint.position, Quaternion.identity);
             // if (go.TryGetComponent(out PhotonView pv) && pv.IsMine)
             // {
@@ -103,8 +108,8 @@ namespace Kst
 
                 _virtualCam.Follow = go.transform;
                 _virtualCam.LookAt = go.transform;
-            }       
-            _plateSpawner.StartSpawn(); //TODO <김승태> : 삭제 요망
+            }
+            // _plateSpawner.StartSpawn(); //TODO <김승태> : 삭제 요망
         }
 
         // 입장 플레이어 체크
@@ -135,6 +140,7 @@ namespace Kst
         [PunRPC]
         private void StartGame()
         {
+            _isStart = true;
             _UIManager.photonView.RPC(nameof(_UIManager.StartGameRoutine), RpcTarget.AllViaServer);
         }
 
@@ -147,6 +153,13 @@ namespace Kst
             {
                 CheckRoomPlayer();
             }
+        }
+
+        //마스터 클라이언트 변경시
+        public override void OnMasterClientSwitched(Player newMasterClient)
+        {
+            if (PhotonNetwork.LocalPlayer == newMasterClient)
+                GameManager_Map3.Instance.PlateSpawner.StartSpawn();
         }
 
 
