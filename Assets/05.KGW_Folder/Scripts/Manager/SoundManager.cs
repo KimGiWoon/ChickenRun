@@ -10,7 +10,9 @@ public class SoundManager : Singleton<SoundManager>
         BGM_InGame1,
         BGM_InGame2,
         BGM_InGame3,
-        BGM_InGame4
+        BGM_InGame4,
+        BGM_Login,
+        BGM_Lobby
     }
 
     // 인게임 SFX
@@ -21,7 +23,18 @@ public class SoundManager : Singleton<SoundManager>
         SFX_Goal,
         SFX_Count,
         SFX_Start,
-        SFX_DropWater
+        SFX_DropWater,
+        SFX_Walk,
+        SFX_Shot,
+        SFX_Hit,
+        SFX_Win,
+        SFX_Lose,
+        SFX_Smile, //웃음
+        SFX_Suprised, // 놀람
+        SFX_Quiz, //농락
+        SFX_Angry,//분노
+        SFX_Heart, //하트
+        SFX_Crying //울음
     }
 
     [Header("BGM, SFX Sound Files")]
@@ -31,6 +44,7 @@ public class SoundManager : Singleton<SoundManager>
     [Header("Audio Source Reference")]
     [SerializeField] public AudioSource _bgmAudioSource;
     [SerializeField] public AudioSource _sfxAudioSource;
+    [SerializeField] public AudioSource _loopSfxAS;
 
     private void Start()
     {
@@ -47,7 +61,7 @@ public class SoundManager : Singleton<SoundManager>
     {
         base.OnDestroy();
         // 플레이 모드 확인하여 이벤트 구독 해제
-        if(Application.isPlaying)
+        if (Application.isPlaying)
         {
             SettingManager.Instance.BGM.OnChanged -= BgmVolume;
             SettingManager.Instance.SFX.OnChanged -= SfxVolume;
@@ -73,6 +87,22 @@ public class SoundManager : Singleton<SoundManager>
     {
         _sfxAudioSource.PlayOneShot(_sfxFiles[(int)sfx]);
     }
+
+    //Loop SFX 플레이
+    public void PlayLoopSFX(Sfxs sfx)
+    {
+        if (_loopSfxAS.isPlaying && _loopSfxAS.clip == _sfxFiles[(int)sfx]) return;
+
+        _loopSfxAS.clip = _sfxFiles[(int)sfx];
+        _loopSfxAS.loop = true;
+        _loopSfxAS.Play();
+    }
+    public void StopLoopSFX()
+    {
+        _loopSfxAS.Stop();
+        _loopSfxAS.clip = null;
+    }
+
 
     // BGM 볼륨
     public void BgmVolume(float volume)

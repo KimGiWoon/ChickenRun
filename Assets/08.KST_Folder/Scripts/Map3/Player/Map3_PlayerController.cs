@@ -102,6 +102,8 @@ namespace Kst
             {
                 _currentAnimatorHash = Idle_Hash;
                 _animator.Play(Idle_Hash);
+
+                SoundManager.Instance.StopLoopSFX();
             }
             else if (_rb.velocity.x > 0.1f || _rb.velocity.x < -0.1f)
             {
@@ -110,6 +112,7 @@ namespace Kst
                 _animator.Play(Move_Hash);
                 // 루프용 SFX로 변경 필요. -> SoundManager의 구조 변화 필요.
                 // SoundManager.Instance.PlaySFX(SoundManager.Sfxs.SFX_Jump);
+                SoundManager.Instance.PlayLoopSFX(SoundManager.Sfxs.SFX_Walk);
             }
         }
 
