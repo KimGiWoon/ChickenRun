@@ -11,15 +11,9 @@ public class NetworkManager_Map4 : MonoBehaviourPunCallbacks
     [SerializeField] GameManager_Map4 _gameManager;
 
     public bool _isStart = false;
-    public int _currentPlayer;
 
     private void Start()
     {
-        if (_isStart)
-        {
-            return;
-        }
-
         // 서버에 연결이 되어 있지 않으면 서버 접속
         if (!PhotonNetwork.IsConnected)
         {
@@ -71,20 +65,25 @@ public class NetworkManager_Map4 : MonoBehaviourPunCallbacks
     // 입장 플레이어 체크
     private void CheckRoomPlayer()
     {
+        if (_isStart)
+        {
+            return;
+        }
+
         // 방에 입장한 플레이어
-        _currentPlayer = PhotonNetwork.CurrentRoom.PlayerCount;
+        int currentPlayer = PhotonNetwork.CurrentRoom.PlayerCount;
         // 방에 입장 가능한 Max 플레이어
         int maxPlayer = PhotonNetwork.CurrentRoom.MaxPlayers;
 
-        UnityEngine.Debug.Log($"입장 플레이어 : {_currentPlayer}/{maxPlayer}");
+        UnityEngine.Debug.Log($"입장 플레이어 : {currentPlayer}/{maxPlayer}");
 
         // 현재 인원 전달
         if (PhotonNetwork.IsMasterClient)
         {
-            _gameManager._totalPlayerCount = _currentPlayer;
+            _gameManager._totalPlayerCount = currentPlayer;
         }
 
-        if (_currentPlayer >= maxPlayer)
+        if (currentPlayer >= maxPlayer)
         {
             UnityEngine.Debug.Log("모든 플레이어 입장 완료");
             // 게임 시작
@@ -92,10 +91,19 @@ public class NetworkManager_Map4 : MonoBehaviourPunCallbacks
         }
     }
 
+    // 방 나가기 콜백
+    public override void OnLeftRoom()
+    {
+        PhotonNetwork.LoadLevel("MainScene");
+    }
+
     // 게임 스타트
     [PunRPC]
     private void StartGame()
     {
+        // 플레이어 생성
+        PlayerSpawn();
+
         _isStart = true;
         _UIManager.photonView.RPC(nameof(_UIManager.StartGameRoutine), RpcTarget.AllViaServer);
     }

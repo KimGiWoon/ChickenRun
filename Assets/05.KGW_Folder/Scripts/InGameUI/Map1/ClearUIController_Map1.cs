@@ -7,7 +7,6 @@ public class ClearUIController_Map1 : MonoBehaviour
 {
     [Header("Clear UI Reference")]
     [SerializeField] GameObject _clearPanel;
-    [SerializeField] NetworkManager_Map1 _networkManager;
     [SerializeField] float _openTime = 2f;
 
     Coroutine _clearRoitine;
@@ -32,7 +31,6 @@ public class ClearUIController_Map1 : MonoBehaviour
 
         yield return _time;
 
-        _networkManager._isStart = false;
         // 씬 이동
         PhotonNetwork.LoadLevel("MainScene");
     }

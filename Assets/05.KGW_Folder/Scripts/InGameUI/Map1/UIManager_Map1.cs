@@ -216,17 +216,20 @@ public class UIManager_Map1 : MonoBehaviourPun
 
         _isExit = true;
         _gameManager.StopStopWatch();
-        SoundManager.Instance.StopBGM();
 
-        photonView.RPC(nameof(ExitPlayerCheck), RpcTarget.AllViaServer, exitPlayer);
-    }
+        photonView.RPC(nameof(ExitPlayerCheck), RpcTarget.MasterClient, exitPlayer);
+        _gameManager.GameDefeatLeaveRoom();
+}
 
-    // 나간 플레이어
+    // 나간 플레이어 알림
     [PunRPC]
     public void ExitPlayerCheck(string exitPlayer)
     {
-        Debug.Log($"{exitPlayer}께서 탈주했습니다.");
-        _gameManager.PlayerExit(exitPlayer);
+        if (PhotonNetwork.IsMasterClient)
+        {
+            _gameManager._exitPlayerCount++;
+            Debug.Log($"나간 플레이어 : {exitPlayer}");
+        }
     }
 
     // 출발지점과 도착지점 위치 확인
@@ -238,9 +241,18 @@ public class UIManager_Map1 : MonoBehaviourPun
     // 플레이어의 위치와 거리 업데이트
     private void PlayerPosUpdate()
     {
+        if (_playerPosition == null || _goalPosition == null || _playerPosSlider == null)
+            return;
+
         float distanceToGoal = Vector2.Distance(_playerPosition.position, _goalPosition.position);
         float progress = Mathf.Clamp01(1 - (distanceToGoal / _totalDistance));
         _playerPosSlider.value = progress;
+    }
+    
+    // 플레이어 위치 참조 초기화
+    public void ClearPlayerReference()
+    {
+        _playerPosition = null;
     }
 
     // 플레이어 위치 세팅
@@ -268,7 +280,7 @@ public class UIManager_Map1 : MonoBehaviourPun
     {
         WaitForSeconds time = new WaitForSeconds(_routineTime);
         int count = 4;
-        _networkManager._isStart = true;
+
         yield return new WaitForSeconds(4f);
         _startPanel.SetActive(true);
 

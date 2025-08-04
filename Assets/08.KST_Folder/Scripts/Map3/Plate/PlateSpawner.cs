@@ -16,8 +16,6 @@ public class PlateSpawner : MonoBehaviourPunCallbacks
     private bool _isSpawning = false;
     private Coroutine _spawnCoroutine;
 
-
-    //TODO <김승태> : UImanager에서 게임 시작 시 StartSpawn 호출하도록 변경해야함.
     public void StartSpawn()
     {
         //스폰 중일 경우 리턴

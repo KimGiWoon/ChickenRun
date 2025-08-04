@@ -42,7 +42,6 @@ public class PlayerController_Map1 : MonoBehaviourPun, IPunObservable
     private void Awake()
     {
         _playerRigid = GetComponent<Rigidbody2D>();
-        ManagerInit();
 
         // 조종 가능 유/무에 따른 레이어 설정 (충돌 관련 세팅)
         if (photonView.IsMine) 
@@ -59,7 +58,9 @@ public class PlayerController_Map1 : MonoBehaviourPun, IPunObservable
 
     private void Start()
     {
-        if(_gameManager != null)
+        ManagerInit();
+
+        if (_gameManager != null)
         {
             // 카메라 세팅 이벤트 구독
             _gameManager.OnPlayerGoal += ChangeCamera;

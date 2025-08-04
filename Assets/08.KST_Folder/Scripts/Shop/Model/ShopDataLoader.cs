@@ -10,7 +10,7 @@ namespace Kst
     {
         [SerializeField] private ShopDataBase _shopDataBase;
 
-        public event Action<List<SkinData>> OnSkinDataLoaded; //TODO <김승태> private 선언 후 Init 하는 방식으로 추후 변경 필요.
+        public event Action<List<SkinData>> OnSkinDataLoaded;
 
         public void LoadSkinsData(string uid)
         {
