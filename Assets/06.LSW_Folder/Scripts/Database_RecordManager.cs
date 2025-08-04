@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
+using Debug = UnityEngine.Debug;
 
 public class Database_RecordManager : Singleton<Database_RecordManager>
 {
@@ -63,6 +64,37 @@ public class Database_RecordManager : Singleton<Database_RecordManager>
         
         // todo : GameManager 이벤트 메서드 연동
         //GameManager.Instance.OnEndGame += (data) => SaveUserRecord(data);
+        //GameManager_Map2.Instance.OnEndGame += (data) => SaveUserMap2Record(data);
+    }
+
+    public void SaveUserMap2Record(GameManager_Map2.Map2Data data)
+    {
+        string uid = _auth.CurrentUser.UserId;
+        string key = data.MapType;
+        DatabaseReference recordRef = _reference.Child("RankData").Child(uid).Child(key);
+        // 맵 기록 저장/갱신 Transaction
+        recordRef.RunTransaction(mutableData =>
+        {
+            long currentRecord = mutableData.Value == null ? long.MaxValue : (long)mutableData.Value;
+            if (data.Record < currentRecord)
+            {
+                mutableData.Value = data.Record;
+            }
+
+            return TransactionResult.Success(mutableData);
+        });
+        
+        if(data.IsWin)
+        {
+            DatabaseReference scoreRef = _reference.Child("RankData").Child(uid).Child("Score");
+            scoreRef.RunTransaction(mutableData =>
+            {
+                long currentRecord = mutableData.Value == null ? 0 : (long)mutableData.Value;
+                mutableData.Value = currentRecord + 1;
+                return TransactionResult.Success(mutableData);
+            });
+        }
+        
     }
 
     // GameManager 게임 종료 이벤트에 등록할 메서드
@@ -72,15 +104,15 @@ public class Database_RecordManager : Singleton<Database_RecordManager>
         string uid = _auth.CurrentUser.UserId;
         string key = data.MapType;
         DatabaseReference recordRef = _reference.Child("RankData").Child(uid).Child(key);
-        
         // 맵 기록 저장/갱신 Transaction
         recordRef.RunTransaction(mutableData =>
         {
-            int currentRecord = mutableData.Value == null ? int.MaxValue : (int)mutableData.Value;
-            if((int)data.Record < currentRecord)
+            long currentRecord = mutableData.Value == null ? long.MaxValue : (long)mutableData.Value;
+            if (data.Record < currentRecord)
             {
                 mutableData.Value = data.Record;
             }
+
             return TransactionResult.Success(mutableData);
         });
 
@@ -88,18 +120,17 @@ public class Database_RecordManager : Singleton<Database_RecordManager>
         
         eggRef.RunTransaction(mutableData =>
         {
-            int currentEgg = mutableData.Value == null ? 0 : (int)mutableData.Value;
+            long currentEgg = mutableData.Value == null ? 0 : (long)mutableData.Value;
             mutableData.Value = currentEgg + data.EggCount;
             return TransactionResult.Success(mutableData);
         });
         
-        // 1등했을 때 승수 갱신 Transaction
         /*if(data.IsWin)
         {
             DatabaseReference scoreRef = _reference.Child("RankData").Child(uid).Child("Score");
             scoreRef.RunTransaction(mutableData =>
             {
-                int currentRecord = mutableData.Value == null ? 0 : (int)mutableData.Value;
+                long currentRecord = mutableData.Value == null ? 0 : (long)mutableData.Value;
                 mutableData.Value = currentRecord + 1;
                 return TransactionResult.Success(mutableData);
             });
@@ -133,8 +164,10 @@ public class Database_RecordManager : Singleton<Database_RecordManager>
                 DataSnapshot snapshots = task.Result;
 
                 int rank = 1;
-                foreach (var snapshot in snapshots.Children) {
+                foreach (var snapshot in snapshots.Children) 
+                {
                     RankData rankData = JsonUtility.FromJson<RankData>(snapshot.GetRawJsonValue());
+                    UnityEngine.Debug.Log($"[DEBUG] Raw snapshot: {snapshot.GetRawJsonValue()}");
                     int recordValue = 0;
                     switch (record) {
                         case "Map1Record":
@@ -203,14 +236,38 @@ public class Database_RecordManager : Singleton<Database_RecordManager>
         if (myRecord == 0)
             return info;
 
-        int myRank = -1;
+        int myRank = 1;
         DataSnapshot snapshot = await _reference
             .Child("RankData")
             .OrderByChild(record)
             .EndAt(myRecord - 1)
             .GetValueAsync();
-        if (snapshot != null) {
-            myRank = (int)snapshot.ChildrenCount + 1;
+        if (snapshot != null) 
+        {
+            foreach (var child in snapshot.Children)
+            {
+                var json = child.GetRawJsonValue();
+                var rankData = JsonUtility.FromJson<RankData>(json);
+
+                int recordValue = 0;
+                switch (record)
+                {
+                    case "Map1Data":
+                        recordValue = (int)rankData.Map1Record;
+                        break;
+                    case "Map2Data":
+                        recordValue = (int)rankData.Map2Record;
+                        break;
+                    case "Map3Data":
+                        recordValue = (int)rankData.Map3Record;
+                        break;
+                }
+
+                if (recordValue > 0)
+                {
+                    myRank++;
+                }
+            }
         }
 
         info.Rank = myRank;
@@ -320,17 +377,16 @@ public class Database_RecordManager : Singleton<Database_RecordManager>
     //}
 
     //// MainScene 연동 이전 임시 로그인으로 작성한 코드 -> 연동 이후 삭제
-    //private void Rank()
-    //{
-    //    _rankPanel.SetActive(!_rankPanel.activeSelf);
-    //}
+    private void Rank()
+    {
+        
+    }
 
-    //// RoomScene 연동 이전 임시 버튼 연동 코드 -> 연동 이후 삭제
-    //private void Info()
-    //{
-    //    _infoPanel.SetActive(!_infoPanel.activeSelf);
-    //    //_infoPanel.GetComponent<PlayerInfoUIController>().ShowInfo();
-    //}
+    // RoomScene 연동 이전 임시 버튼 연동 코드 -> 연동 이후 삭제
+    private void Info()
+    {
+        
+    }
 
     //// 초기 개인 랭킹 표시 메서드
     //// 코드가 더 복잡한 것 같아서 위 메서드로 재구현

@@ -44,7 +44,6 @@ public class UserPersonalRecord : MonoBehaviour
 
     private void OnClick()
     {
-        Debug.Log("진입");
         OnClickPlayerInfo?.Invoke(_uid);
     }
 }
