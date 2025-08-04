@@ -22,7 +22,7 @@ static partial class Utility
 
         Dictionary<string, object> dictionary = new Dictionary<string, object>();
         dictionary[$"UserData/{uid}/Nickname"] = userNickname;
-        dictionary[$"RankData/{uid}/Nickame"] = userNickname;
+        dictionary[$"RankData/{uid}/Nickname"] = userNickname;
 
         CYH_FirebaseManager.DataReference.UpdateChildrenAsync(dictionary).ContinueWithOnMainThread(task =>
         {
@@ -217,7 +217,46 @@ static partial class Utility
         profile.DisplayName = $"게스트{Random.Range(1000, 10000)}";
 
         currentUser.UpdateUserProfileAsync(profile)
-            .ContinueWithOnMainThread(task =>
+            .ContinueWithOnMainThread(async task =>
+            {
+                if (task.IsCanceled)
+                {
+                    Debug.LogError("닉네임 설정 취소");
+                    return;
+                }
+
+                if (task.IsFaulted)
+                {
+                    Debug.LogError("닉네임 설정 실패");
+                    return;
+                }
+
+                // 초기화
+                currentUser.ReloadAsync();
+
+                // Firebase DB에 닉네임 저장
+                //await SaveNickname();
+
+                await currentUser.ReloadAsync();
+
+                Debug.Log("닉네임 설정 성공");
+                Debug.Log($"변경된 유저 닉네임 : {currentUser.DisplayName}");
+            });
+    }
+
+    /// <summary>
+    ///  익명계정에서 구글계정으로 전환된 유저의 DisplayName을 구글계정 DisplayName으로 변경하는 메서드 
+    /// 연결: LinkPanel
+    /// </summary>
+    /// <param name="currentUser">닉네임을 변경할 유저</param>
+    /// <param name="googleDisplayName">새로 설정할 닉네임(구글 계정 닉네임)</param>
+    public static async Task SetGoogleNickname(FirebaseUser currentUser ,string googleDisplayName)
+    {
+        UserProfile profile = new UserProfile();
+        profile.DisplayName = googleDisplayName;
+
+        currentUser.UpdateUserProfileAsync(profile)
+            .ContinueWithOnMainThread(async task =>
             {
                 if (task.IsCanceled)
                 {
@@ -236,8 +275,8 @@ static partial class Utility
 
                 // Firebase DB에 닉네임 저장
                 SaveNickname();
-                
-                // await
+
+                await currentUser.ReloadAsync();
 
                 Debug.Log("닉네임 설정 성공");
                 Debug.Log($"변경된 유저 닉네임 : {currentUser.DisplayName}");

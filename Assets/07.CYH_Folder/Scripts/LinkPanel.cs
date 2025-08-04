@@ -112,7 +112,7 @@ public class LinkPanel : UIBase
 
             Credential credential = GoogleAuthProvider.GetCredential(idToken, null);
 
-            CYH_FirebaseManager.Auth.CurrentUser.LinkWithCredentialAsync(credential).ContinueWithOnMainThread(linkTask =>
+            CYH_FirebaseManager.Auth.CurrentUser.LinkWithCredentialAsync(credential).ContinueWithOnMainThread(async linkTask =>
             {
                 if (linkTask.IsCanceled)
                 {
@@ -142,10 +142,14 @@ public class LinkPanel : UIBase
 
                 // 구글 계정 닉네임으로 currentUser을 닉네임으로 변경
                 //SetNickname(user, googleDisplayName);
-                Utility.SetNickname(user, googleDisplayName);
+                //Utility.SetNickname(user, googleDisplayName);
+
+                // 게스트 닉네임 변경 
+                await Utility.SetGoogleNickname(user, googleDisplayName);
+                await user.ReloadAsync();
 
                 Debug.Log("------유저 정보------");
-                Debug.Log($"유저 이름 : {Utility.LoadNickname()}");
+                Debug.Log($"유저 이름 : {user.DisplayName}");
                 Debug.Log($"유저 ID: {user.UserId}");
                 Debug.Log($"이메일 : {user.Email}");
 
