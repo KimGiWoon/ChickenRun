@@ -5,7 +5,7 @@ namespace Kst
 
     public class Plate : MonoBehaviour
     {
-        [SerializeField] private PlateType _type;
+        [SerializeField] public PlateType _type;
         public PlateType GetPlateType() => _type;
 
         public int GetScore()
