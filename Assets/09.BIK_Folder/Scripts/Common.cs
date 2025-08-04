@@ -43,7 +43,7 @@ public enum MapType
 {
     Map1 = 0,
     Map2,
-    //Map3,
+    Map3,
     //Map4,
 }
 
