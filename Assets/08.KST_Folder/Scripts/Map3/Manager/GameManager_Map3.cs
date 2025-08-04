@@ -13,7 +13,7 @@ namespace Kst
 
         [SerializeField] public UIManager_Map3 _gameUIManager;
         [SerializeField] public float _GamePlayTime;
-        public PlateSpawner PlateSpawner;
+        public PlateSpawner PlateSpawnerSys;
         public Stopwatch _stopwatch;
         public string _currentMapType;
         public float _totalPlayTime;
@@ -56,7 +56,7 @@ namespace Kst
 
         void Update() => PlayTimeOverCheck();
 
-        void StartToSpawn() => PlateSpawner.StartSpawn();
+        void StartToSpawn() => PlateSpawnerSys.StartSpawn();
 
         void GetScore(int score)
         {
@@ -89,7 +89,7 @@ namespace Kst
             UnityEngine.Debug.Log($"계란 : {_data.EggCount}");
             UnityEngine.Debug.Log("게임 플레이 시간이 지났습니다.");
 
-            PlateSpawner.StopSpawn();
+            PlateSpawnerSys.StopSpawn();
             photonView.RPC(nameof(GameClearLeaveRoom), RpcTarget.AllViaServer);
         }
 

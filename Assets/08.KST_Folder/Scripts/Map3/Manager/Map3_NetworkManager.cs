@@ -113,7 +113,11 @@ namespace Kst
         public override void OnMasterClientSwitched(Player newMasterClient)
         {
             if (PhotonNetwork.LocalPlayer == newMasterClient)
-                GameManager_Map3.Instance.PlateSpawner.StartSpawn();
+            {
+                Debug.Log("마스터 변경 및 권한 양도");
+                GameManager_Map3.Instance.PlateSpawnerSys.StopSpawn();
+                GameManager_Map3.Instance.PlateSpawnerSys.StartSpawn();
+            }
         }
     }
 }

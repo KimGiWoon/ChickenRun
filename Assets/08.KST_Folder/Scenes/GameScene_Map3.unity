@@ -1237,7 +1237,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _gameUIManager: {fileID: 1909447668}
   _GamePlayTime: 1000
-  PlateSpawner: {fileID: 1427744986}
+  PlateSpawnerSys: {fileID: 1427744986}
   _currentMapType: Map3
   _totalPlayTime: 0
   _totalPlayerCount: 0
