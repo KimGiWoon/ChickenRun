@@ -10,6 +10,9 @@ public class CameraController_Map2 : MonoBehaviour
 
     private Transform _followTarget;
     private readonly Vector3 _offset = new Vector3(0, 0, -10f);
+    private List<PlayerController_Map1> _observePlayers = new();
+    private int _index;
+    private bool _isViewing;
 
     // 플레이어가 움직이고 난 후 카메라 이동
     private void LateUpdate()
@@ -17,6 +20,20 @@ public class CameraController_Map2 : MonoBehaviour
         FollowCamera();
     }
 
+    private void Update()
+    {
+        // 터치 시 다음 플레이어로 카메라 전환
+        if (_isViewing && Input.GetMouseButtonDown(0))
+        {
+            // 살아있는 플레이어가 없으면 실행 안함
+            if (_observePlayers.Count == 0) return;
+
+            // 0번 인덱스에 있는 플레이어 부터 순회하면서 카메라 전환
+            _index = (_index + 1) % _observePlayers.Count;
+            SetTarget(_observePlayers[_index].transform);
+        }
+    }
+    
     // 타겟 설정
     public void SetTarget(Transform target)
     {
@@ -41,6 +58,28 @@ public class CameraController_Map2 : MonoBehaviour
         else // 즉각 이동 모드 On
         {
             transform.position = camPos;
+        }
+    }
+    
+    public void OnViewingMode()
+    {
+        _observePlayers.Clear();
+        _index = 0;
+
+        // 살아 있는 플레이어 순회
+        foreach(var player in FindObjectsOfType<PlayerController_Map1>())
+        {
+            // 결승점에 들어가지 않은 플레이거가 있으면 관찰리스트에 추가
+            if (!player._isGoal)
+            {
+                _observePlayers.Add(player);
+            }
+        }
+
+        if(_observePlayers.Count > 0)
+        {
+            SetTarget(_observePlayers[_index].transform);
+            _isViewing = true;
         }
     }
 }

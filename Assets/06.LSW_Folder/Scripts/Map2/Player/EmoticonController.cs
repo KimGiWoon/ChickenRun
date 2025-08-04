@@ -106,6 +106,4 @@ public class EmoticonController : MonoBehaviourPunCallbacks
         // 이모티콘 표시 시간 코루틴 시작
         _emoticonRoutine = StartCoroutine(EmoticonPlayTimeCoroutine());
     }
-    
-    
 }
