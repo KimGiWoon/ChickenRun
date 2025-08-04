@@ -104,15 +104,15 @@ public class Database_RecordManager : Singleton<Database_RecordManager>
         string uid = _auth.CurrentUser.UserId;
         string key = data.MapType;
         DatabaseReference recordRef = _reference.Child("RankData").Child(uid).Child(key);
-        
         // 맵 기록 저장/갱신 Transaction
         recordRef.RunTransaction(mutableData =>
         {
-            int currentRecord = mutableData.Value == null ? int.MaxValue : (int)mutableData.Value;
-            if((int)data.Record < currentRecord)
+            long currentRecord = mutableData.Value == null ? long.MaxValue : (long)mutableData.Value;
+            if (data.Record < currentRecord)
             {
                 mutableData.Value = data.Record;
             }
+
             return TransactionResult.Success(mutableData);
         });
 
@@ -120,18 +120,17 @@ public class Database_RecordManager : Singleton<Database_RecordManager>
         
         eggRef.RunTransaction(mutableData =>
         {
-            int currentEgg = mutableData.Value == null ? 0 : (int)mutableData.Value;
+            long currentEgg = mutableData.Value == null ? 0 : (long)mutableData.Value;
             mutableData.Value = currentEgg + data.EggCount;
             return TransactionResult.Success(mutableData);
         });
         
-        // 1등했을 때 승수 갱신 Transaction
         /*if(data.IsWin)
         {
             DatabaseReference scoreRef = _reference.Child("RankData").Child(uid).Child("Score");
             scoreRef.RunTransaction(mutableData =>
             {
-                int currentRecord = mutableData.Value == null ? 0 : (int)mutableData.Value;
+                long currentRecord = mutableData.Value == null ? 0 : (long)mutableData.Value;
                 mutableData.Value = currentRecord + 1;
                 return TransactionResult.Success(mutableData);
             });
@@ -378,17 +377,16 @@ public class Database_RecordManager : Singleton<Database_RecordManager>
     //}
 
     //// MainScene 연동 이전 임시 로그인으로 작성한 코드 -> 연동 이후 삭제
-    //private void Rank()
-    //{
-    //    _rankPanel.SetActive(!_rankPanel.activeSelf);
-    //}
+    private void Rank()
+    {
+        
+    }
 
-    //// RoomScene 연동 이전 임시 버튼 연동 코드 -> 연동 이후 삭제
-    //private void Info()
-    //{
-    //    _infoPanel.SetActive(!_infoPanel.activeSelf);
-    //    //_infoPanel.GetComponent<PlayerInfoUIController>().ShowInfo();
-    //}
+    // RoomScene 연동 이전 임시 버튼 연동 코드 -> 연동 이후 삭제
+    private void Info()
+    {
+        
+    }
 
     //// 초기 개인 랭킹 표시 메서드
     //// 코드가 더 복잡한 것 같아서 위 메서드로 재구현
