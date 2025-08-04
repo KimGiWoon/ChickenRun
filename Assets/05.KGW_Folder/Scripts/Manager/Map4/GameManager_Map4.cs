@@ -96,29 +96,6 @@ public class GameManager_Map4 : MonoBehaviourPunCallbacks
         OnEggCountChange?.Invoke(_totalEggCount);   // 이벤트 호출
     }
 
-    // 플레이어 탈주
-    public void PlayerExit(string exitPlayer)
-    {
-        if (PhotonNetwork.IsMasterClient)
-        {
-            _exitPlayerCount++;
-            UnityEngine.Debug.Log($"나간 사람 수 : {_exitPlayerCount}");
-        }
-
-        if (PhotonNetwork.LocalPlayer.CustomProperties.TryGetValue("Nickname", out object nickname))
-        {
-            string myNickname = nickname.ToString();
-
-            if (exitPlayer == myNickname)
-            {
-                UnityEngine.Debug.Log($"{exitPlayer}께서 나갔습니다.");
-
-                _networkManager._isStart = false;
-                _defeatUIController.gameObject.SetActive(true);
-            }
-        }
-    }
-
     // 플레이어 죽음
     public void PlayerDeath(string playerNickname)
     {

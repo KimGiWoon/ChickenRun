@@ -44,7 +44,6 @@ public class DefeatUIController_Map4 : MonoBehaviour
 
         yield return _time;
 
-        SoundManager.Instance.StopBGM();
         // 씬 이동
         PhotonNetwork.LoadLevel("MainScene");
     }
@@ -57,9 +56,7 @@ public class DefeatUIController_Map4 : MonoBehaviour
 
         yield return _time;
 
-        SoundManager.Instance.StopBGM();
         // 씬 이동
-        PhotonNetwork.LoadLevel("MainScene");
         PhotonNetwork.LeaveRoom();
     }
 
