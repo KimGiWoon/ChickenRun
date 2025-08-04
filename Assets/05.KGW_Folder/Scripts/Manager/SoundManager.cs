@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class SoundManager : Singleton<SoundManager>
@@ -10,7 +8,9 @@ public class SoundManager : Singleton<SoundManager>
         BGM_InGame1,
         BGM_InGame2,
         BGM_InGame3,
-        BGM_InGame4
+        BGM_InGame4,
+        BGM_Login,
+        BGM_Lobby
     }
 
     // 인게임 SFX
@@ -21,12 +21,32 @@ public class SoundManager : Singleton<SoundManager>
         SFX_Goal,
         SFX_Count,
         SFX_Start,
-        SFX_DropWater
+        SFX_DropWater,
+        SFX_Walk,
+        SFX_Shot,
+        SFX_Hit,
+        SFX_Win,
+        SFX_Lose,
+        SFX_Death,
+        SFX_Alarm,
+        SFX_Drill,
+        SFX_Clear,
+        SFX_Defeat
+    }
+    public enum Sfx_Emotion
+    {
+        SFX_Smile = 0, //웃음
+        SFX_Suprised, // 놀람
+        SFX_Quiz, //농락
+        SFX_Angry,//분노
+        SFX_Heart, //하트
+        SFX_Crying //울음
     }
 
     [Header("BGM, SFX Sound Files")]
     [SerializeField] AudioClip[] _bgmFiles;
     [SerializeField] AudioClip[] _sfxFiles;
+    [SerializeField] AudioClip[] _sfxEmotionFiles;
 
     [Header("Audio Source Reference")]
     [SerializeField] public AudioSource _bgmAudioSource;
@@ -47,7 +67,7 @@ public class SoundManager : Singleton<SoundManager>
     {
         base.OnDestroy();
         // 플레이 모드 확인하여 이벤트 구독 해제
-        if(Application.isPlaying)
+        if (Application.isPlaying)
         {
             SettingManager.Instance.BGM.OnChanged -= BgmVolume;
             SettingManager.Instance.SFX.OnChanged -= SfxVolume;
@@ -68,10 +88,21 @@ public class SoundManager : Singleton<SoundManager>
         _bgmAudioSource.Stop();
     }
 
+    // SFX 정지
+    public void StopSFX()
+    {
+        _sfxAudioSource.Stop();
+    }
+
     // SFX 플레이
     public void PlaySFX(Sfxs sfx)
     {
         _sfxAudioSource.PlayOneShot(_sfxFiles[(int)sfx]);
+    }
+    // SFX 플레이
+    public void PlaySFX(int index)
+    {
+        _sfxAudioSource.PlayOneShot(_sfxEmotionFiles[index]);
     }
 
     // BGM 볼륨

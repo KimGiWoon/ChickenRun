@@ -34,31 +34,30 @@ MonoBehaviour:
   RunInBackground: 1
   StartInOfflineMode: 0
   RpcList:
+  - AddScore
+  - ArrivePlayer
   - ClickRpc
+  - DelayedPlayer
   - DestroyRpc
   - DestroySpaceship
-  - Fire
-  - RespawnSpaceship
-  - NotifyPlayer
-  - StartGame
-  - ArrivePlayer
   - EmoticonPlay
   - ExitPlayer
+  - ExitPlayerCheck
+  - Fire
   - GameClearLeaveRoom
-  - StartGameRoutine
-  - ReadyGame
-  - PlayerNickname
-  - RPC_ReceiveKickByUID
-  - PlateSpawn
-  - RequestReturn
-  - RPC_ShootBullet
+  - GameDefeatLeaveRoom
   - GiveEgg
-  - GiveScore
-  - RPC_AddScore
-  - RPC_GiveEgg
-  - AddScore
+  - LoseGame
   - MinusScore
-  - EndGame
+  - NotifyPlayer
+  - PlateSpawn
+  - ReadyGame
+  - RequestReturn
+  - RespawnSpaceship
+  - RPC_ReceiveKickByUID
+  - RPC_ShootBullet
+  - StartGame
+  - StartGameRoutine
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

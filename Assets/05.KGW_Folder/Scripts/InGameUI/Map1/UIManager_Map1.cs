@@ -1,9 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using Photon.Pun;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class UIManager_Map1 : MonoBehaviourPun
@@ -53,10 +53,13 @@ public class UIManager_Map1 : MonoBehaviourPun
     [Header("Manager Reference")]
     [SerializeField] NetworkManager_Map1 _networkManager;
     [SerializeField] GameManager_Map1 _gameManager;
+    [SerializeField] PlayerController_Map1 _playerController;
+    [SerializeField] DefeatUIController_Map1 _defeatUIcontroller;
 
     Coroutine _panelRoutine;
     Coroutine _emoticonRoutine;
     float _totalDistance;
+    public bool _isExit = false;
     public bool _isOptionOpen = false;
     public bool _isEmoticonPanelOpen = false;
     public float _emoticonTime = 3f;
@@ -142,10 +145,6 @@ public class UIManager_Map1 : MonoBehaviourPun
     {
         _musicSlider.value = SettingManager.Instance.BGM.Value;
         _effectSlider.value = SettingManager.Instance.SFX.Value;
-
-        // 사운드 초기값 중간 세팅
-        //_musicSlider.value = 0.1f;
-        //_effectSlider.value = 0.2f;
     }
 
     // 옵션 창 오픈
@@ -165,7 +164,6 @@ public class UIManager_Map1 : MonoBehaviourPun
     // 이모티콘 패널 오픈
     private void OnEmoticonPanel()
     {
-
         if (!_isEmoticonPanelOpen)
         {
             _emoticonPanel.SetActive(true);
@@ -214,25 +212,23 @@ public class UIManager_Map1 : MonoBehaviourPun
     // 나가기 버튼 클릭
     private void OnExitPlayGame()
     {
-        string exitPlayer = PhotonNetwork.LocalPlayer.NickName;
+        string exitPlayer = _playerEmoticonController._nickname;
 
+        _isExit = true;
         _gameManager.StopStopWatch();
-        SoundManager.Instance.StopBGM(); 
-        _networkManager._isStart = false;
 
-        // 나감을 알림
-        photonView.RPC(nameof(ExitPlayer), RpcTarget.AllViaServer, exitPlayer);
-    }
+        photonView.RPC(nameof(ExitPlayerCheck), RpcTarget.MasterClient, exitPlayer);
+        _gameManager.GameDefeatLeaveRoom();
+}
 
-    // 방 나가기
+    // 나간 플레이어 알림
     [PunRPC]
-    private void ExitPlayer(string playerNickname)
+    public void ExitPlayerCheck(string exitPlayer)
     {
-        UnityEngine.Debug.Log($"{playerNickname}께서 나갔습니다.");
-        if (PhotonNetwork.LocalPlayer.NickName == playerNickname)
+        if (PhotonNetwork.IsMasterClient)
         {
-            PhotonNetwork.LoadLevel("MainScene");
-            PhotonNetwork.LeaveRoom();
+            _gameManager._exitPlayerCount++;
+            Debug.Log($"나간 플레이어 : {exitPlayer}");
         }
     }
 
@@ -245,9 +241,18 @@ public class UIManager_Map1 : MonoBehaviourPun
     // 플레이어의 위치와 거리 업데이트
     private void PlayerPosUpdate()
     {
+        if (_playerPosition == null || _goalPosition == null || _playerPosSlider == null)
+            return;
+
         float distanceToGoal = Vector2.Distance(_playerPosition.position, _goalPosition.position);
         float progress = Mathf.Clamp01(1 - (distanceToGoal / _totalDistance));
         _playerPosSlider.value = progress;
+    }
+    
+    // 플레이어 위치 참조 초기화
+    public void ClearPlayerReference()
+    {
+        _playerPosition = null;
     }
 
     // 플레이어 위치 세팅
@@ -313,7 +318,4 @@ public class UIManager_Map1 : MonoBehaviourPun
 
         _playerEmoticonController._SpeechBubble.SetActive(false);
     }
-
-    
-    
 }

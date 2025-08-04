@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Photon.Pun;
+using Photon.Pun.Demo.PunBasics;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -58,11 +59,13 @@ public class UIManager_Map4 : MonoBehaviourPun
     [Header("Manager Reference")]
     [SerializeField] NetworkManager_Map4 _networkManager;
     [SerializeField] GameManager_Map4 _gameManager;
+    [SerializeField] DefeatUIController_Map4 _defeatUIcontroller;
 
     Coroutine _panelRoutine;
     Coroutine _emoticonRoutine;
     float _playerDistance;
     float _drillDistance;
+    public bool _isExit = false;
     public bool _isOptionOpen = false;
     public bool _isEmoticonPanelOpen = false;
     public float _emoticonTime = 3f;
@@ -152,10 +155,6 @@ public class UIManager_Map4 : MonoBehaviourPun
     {
         _musicSlider.value = SettingManager.Instance.BGM.Value;
         _effectSlider.value = SettingManager.Instance.SFX.Value;
-
-        // 사운드 초기값 중간 세팅
-        _musicSlider.value = 0.1f;
-        _effectSlider.value = 0.2f;
     }
 
     // 옵션 창 오픈
@@ -223,22 +222,24 @@ public class UIManager_Map4 : MonoBehaviourPun
     // 나가기 버튼 클릭
     private void OnExitPlayGame()
     {
-        string exitPlayer = PhotonNetwork.LocalPlayer.NickName;
-        _gameManager._stopwatch.Stop();
-        // 나감을 알림
-        photonView.RPC(nameof(ExitPlayer), RpcTarget.AllViaServer, exitPlayer);
+        string exitPlayer = _playerEmoticonController._nickname;
+
+        _isExit = true;
+        _gameManager.StopStopWatch();
+
+        photonView.RPC(nameof(ExitPlayerCheck), RpcTarget.MasterClient, exitPlayer);
+        _gameManager.GameDefeatLeaveRoom();
     }
 
-    // 방 나가기
+    // 나간 플레이어 알림
     [PunRPC]
-    private void ExitPlayer(string PlayerNickname)
+    public void ExitPlayerCheck(string exitPlayer)
     {
-        Debug.Log($"{PlayerNickname}께서 나갔습니다.");
-        _networkManager._isStart = false;
-        SoundManager.Instance.StopBGM();
-
-        // 로비 씬이 있으면 추가해서 씬 이동
-        PhotonNetwork.LoadLevel("MainScene");
+        if (PhotonNetwork.IsMasterClient)
+        {
+            _gameManager._exitPlayerCount++;
+            Debug.Log($"나간 플레이어 : {exitPlayer}");
+        }
     }
 
     // 출발지점과 도착지점 위치 확인
@@ -254,6 +255,12 @@ public class UIManager_Map4 : MonoBehaviourPun
         float progress = Mathf.Clamp01(1 - (_playerEndDistance / _playerDistance));
         _playerPosSlider.value = progress;
         _distanceText.text = $"{((int)_playerEndDistance).ToString()}m";
+    }
+
+    // 플레이어 위치 참조 초기화
+    public void ClearPlayerReference()
+    {
+        _playerPosition = null;
     }
 
     // 플레이어 위치 세팅
@@ -302,7 +309,7 @@ public class UIManager_Map4 : MonoBehaviourPun
         WaitForSeconds time = new WaitForSeconds(_routineTime);
         int count = 4;
 
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(4f);
         _startPanel.SetActive(true);
 
         while (true)

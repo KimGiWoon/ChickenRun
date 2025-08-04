@@ -8,6 +8,7 @@ using Hashtable = ExitGames.Client.Photon.Hashtable;
 public class NetworkManager_Map2 : MonoBehaviourPunCallbacks
 {
     private int _currentPlayer;
+    private bool _isStarted;
 
     private void Awake()
     {
@@ -17,24 +18,29 @@ public class NetworkManager_Map2 : MonoBehaviourPunCallbacks
 
     private void Start()
     {
-        GameManager_Map2.Instance.OnTimeUp += () => PhotonNetwork.LoadLevel("MainScene");
-        
         if (!PhotonNetwork.IsConnected)
         {
             PhotonNetwork.ConnectUsingSettings();
         }
-
-        PhotonNetwork.LocalPlayer.NickName = $"Player{PhotonNetwork.LocalPlayer.ActorNumber}";
-        string nickname = PhotonNetwork.LocalPlayer.NickName;
-
-        Hashtable table = new Hashtable { { "Nickname", nickname } };
-        PhotonNetwork.LocalPlayer.SetCustomProperties(table);
-
+        
         PhotonNetwork.AutomaticallySyncScene = false;
         PlayerSpawn();
         photonView.RPC(nameof(NotifyPlayer), RpcTarget.MasterClient);
+        if (!_isStarted)
+        {
+            StartCoroutine(DelayStart());
+        }
     }
 
+    private IEnumerator DelayStart()
+    {
+        yield return new WaitForSeconds(3f);
+        if (PhotonNetwork.IsMasterClient && _currentPlayer <= PhotonNetwork.CurrentRoom.MaxPlayers)
+        {
+            photonView.RPC(nameof(ReadyGame), RpcTarget.AllViaServer);
+        }
+    }
+    
     // 마스터 서버 접속
     public override void OnConnectedToMaster()
     {
@@ -90,11 +96,22 @@ public class NetworkManager_Map2 : MonoBehaviourPunCallbacks
             photonView.RPC(nameof(ReadyGame), RpcTarget.AllViaServer);
         }
     }
+    
+    [PunRPC]
+    private void DelayedPlayer()
+    {
+        _currentPlayer++;
+        if (PhotonNetwork.IsMasterClient && _currentPlayer <= PhotonNetwork.CurrentRoom.MaxPlayers)
+        {
+            photonView.RPC(nameof(ReadyGame), RpcTarget.AllViaServer);
+        }
+    }
 
     [PunRPC]
     private void ReadyGame()
     {
         Debug.Log("게임 준비 완료");
+        _isStarted = true;
         GameManager_Map2.Instance.ReadyGame();
     }
 }

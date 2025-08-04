@@ -26,16 +26,12 @@ public class NetworkManager_Map1 : MonoBehaviourPunCallbacks
         {
             UnityEngine.Debug.Log("입장 완료");
     
-            // 플레이어 생성
-            PlayerSpawn();
-
-            // 방에 들어온 플레이어 체크
-            if (PhotonNetwork.IsMasterClient)
+        // 방에 들어온 플레이어 체크
+        if (PhotonNetwork.IsMasterClient)
             {
                 CheckRoomPlayer();
             }
         }
-
     }
 
     // 마스터 서버 접속
@@ -62,8 +58,22 @@ public class NetworkManager_Map1 : MonoBehaviourPunCallbacks
     // 플레이어 생성
     private void PlayerSpawn()
     {
+        if (_isStart)
+        {
+            return;
+        }
+
         Vector2 spawnPos = new Vector2(0, 0);
-        PhotonNetwork.Instantiate($"Player_Map1", spawnPos, Quaternion.identity);
+
+        // 커스텀 속성에서 스킨 이름 가져오기
+        string skinName = "Default";
+        if (PhotonNetwork.LocalPlayer.CustomProperties.TryGetValue("Skin", out object skinObj))
+        {
+            skinName = skinObj.ToString();
+        }
+
+        // Instantiate 시 스킨 이름 전달
+        PhotonNetwork.Instantiate("Player_Map1", spawnPos, Quaternion.identity, 0, new object[] { skinName });
     }
 
     // 입장 플레이어 체크
@@ -95,10 +105,19 @@ public class NetworkManager_Map1 : MonoBehaviourPunCallbacks
         }
     }
 
-    // 게임 스타트
+    // 방 나가기 콜백
+    public override void OnLeftRoom()
+    {
+        PhotonNetwork.LoadLevel("MainScene");
+    }
+
+     // 게임 스타트
     [PunRPC]
     private void StartGame()
     {
+        // 플레이어 생성
+        PlayerSpawn();
+
         _isStart = true;
         _UIManager.photonView.RPC(nameof(_UIManager.StartGameRoutine), RpcTarget.AllViaServer);
     }
