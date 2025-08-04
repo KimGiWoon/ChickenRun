@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
+using Debug = UnityEngine.Debug;
 
 public class Database_RecordManager : Singleton<Database_RecordManager>
 {
@@ -63,6 +64,37 @@ public class Database_RecordManager : Singleton<Database_RecordManager>
         
         // todo : GameManager 이벤트 메서드 연동
         //GameManager.Instance.OnEndGame += (data) => SaveUserRecord(data);
+        //GameManager_Map2.Instance.OnEndGame += (data) => SaveUserMap2Record(data);
+    }
+
+    public void SaveUserMap2Record(GameManager_Map2.Map2Data data)
+    {
+        string uid = _auth.CurrentUser.UserId;
+        string key = data.MapType;
+        DatabaseReference recordRef = _reference.Child("RankData").Child(uid).Child(key);
+        // 맵 기록 저장/갱신 Transaction
+        recordRef.RunTransaction(mutableData =>
+        {
+            long currentRecord = mutableData.Value == null ? long.MaxValue : (long)mutableData.Value;
+            if (data.Record < currentRecord)
+            {
+                mutableData.Value = data.Record;
+            }
+
+            return TransactionResult.Success(mutableData);
+        });
+        
+        if(data.IsWin)
+        {
+            DatabaseReference scoreRef = _reference.Child("RankData").Child(uid).Child("Score");
+            scoreRef.RunTransaction(mutableData =>
+            {
+                long currentRecord = mutableData.Value == null ? 0 : (long)mutableData.Value;
+                mutableData.Value = currentRecord + 1;
+                return TransactionResult.Success(mutableData);
+            });
+        }
+        
     }
 
     // GameManager 게임 종료 이벤트에 등록할 메서드
@@ -133,8 +165,10 @@ public class Database_RecordManager : Singleton<Database_RecordManager>
                 DataSnapshot snapshots = task.Result;
 
                 int rank = 1;
-                foreach (var snapshot in snapshots.Children) {
+                foreach (var snapshot in snapshots.Children) 
+                {
                     RankData rankData = JsonUtility.FromJson<RankData>(snapshot.GetRawJsonValue());
+                    UnityEngine.Debug.Log($"[DEBUG] Raw snapshot: {snapshot.GetRawJsonValue()}");
                     int recordValue = 0;
                     switch (record) {
                         case "Map1Record":
@@ -203,14 +237,38 @@ public class Database_RecordManager : Singleton<Database_RecordManager>
         if (myRecord == 0)
             return info;
 
-        int myRank = -1;
+        int myRank = 1;
         DataSnapshot snapshot = await _reference
             .Child("RankData")
             .OrderByChild(record)
             .EndAt(myRecord - 1)
             .GetValueAsync();
-        if (snapshot != null) {
-            myRank = (int)snapshot.ChildrenCount + 1;
+        if (snapshot != null) 
+        {
+            foreach (var child in snapshot.Children)
+            {
+                var json = child.GetRawJsonValue();
+                var rankData = JsonUtility.FromJson<RankData>(json);
+
+                int recordValue = 0;
+                switch (record)
+                {
+                    case "Map1Data":
+                        recordValue = (int)rankData.Map1Record;
+                        break;
+                    case "Map2Data":
+                        recordValue = (int)rankData.Map2Record;
+                        break;
+                    case "Map3Data":
+                        recordValue = (int)rankData.Map3Record;
+                        break;
+                }
+
+                if (recordValue > 0)
+                {
+                    myRank++;
+                }
+            }
         }
 
         info.Rank = myRank;
