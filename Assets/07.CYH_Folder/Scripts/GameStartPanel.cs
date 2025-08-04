@@ -1,6 +1,7 @@
 using Firebase.Auth;
 using Firebase.Extensions;
 using System;
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -26,8 +27,8 @@ public class GameStartPanel : UIBase
         _gameStartButton.onClick.AddListener(() =>
         {
             //TODO: <최연호> 테스트씬 삭제
-            //SceneManager.LoadScene("MainScene");
-            SceneManager.LoadScene("[CYH] MainScene");
+            SceneManager.LoadScene("MainScene");
+            //SceneManager.LoadScene("[CYH] MainScene");
             
             // 포톤 초기화
             CYH_FirebaseManager.Instance.OnFirebaseLoginSuccess();
@@ -43,10 +44,10 @@ public class GameStartPanel : UIBase
 
         OnSetNicknameField += SetNicknameField;
 
-        Debug.Log("------유저 정보------");
-        Debug.Log($"유저 닉네임 : {CYH_FirebaseManager.Auth.CurrentUser.DisplayName}");
-        Debug.Log($"유저 ID : {CYH_FirebaseManager.Auth.CurrentUser.UserId}");
-        Debug.Log($"이메일 : {CYH_FirebaseManager.Auth.CurrentUser.Email}");
+        //Debug.Log("------유저 정보------");
+        //Debug.Log($"유저 닉네임 : {CYH_FirebaseManager.Auth.CurrentUser.DisplayName}");
+        //Debug.Log($"유저 ID : {CYH_FirebaseManager.Auth.CurrentUser.UserId}");
+        //Debug.Log($"이메일 : {CYH_FirebaseManager.Auth.CurrentUser.Email}");
     }
 
     private void OnEnable()
@@ -64,22 +65,36 @@ public class GameStartPanel : UIBase
     /// </summary>
     public void SetNicknameField()
     {
+        //StartCoroutine(SetNicknameFieldCoroutine());
+
         FirebaseUser user = CYH_FirebaseManager.Auth.CurrentUser;
         Debug.Log("GameStartPanel 이벤트 호출");
 
-        if (user != null && !string.IsNullOrEmpty(user.DisplayName))
+        if (user != null)
         {
             Debug.Log("현재 유저 상태: 닉네임 null 아님, 유저 null 아님");
             _nicknameText.text = $"{user.DisplayName} 님";
-        }
-        else if (user.IsAnonymous)
-        {
-            Debug.LogError($"현재 유저 상태: 게스트 / Displayname : {user.DisplayName}");
-            //_nicknameText.text = $"{user.DisplayName} 님";
-            _nicknameText.text = $"게스트 님";
-        }
-    }
+            Debug.Log($"Utility.LoadNickname() : {user.DisplayName}");
 
+        }
+        else
+        {
+            _nicknameText.text = $" null 님";
+            Debug.Log("현재 유저 상태: null");
+        }
+
+        //if (user != null && !string.IsNullOrEmpty(user.DisplayName))
+        //{
+        //    Debug.Log("현재 유저 상태: 닉네임 null 아님, 유저 null 아님");
+        //    _nicknameText.text = $"{user.DisplayName} 님";
+        //}
+        //else if (user.IsAnonymous)
+        //{
+        //    Debug.LogError($"현재 유저 상태: 게스트 / Displayname : {user.DisplayName}");
+        //    //_nicknameText.text = $"{user.DisplayName} 님";
+        //    _nicknameText.text = $"게스트 님";
+        //}
+    }
 
     /// <summary>
     /// 닉네임 text에 표시되는 닉네임을 변경하는 메세드
@@ -93,20 +108,30 @@ public class GameStartPanel : UIBase
         if (user != null)
         {
             Debug.Log("현재 유저 상태: 닉네임 null 아님, 유저 null 아님");
-            _nicknameText.text = $"{googleDisplayName} 님";
+            _nicknameText.text = $"{Utility.LoadNickname()} 님";
         }
-
-        else if (user.IsAnonymous)
-        {
-            Debug.LogError($"현재 유저 상태: 게스트 / Displayname : {user.DisplayName}");
-            _nicknameText.text = $"게스트 님";
-        }
-
         else
         {
-            Debug.LogError($"현재 유저 상태: else / Displayname : {user.DisplayName}");
-            _nicknameText.text = $"else 님";
+            Debug.Log("현재 유저 상태: null");
         }
+
+        //if (user != null)
+        //{
+        //    Debug.Log("현재 유저 상태: 닉네임 null 아님, 유저 null 아님");
+        //    _nicknameText.text = $"{googleDisplayName} 님";
+        //}
+
+        //else if (user.IsAnonymous)
+        //{
+        //    Debug.LogError($"현재 유저 상태: 게스트 / Displayname : {user.DisplayName}");
+        //    _nicknameText.text = $"게스트 님";
+        //}
+
+        //else
+        //{
+        //    Debug.LogError($"현재 유저 상태: else / Displayname : {user.DisplayName}");
+        //    _nicknameText.text = $"else 님";
+        //}
     }
 
     /// <summary>
@@ -146,7 +171,6 @@ public class GameStartPanel : UIBase
                 {
                     Debug.LogError("유저 삭제 실패");
                 }
-
             
                 Debug.Log("유저 삭제 성공");
                 Debug.Log($" (Auth Delete_2) 현재 로그인된 유저 uid : {currentUser.UserId}");

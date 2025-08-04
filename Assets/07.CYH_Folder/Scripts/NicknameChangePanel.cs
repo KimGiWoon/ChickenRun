@@ -67,7 +67,10 @@ public class NicknameChangePanel : UIBase
             return;
         }
 
-        SetNickname();
+        // 닉네임 재설정 및 데이터베이스에 저장
+        //SetNickname();
+        Utility.SetNickname(_nicknameField.text);
+
         PopupManager.Instance.ShowOKPopup("닉네임 변경 성공.\r\n다시 로그인해 주세요.", "OK", () =>
         {
             PopupManager.Instance.HidePopup();
@@ -83,32 +86,5 @@ public class NicknameChangePanel : UIBase
             //TODO: <최연호> 테스트씬 삭제
             SceneManager.LoadScene("[CYH] LoginScene");
         });
-    }
-
-    private void SetNickname()
-    {
-        UserProfile profile = new UserProfile();
-        profile.DisplayName = _nicknameField.text;
-
-        FirebaseUser user = CYH_FirebaseManager.Auth.CurrentUser;
-        user.UpdateUserProfileAsync(profile)
-            .ContinueWithOnMainThread(task =>
-            {
-                if (task.IsCanceled)
-                {
-                    Debug.LogError("닉네임 변경 취소");
-                    return;
-                }
-
-                if (task.IsFaulted)
-                {
-                    Debug.LogError("닉네임 변경 실패");
-                    return;
-                }
-                Debug.Log("닉네임 변경 성공");
-                
-                // DB 닉네임 수정
-                Utility.SaveNickname();
-            });
     }
 }

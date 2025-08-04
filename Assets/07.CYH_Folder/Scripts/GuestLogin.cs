@@ -28,7 +28,7 @@ public class GuestLogin : MonoBehaviour
             return;
         }
 
-        CYH_FirebaseManager.Auth.SignInAnonymouslyAsync().ContinueWithOnMainThread(task =>
+        CYH_FirebaseManager.Auth.SignInAnonymouslyAsync().ContinueWithOnMainThread(async task =>
         {
             if (task.IsCanceled)
             {
@@ -44,9 +44,13 @@ public class GuestLogin : MonoBehaviour
             Firebase.Auth.AuthResult result = task.Result;
 
             FirebaseUser user = CYH_FirebaseManager.Auth.CurrentUser;
-            
+
             // 게스트 닉네임 변경 
-            Utility.SetNickname(user);
+            //Utility.SetGuestNickname(user);
+
+            // 게스트 닉네임 변경 
+            await Utility.SetGuestNickname(user);
+            await user.ReloadAsync();
 
             Debug.Log("------유저 정보------");
             Debug.Log($"유저 닉네임 : {user.DisplayName}");

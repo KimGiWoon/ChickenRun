@@ -139,7 +139,7 @@ public class SignUpPanel : UIBase
                     FirebaseUser user = result.User;
 
                     // 유저 이름 등록
-                    SetUserNickname(user);
+                    Utility.SetNickname(_nicknameField.text);
 
                     // 인증 이메일 전송
                     SendEmailVerification(user);
@@ -152,7 +152,7 @@ public class SignUpPanel : UIBase
 
                     Debug.Log("이메일 가입 성공");
                     Debug.Log("------유저 정보------");
-                    Debug.Log($"유저 닉네임 : {user.DisplayName}");
+                    Debug.Log($"유저 닉네임 : {Utility.LoadNickname()}");
                     Debug.Log($"유저 ID : {user.UserId}");
                     Debug.Log($"이메일 : {user.Email}");
                 }
@@ -183,7 +183,7 @@ public class SignUpPanel : UIBase
                  else if (task.IsFaulted)
                  {
                      Debug.LogError($"이메일 중복 체크 실패 / 원인 : {task.Exception}");
-                     
+
                      // 팝업 (이메일 형식 확인)
                      ShowPopup("올바른 이메일 형식이 아닙니다.");
                      return;
@@ -246,21 +246,21 @@ public class SignUpPanel : UIBase
     /// </summary>
     private void NicknameCheck()
     {
-         _checkedNickname = _nicknameField.text;
+        _checkedNickname = _nicknameField.text;
 
         //DatabaseReference userData = CYH_FirebaseManager.Database.GetReference("UserData");
         DatabaseReference userData = CYH_FirebaseManager.Database.RootReference.Child("UserData");
 
-        userData.OrderByChild("NickName").EqualTo(_nicknameField.text).GetValueAsync().ContinueWithOnMainThread(task=>
+        userData.OrderByChild("Nickname").EqualTo(_nicknameField.text).GetValueAsync().ContinueWithOnMainThread(task =>
         {
             if (task.IsFaulted)
             {
                 Debug.Log("실패: " + task.Exception);
                 return;
             }
-            
+
             DataSnapshot snapshot = task.Result;
-            
+
             if (!snapshot.Exists || snapshot.ChildrenCount == 0)
             {
                 // 팝업 (사용 가능 닉네임)
@@ -271,44 +271,13 @@ public class SignUpPanel : UIBase
             foreach (DataSnapshot user in snapshot.Children)
             {
                 string uid = user.Key;
-                string nickname = user.Child("NickName").Value?.ToString();
+                string nickname = user.Child("Nickname").Value?.ToString();
                 Debug.Log($"중복된 닉네임: {nickname}, uid: {uid}");
 
                 // 팝업 (중복된 닉네임)
                 ShowPopup("중복된 닉네임입니다.");
             }
         });
-    }
-
-    /// <summary>
-    /// 회원가입 시 유저 닉네임을 설정하는 메서드
-    /// </summary>
-    /// <param name="currentUser">닉네임을 설정할 유저</param>
-    private void SetUserNickname(FirebaseUser currentUser)
-    {
-        DatabaseReference userData = CYH_FirebaseManager.Database.RootReference.Child("UserData");
-        
-        UserProfile profile = new UserProfile();
-        profile.DisplayName = _nicknameField.text;
-
-        currentUser.UpdateUserProfileAsync(profile)
-            .ContinueWithOnMainThread(task =>
-            {
-                if (task.IsCanceled)
-                {
-                    Debug.LogError("닉네임 설정 취소");
-                    return;
-                }
-
-                if (task.IsFaulted)
-                {
-                    Debug.LogError("닉네임 설정 실패");
-                    return;
-                }
-                Debug.Log("닉네임 설정 성공");
-                // TODO: <최연호> 닉네임 UserData UpdateChildrenAsync / SetValueAsync
-                // RankData SetValue
-            });
     }
 }
 

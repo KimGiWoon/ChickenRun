@@ -5,6 +5,7 @@ using Google;
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 
@@ -140,25 +141,28 @@ public class LinkPanel : UIBase
                 }
 
                 // 구글 계정 닉네임으로 currentUser을 닉네임으로 변경
-                SetNickname(user, googleDisplayName);
+                //SetNickname(user, googleDisplayName);
+                Utility.SetNickname(user, googleDisplayName);
 
                 Debug.Log("------유저 정보------");
-                Debug.Log($"유저 이름 : {user.DisplayName}");
+                Debug.Log($"유저 이름 : {Utility.LoadNickname()}");
                 Debug.Log($"유저 ID: {user.UserId}");
                 Debug.Log($"이메일 : {user.Email}");
 
-                StartCoroutine(WaitForReloadAndLog(user));
+                //StartCoroutine(WaitForReloadAndLog(user));
 
-                PopupManager.Instance.ShowOKPopup("구글 계정으로 전환 성공\r\n 다시 로그인 해주세요.", "OK", () =>
-                {
-                    PopupManager.Instance.HidePopup();
-                    
-                    // SignOut
-                    CYH_FirebaseManager.Auth.SignOut();
-                    
-                    // LoginPanel ShowUI, GameStartPanel HideUI
-                    OnClickSignOut?.Invoke();
-                });
+                PopupManager.Instance.ShowOKPopup("구글 계정으로 전환 성공", "OK", () => PopupManager.Instance.HidePopup());
+
+                //PopupManager.Instance.ShowOKPopup("구글 계정으로 전환 성공\r\n 다시 로그인 해주세요.", "OK", () =>
+                //{
+                //    PopupManager.Instance.HidePopup();
+
+                //    // SignOut
+                //    CYH_FirebaseManager.Auth.SignOut();
+
+                //    // LoginPanel ShowUI, GameStartPanel HideUI
+                //    OnClickSignOut?.Invoke();
+                //});
             });
         });
     }
