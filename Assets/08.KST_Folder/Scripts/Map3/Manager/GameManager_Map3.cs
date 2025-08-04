@@ -102,6 +102,8 @@ namespace Kst
             _networkManager._isStart = false;
             SoundManager.Instance.StopBGM();
 
+            PhotonNetwork.LeaveRoom();
+
             PhotonNetwork.LoadLevel("MainScene");
         }
 

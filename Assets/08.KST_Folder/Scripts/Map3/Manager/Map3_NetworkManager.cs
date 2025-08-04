@@ -18,6 +18,8 @@ namespace Kst
         public bool _isStart = false;
         [SerializeField] private CinemachineVirtualCamera _virtualCam;
 
+        void Awake() => PhotonNetwork.AutomaticallySyncScene = false;
+
         void Start()
         {
             // 서버에 연결이 되어 있지 않으면 서버 접속
