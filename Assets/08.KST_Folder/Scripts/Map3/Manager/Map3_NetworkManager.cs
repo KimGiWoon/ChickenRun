@@ -15,8 +15,8 @@ namespace Kst
         [SerializeField] private string playerPrefabName = "Map3_Player";
         [SerializeField] private Map3BtnUI _btnUI;
         [SerializeField] private Transform spawnPoint; // 플레이어 생성 위치
-        private bool _isStart = false;
-        [SerializeField] private Cinemachine.CinemachineVirtualCamera _virtualCam;
+        public bool _isStart = false;
+        [SerializeField] private CinemachineVirtualCamera _virtualCam;
 
         void Start()
         {
@@ -29,13 +29,6 @@ namespace Kst
             else
             {
                 Debug.Log("입장 완료");
-
-                // 닉네임을 커스텀 프로퍼티로 저장
-                string nickname = PhotonNetwork.LocalPlayer.NickName;
-                Hashtable hashtable = new Hashtable { { "Nickname", nickname } };
-
-                // 닉네임 정보를 포톤서버에 업로드
-                PhotonNetwork.LocalPlayer.SetCustomProperties(hashtable);
 
                 // 플레이어 생성
                 PlayerSpawn();
@@ -72,29 +65,12 @@ namespace Kst
         {
             Debug.Log("Joined Room");
 
-            PhotonNetwork.LocalPlayer.NickName = $"Player{PhotonNetwork.LocalPlayer.ActorNumber}";
-
-            // 닉네임을 커스텀 프로퍼티로 저장
-            string nickname = PhotonNetwork.LocalPlayer.NickName;
-            Hashtable hashtable = new Hashtable { { "Nickname", nickname } };
-
-            // 닉네임 정보를 포톤서버에 업로드
-            PhotonNetwork.LocalPlayer.SetCustomProperties(hashtable);
-
             PlayerSpawn();
 
             if (PhotonNetwork.IsMasterClient)
             {
                 CheckRoomPlayer();
             }
-
-            // GameObject go = PhotonNetwork.Instantiate(playerPrefabName, spawnPoint.position, Quaternion.identity);
-            // if (go.TryGetComponent(out PhotonView pv) && pv.IsMine)
-            // {
-            //     Map3_PlayerController player = go.GetComponent<Map3_PlayerController>();
-            //     _btnUI.Init(player);
-            // }
-            // _plateSpawner.StartSpawn();
         }
 
         // 플레이어 생성
@@ -109,7 +85,6 @@ namespace Kst
                 _virtualCam.Follow = go.transform;
                 _virtualCam.LookAt = go.transform;
             }
-            // _plateSpawner.StartSpawn(); //TODO <김승태> : 삭제 요망
         }
 
         // 입장 플레이어 체크

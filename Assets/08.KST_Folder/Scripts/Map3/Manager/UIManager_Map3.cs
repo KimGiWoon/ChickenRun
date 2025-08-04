@@ -44,6 +44,7 @@ public class UIManager_Map3 : MonoBehaviourPun
     public bool _isOptionOpen = false;
     public bool _isEmoticonPanelOpen = false;
     public float _emoticonTime = 3f;
+    [SerializeField] private Map3_NetworkManager _networkManager;
 
     public event Action OnGameStart;
 
@@ -201,6 +202,10 @@ public class UIManager_Map3 : MonoBehaviourPun
     {
         string exitPlayer = PhotonNetwork.LocalPlayer.NickName;
 
+        GameManager_Map3.Instance.StopStopWatch();
+        SoundManager.Instance.StopBGM();
+        _networkManager._isStart = false;
+
         // 나감을 알림
         photonView.RPC(nameof(ExitPlayer), RpcTarget.AllViaServer, exitPlayer);
     }
@@ -211,11 +216,17 @@ public class UIManager_Map3 : MonoBehaviourPun
     {
         Debug.Log($"{PlayerNickname}께서 나갔습니다.");
 
+        if (PhotonNetwork.LocalPlayer.NickName == PlayerNickname)
+        {
+            PhotonNetwork.LoadLevel("MainScene");
+            PhotonNetwork.LeaveRoom();
+        }
+
         // 현재의 방을 나가기
         //PhotonNetwork.LeaveRoom();
 
         // 로비 씬이 있으면 추가해서 씬 이동
-        PhotonNetwork.LoadLevel("MainScene");
+        // PhotonNetwork.LoadLevel("MainScene");
     }
 
     // 플레이어 위치 세팅
@@ -268,6 +279,7 @@ public class UIManager_Map3 : MonoBehaviourPun
                 SoundManager.Instance.PlayBGM(SoundManager.Bgms.BGM_InGame4);
                 _startPanel.SetActive(false);
                 //TODO <김승태> 스포너 생성 시작 시점
+                GameManager_Map3.Instance.StartStopWatch();
                 OnGameStart?.Invoke();
                 // GameManager_Map3.Instance.PlateSpawner.StartSpawn();
                 break;

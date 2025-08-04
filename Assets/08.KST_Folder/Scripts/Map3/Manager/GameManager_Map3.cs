@@ -17,14 +17,12 @@ namespace Kst
         public Stopwatch _stopwatch;
         public string _currentMapType;
         public float _totalPlayTime;
-        int _totalEggCount = 0;
         public int _totalPlayerCount;
         Map3Data _data;
+        [SerializeField] private Map3_NetworkManager _networkManager;
 
         //이벤트
-        // public event Action<int> OnEggCountChange;
         public event Action<Map3Data> OnEndGame;
-
 
         void Awake()
         {
@@ -34,32 +32,44 @@ namespace Kst
                 Destroy(gameObject);
 
             _stopwatch = new Stopwatch();
+            _data = new("Map3Record");
         }
         void OnEnable()
         {
             _gameUIManager.OnGameStart += StartToSpawn;
+            StartCoroutine(DelaySubscribe());
         }
         void OnDisable()
         {
             _gameUIManager.OnGameStart -= StartToSpawn;
+            ScoreManager.Instance.OnEggChanged -= GetEgg;
+            ScoreManager.Instance.OnScoreChanged -= GetScore;
         }
 
-        void Update()
+        IEnumerator DelaySubscribe()
         {
-            PlayTimeOverCheck();
+            //scoreManager가 생성되기 전까지는 대기
+            yield return new WaitUntil(() => ScoreManager.Instance != null);
+            ScoreManager.Instance.OnEggChanged += GetEgg;
+            ScoreManager.Instance.OnScoreChanged += GetScore;
         }
 
-        // IEnumerator DelaySubscribe()
-        // {
-        //     //scoreManager가 생성되기 전까지는 대기
-        //     yield return new WaitUntil(() => _gameUIManager != null);
-        //     ScoreManager.Instance.OnScoreChanged += RefreshScoreUI;
-        //     ScoreManager.Instance.OnEggChanged += RefreshEggUI;
-        // }
+        void Update() => PlayTimeOverCheck();
 
-        void StartToSpawn()
+        void StartToSpawn() => PlateSpawner.StartSpawn();
+
+        void GetScore(int score)
         {
-            PlateSpawner.StartSpawn();
+            _data.Score = score;
+            UnityEngine.Debug.Log($"획득 점수 : {score}");
+            UnityEngine.Debug.Log($"데이터에 저장된 점수 : {_data.Score}");
+        }
+
+        void GetEgg(int egg)
+        {
+            _data.EggCount = egg;
+            UnityEngine.Debug.Log($"획득 재화 : {egg}");
+            UnityEngine.Debug.Log($"데이터에 저장된 점수 : {_data.EggCount}");
         }
 
         private void PlayTimeOverCheck()
@@ -74,8 +84,9 @@ namespace Kst
         public void GamePlayTimeOver()
         {
             _stopwatch.Stop();
-            _data.EggCount = _totalEggCount;
             OnEndGame?.Invoke(_data);
+            UnityEngine.Debug.Log($"스코어 : {_data.Score}");
+            UnityEngine.Debug.Log($"계란 : {_data.EggCount}");
             UnityEngine.Debug.Log("게임 플레이 시간이 지났습니다.");
 
             PlateSpawner.StopSpawn();
@@ -87,41 +98,26 @@ namespace Kst
         public void GameClearLeaveRoom()
         {
             UnityEngine.Debug.Log("모든 플레이어가 방을 나갑니다.");
-            _stopwatch?.Reset();
 
-            // 현재의 방을 나가기
-            //PhotonNetwork.LeaveRoom();
+            _networkManager._isStart = false;
+            SoundManager.Instance.StopBGM();
 
-            // 로비 씬이 있으면 추가해서 씬 이동
             PhotonNetwork.LoadLevel("MainScene");
         }
-
-        // 달걀 획득
-        // public void GetEgg(int eggCount)
-        // {
-        //     _totalEggCount += eggCount;
-        //     // OnEggCountChange?.Invoke(_totalEggCount);   // 이벤트 호출
-        // }
 
         // 스탑워치 시작
         public void StartStopWatch()
         {
             // 스탑워치 리셋
             if (_stopwatch != null)
-            {
                 _stopwatch.Reset();
-            }
 
             // 스탑워치 시작
             _stopwatch.Start();
         }
 
         // 스탑워치 정지
-        public void StopStopWatch()
-        {
-            _stopwatch.Stop();
-            _data.Record = _stopwatch.ElapsedMilliseconds;
-        }
+        public void StopStopWatch() => _stopwatch.Stop();
 
         // 플레이 타임 UI 업데이트
         public string PlayTimeUpdate()
@@ -135,7 +131,6 @@ namespace Kst
 
             return string.Format($"{minuteTime:D2}:{secondTime:00.00}");
         }
-
 
     }
 }

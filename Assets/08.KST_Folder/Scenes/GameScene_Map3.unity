@@ -1241,11 +1241,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _gameUIManager: {fileID: 1909447668}
-  _GamePlayTime: 100
+  _GamePlayTime: 10
   PlateSpawner: {fileID: 1427744986}
   _currentMapType: Map3
-  _totalPlayTime: 200
+  _totalPlayTime: 0
   _totalPlayerCount: 0
+  _networkManager: {fileID: 741950609}
 --- !u!4 &691015402
 Transform:
   m_ObjectHideFlags: 0
@@ -1297,6 +1298,7 @@ MonoBehaviour:
   playerPrefabName: Map3_Player
   _btnUI: {fileID: 318930635}
   spawnPoint: {fileID: 741950610}
+  _isStart: 0
   _virtualCam: {fileID: 1186528911}
 --- !u!4 &741950610
 Transform:
@@ -1842,7 +1844,7 @@ GameObject:
   - component: {fileID: 1106645989}
   m_Layer: 0
   m_Name: Left
-  m_TagString: Untagged
+  m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2407,7 +2409,7 @@ GameObject:
   - component: {fileID: 1587541759}
   m_Layer: 0
   m_Name: Right
-  m_TagString: Untagged
+  m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2899,6 +2901,7 @@ MonoBehaviour:
   _isOptionOpen: 0
   _isEmoticonPanelOpen: 0
   _emoticonTime: 3
+  _networkManager: {fileID: 741950609}
 --- !u!1 &1935269792
 GameObject:
   m_ObjectHideFlags: 3
