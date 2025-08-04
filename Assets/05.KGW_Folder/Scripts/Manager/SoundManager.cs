@@ -27,10 +27,15 @@ public class SoundManager : Singleton<SoundManager>
         SFX_Hit,
         SFX_Win,
         SFX_Lose,
+        SFX_Death,
+        SFX_Alarm,
+        SFX_Drill,
+        SFX_Clear,
+        SFX_Defeat
     }
     public enum Sfx_Emotion
     {
-        SFX_Smile=0, //웃음
+        SFX_Smile = 0, //웃음
         SFX_Suprised, // 놀람
         SFX_Quiz, //농락
         SFX_Angry,//분노
