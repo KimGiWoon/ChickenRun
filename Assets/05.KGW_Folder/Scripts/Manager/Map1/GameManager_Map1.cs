@@ -52,6 +52,7 @@ public class GameManager_Map1 : MonoBehaviourPunCallbacks
     {
         _stopwatch = new Stopwatch();
         _data = new Map1Data("Map1Record");
+        PhotonNetwork.RunRpcCoroutines = true;
     }
 
     private void Update()

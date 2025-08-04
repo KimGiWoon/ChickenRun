@@ -154,9 +154,10 @@ public class GameManager_Map4 : MonoBehaviourPunCallbacks
     [PunRPC]
     public void GameClearLeaveRoom()
     {
-        _networkManager._isStart = false;
         SoundManager.Instance.StopBGM();
         SoundManager.Instance.StopSFX();
+        _networkManager._isStart = false;
+        _gameUIManager.ClearPlayerReference();
 
         // 클리어 UI 활성화
         _clearUIController.gameObject.SetActive(true);
@@ -166,9 +167,10 @@ public class GameManager_Map4 : MonoBehaviourPunCallbacks
     [PunRPC]
     public void GameDefeatLeaveRoom()
     {
-        _networkManager._isStart = false;
         SoundManager.Instance.StopBGM();
         SoundManager.Instance.StopSFX();
+        _networkManager._isStart = false;
+        _gameUIManager.ClearPlayerReference();
 
         // 실패 UI 활성화
         _defeatUIController.gameObject.SetActive(true);

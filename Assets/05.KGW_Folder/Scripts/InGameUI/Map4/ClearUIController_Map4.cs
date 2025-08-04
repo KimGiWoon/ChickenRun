@@ -31,7 +31,8 @@ public class ClearUIController_Map4 : MonoBehaviour
 
         yield return _time;
 
-        SoundManager.Instance.StopBGM();
+        SoundManager.Instance.StopSFX();
+
         // 씬 이동
         PhotonNetwork.LoadLevel("MainScene");
     }

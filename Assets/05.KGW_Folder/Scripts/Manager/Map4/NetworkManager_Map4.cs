@@ -24,9 +24,6 @@ public class NetworkManager_Map4 : MonoBehaviourPunCallbacks
         {
             UnityEngine.Debug.Log("입장 완료");
          
-            // 플레이어 생성
-            PlayerSpawn();
-
             // 방에 들어온 플레이어 체크
             if (PhotonNetwork.IsMasterClient)
             {
@@ -58,6 +55,11 @@ public class NetworkManager_Map4 : MonoBehaviourPunCallbacks
     // 플레이어 생성
     private void PlayerSpawn()
     {
+        if (_isStart)
+        {
+            return;
+        }
+
         Vector2 spawnPos = new Vector2(0, -4f);
         PhotonNetwork.Instantiate($"Player_Map4", spawnPos, Quaternion.identity);
     }
