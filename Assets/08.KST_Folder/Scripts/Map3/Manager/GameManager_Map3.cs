@@ -80,7 +80,7 @@ namespace Kst
             }
         }
 
-        // 게임 시간 초과
+        // 게임 시간 초과(게임 종료)
         public void GamePlayTimeOver()
         {
             _stopwatch.Stop();
