@@ -500,7 +500,6 @@ MonoBehaviour:
   _startOrReadyButton: {fileID: 5116107333897319167}
   _startOrReadyText: {fileID: 1326377159351978546}
   _backButton: {fileID: 5851208184392286524}
-  _photonView: {fileID: 2358699871753454203, guid: aba0a670417e5b34fb671d9bd0608f94, type: 3}
 --- !u!1 &1293862458518983314
 GameObject:
   m_ObjectHideFlags: 0
@@ -2295,7 +2294,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -2461,8 +2460,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4278190080
+  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:

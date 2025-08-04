@@ -59,11 +59,11 @@ public class PlayerSlot : MonoBehaviour, IPointerDownHandler, IPointerUpHandler,
                 _nicknameText.color = Common.ConvertColorTypeToUnityColor(colorType);
             }
             else {
-                _nicknameText.color = Color.black;
+                _nicknameText.color = Color.white;
             }
         }
         else {
-            _nicknameText.color = Color.black;
+            _nicknameText.color = Color.white;
         }
 
         // 준비 상태
@@ -141,6 +141,9 @@ public class PlayerSlot : MonoBehaviour, IPointerDownHandler, IPointerUpHandler,
     private void TryKickPlayer()
     {
         if (!PhotonNetwork.IsMasterClient)
+            return;
+
+        if (_player == PhotonNetwork.LocalPlayer)
             return;
 
         if (_player.CustomProperties.TryGetValue("UID", out object uidObj) && uidObj is string uid) {

@@ -10,7 +10,8 @@ public class GameManager_Map2 : MonoBehaviourPun
 {
     [SerializeField] private Transform _startPos;
     [SerializeField] private Transform _goalPos;
-
+    [SerializeField] private float _gamePlayTime = 300f;
+    
     private static GameManager_Map2 _instance;
     public static GameManager_Map2 Instance
     {
@@ -25,7 +26,9 @@ public class GameManager_Map2 : MonoBehaviourPun
     private Map2Data _data;
     private int _totalEggCount;
     private bool _isEnd;
+    private bool _isGameOver;
     private float _totalDistance;
+    private float _totalPlayTime;
     
     public Property<float> GameProgress;
     
@@ -64,10 +67,12 @@ public class GameManager_Map2 : MonoBehaviourPun
         // 플레이어와 결승선의 거리 확인
         PlayerPosUpdate();
         
-        // 3분이 지나면 게임 종료
-        if (_stopwatch.ElapsedMilliseconds >= 180000)
+        if (_isGameOver) return;
+
+        if (_totalPlayTime >= _gamePlayTime) 
         {
-            photonView.RPC(nameof(EndGame), RpcTarget.AllViaServer);
+            _isGameOver = true;
+            GamePlayTimeOver();
         }
     }
 
@@ -93,6 +98,8 @@ public class GameManager_Map2 : MonoBehaviourPun
         float arrivalTime = (float)_stopwatch.Elapsed.TotalSeconds;
         int minuteTime = (int)arrivalTime / 60;
         float secondTime = arrivalTime % 60;
+        
+        _totalPlayTime = arrivalTime;
 
         return string.Format($"{minuteTime:D2}:{secondTime:00.00}");
     }
@@ -115,16 +122,22 @@ public class GameManager_Map2 : MonoBehaviourPun
         _data.Record = _stopwatch.ElapsedMilliseconds;
     }
 
-    // 게임이 종료될 때 호출되는 메서드
-    [PunRPC]
-    private IEnumerator EndGame()
+    private void GamePlayTimeOver()
     {
         _stopwatch.Stop();
-        _data.EggCount = _totalEggCount;
-        OnEndGame?.Invoke(_data);
-        // 게임 결과 UI 호출 
-        yield return new WaitForSeconds(3f);
-        OnTimeUp?.Invoke();
+        UnityEngine.Debug.Log("게임 플레이 시간이 지났습니다.");
+        photonView.RPC(nameof(GameClearLeaveRoom), RpcTarget.AllViaServer);
+    }
+
+    // 현재의 방을 나가기
+    [PunRPC]
+    public void GameClearLeaveRoom()
+    {
+        UnityEngine.Debug.Log("모든 플레이어가 방을 나갑니다.");
+
+        //PhotonNetwork.LeaveRoom();
+        // 로비 씬이 있으면 추가해서 씬 이동
+        PhotonNetwork.LoadLevel("MainScene");
     }
     
     // 달걀 획득
