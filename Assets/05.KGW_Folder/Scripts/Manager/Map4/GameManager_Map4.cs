@@ -15,16 +15,22 @@ public class GameManager_Map4 : MonoBehaviourPunCallbacks
 
     [Header("Map4 Setting")]
     [SerializeField] public float _GamePlayTime;
+    [SerializeField] ClearUIController_Map4 _clearUIController;
+    [SerializeField] DefeatUIController_Map4 _defeatUIController;
+    [SerializeField] PlayerController_Map4 _playerController;
+    [SerializeField] public CameraController_Map4 _cameraController;
 
     int _totalEggCount = 0;
     Map4Data _data;
     public bool _isFirstPlayer = false;
-    public int _goalPlayerCount = 0;
     public Stopwatch _stopwatch;
     public string _currentMapType;
     public float _totalPlayTime;
     public int _alivePlayer;
     public int _totalPlayerCount;
+    public int _goalPlayerCount = 0;
+    public int _deathPlayerCount = 0;
+    public int _exitPlayerCount = 0;
 
     // 달걀 획득에 대한 이벤트 (UI 적용)
     public event Action<int> OnEggCountChange;
@@ -90,20 +96,50 @@ public class GameManager_Map4 : MonoBehaviourPunCallbacks
         OnEggCountChange?.Invoke(_totalEggCount);   // 이벤트 호출
     }
 
-    // 플레이어 죽음
-    public void PlayerDeath()
+    // 플레이어 탈주
+    public void PlayerExit(string exitPlayer)
     {
-        // 카메라 전환 이벤트 호출
-        OnPlayerDeath?.Invoke();    
+        if (PhotonNetwork.IsMasterClient)
+        {
+            _exitPlayerCount++;
+            UnityEngine.Debug.Log($"나간 사람 수 : {_exitPlayerCount}");
+        }
+
+        if (PhotonNetwork.LocalPlayer.CustomProperties.TryGetValue("Nickname", out object nickname))
+        {
+            string myNickname = nickname.ToString();
+
+            if (exitPlayer == myNickname)
+            {
+                UnityEngine.Debug.Log($"{exitPlayer}께서 나갔습니다.");
+
+                _networkManager._isStart = false;
+                _defeatUIController.gameObject.SetActive(true);
+            }
+        }
+    }
+
+    // 플레이어 죽음
+    public void PlayerDeath(string playerNickname)
+    {
+        if (PhotonNetwork.LocalPlayer.CustomProperties.TryGetValue("Nickname", out object nickname))
+        {
+            string myNickname = nickname.ToString();
+
+            if (myNickname == playerNickname)
+            {
+                OnPlayerDeath?.Invoke();
+            }
+        }
 
         if (PhotonNetwork.IsMasterClient)
         {
-            _alivePlayer -= 1;
-            UnityEngine.Debug.Log($"살아남은 사람 : {_alivePlayer}");
+            _deathPlayerCount++;
 
-            if (_alivePlayer <= 0)
+            // 모든 플레이어가 죽음
+            if (_exitPlayerCount + _goalPlayerCount + _deathPlayerCount >= _totalPlayerCount)
             {
-                PlayerAllDeath();
+                photonView.RPC(nameof(GameDefeatLeaveRoom), RpcTarget.AllViaServer);
             }
         }
     }
@@ -111,49 +147,53 @@ public class GameManager_Map4 : MonoBehaviourPunCallbacks
     // 플레이어 결승점 도착
     public void PlayerReachedGoal(string playerNickname)
     {
-        // 골인하면 카메라 전환 이벤트 호출
-        OnPlayerGoal?.Invoke();
-
-        _stopwatch.Stop();
-        _goalPlayerCount++;
-        _data.EggCount = _totalEggCount;
-        _data.Record = _stopwatch.ElapsedMilliseconds;
-        OnEndGame?.Invoke(_data);
-
-        UnityEngine.Debug.Log($"현재 결승점에 도착한 플레이어 : {_goalPlayerCount}/{_alivePlayer}");
-
-        // 살아남은 플레이어 결승점 도착
-        if (_goalPlayerCount >= _alivePlayer)
+        if (PhotonNetwork.LocalPlayer.CustomProperties.TryGetValue("Nickname", out object nickname))
         {
-            UnityEngine.Debug.Log("모든 플레이어 도착");
-            photonView.RPC(nameof(GameClearLeaveRoom), RpcTarget.AllViaServer);
+            string myNickname = nickname.ToString();
+
+            if (myNickname == playerNickname)
+            {
+                UnityEngine.Debug.Log(playerNickname);
+                OnPlayerGoal?.Invoke();
+                SoundManager.Instance.StopBGM();
+                _data.EggCount = _totalEggCount;
+                _data.Record = _stopwatch.ElapsedMilliseconds;
+                OnEndGame?.Invoke(_data);
+            }
+        }
+
+        if (PhotonNetwork.IsMasterClient)
+        {
+            _goalPlayerCount++;
+
+            if (_exitPlayerCount + _goalPlayerCount + _deathPlayerCount >= _totalPlayerCount)
+            {
+                photonView.RPC(nameof(GameClearLeaveRoom), RpcTarget.AllViaServer);
+            }
         }
     }
 
-    // 모든 플레이어가 죽음
-    public void PlayerAllDeath()
-    {
-        UnityEngine.Debug.Log("모든 플레이어가 사망했습니다.");
-        photonView.RPC(nameof(GameClearLeaveRoom), RpcTarget.AllViaServer);
-    }
-
-    // 게임 시간 초과
-    public void GamePlayTimeOver()
-    {
-        _stopwatch.Stop();
-        UnityEngine.Debug.Log("게임 플레이 시간이 지났습니다.");
-        photonView.RPC(nameof(GameClearLeaveRoom), RpcTarget.AllViaServer);
-    }
-
-    // 현재의 방을 나가기
+    // 클리어 후 현재의 방을 나가기
     [PunRPC]
     public void GameClearLeaveRoom()
     {
-        UnityEngine.Debug.Log("모든 플레이어가 방을 나갑니다.");
         _networkManager._isStart = false;
         SoundManager.Instance.StopBGM();
+        SoundManager.Instance.StopSFX();
 
-        // 로비 씬이 있으면 추가해서 씬 이동
-        PhotonNetwork.LoadLevel("MainScene");
+        // 클리어 UI 활성화
+        _clearUIController.gameObject.SetActive(true);
+    }
+
+    // 실패 후 현재의 방을 나가기
+    [PunRPC]
+    public void GameDefeatLeaveRoom()
+    {
+        _networkManager._isStart = false;
+        SoundManager.Instance.StopBGM();
+        SoundManager.Instance.StopSFX();
+
+        // 실패 UI 활성화
+        _defeatUIController.gameObject.SetActive(true);
     }
 }

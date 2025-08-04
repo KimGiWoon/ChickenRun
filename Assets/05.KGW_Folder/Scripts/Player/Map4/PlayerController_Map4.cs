@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Photon.Pun;
 using Photon.Pun.Demo.PunBasics;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerController_Map4 : MonoBehaviourPun, IPunObservable
 {
@@ -11,6 +12,8 @@ public class PlayerController_Map4 : MonoBehaviourPun, IPunObservable
     [SerializeField] PlayerState_Map4 _playerstate;
     [SerializeField] SpriteRenderer _playerRenderer;
     [SerializeField] Animator _playerAni;
+    [SerializeField] PlayerEmoticonController_Map4 _playerEmoticonController;
+    [SerializeField] Slider _jumpGuageSlider;
 
     [Header("Correction Setting")]
     [SerializeField] float _correctionValue = 20f;
@@ -23,6 +26,8 @@ public class PlayerController_Map4 : MonoBehaviourPun, IPunObservable
     Quaternion _currentRotation;
     float _touchStartTime;
     float _touchEndTime;
+    float _guageValue;
+    float _maxTime;
     bool _isGround;
     bool _isTouch;
     public bool _isGoal = false;
@@ -55,15 +60,21 @@ public class PlayerController_Map4 : MonoBehaviourPun, IPunObservable
 
     private void Start()
     {
-        // 카메라 세팅 이벤트 구독
-        _gameManager.OnPlayerDeath += ChangeCamera;
-        _gameManager.OnPlayerGoal += ChangeCamera;
-
+        if (_gameManager != null)
+        {
+            // 카메라 세팅 이벤트 구독
+            _gameManager.OnPlayerDeath += ChangeCamera;
+            _gameManager.OnPlayerGoal += ChangeCamera;
+        }
+        
         // 자기 자신의 카메라 설정
         if (photonView.IsMine)
         {
-            _gameManager._gameUIManager.SetPlayerPosition(transform);
+            _gameUIManager.SetPlayerPosition(transform);
             ChangeCamera();
+
+            // 점프게이지 활성화
+            _jumpGuageSlider.gameObject.SetActive(true);
         }
     }
 
@@ -104,9 +115,12 @@ public class PlayerController_Map4 : MonoBehaviourPun, IPunObservable
 
     private void OnDestroy()
     {
-        // 카메라 세팅 이벤트 구독 취소
-        _gameManager.OnPlayerDeath -= ChangeCamera;
-        _gameManager.OnPlayerGoal -= ChangeCamera;
+        if (_gameUIManager != null)
+        {
+            // 카메라 세팅 이벤트 구독 취소
+            _gameManager.OnPlayerDeath -= ChangeCamera;
+            _gameManager.OnPlayerGoal -= ChangeCamera;
+        }
     }
 
     // 화면 터치 입력
@@ -115,16 +129,21 @@ public class PlayerController_Map4 : MonoBehaviourPun, IPunObservable
         if (!_isGround) return;
 
         // 화면 터치 시 터치 타임 측정
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButton(0))
         {
-            // 옵션창 오픈 시 움직임 금지
-            if (_gameUIManager._isOptionOpen) return;
+            // 해당 상황일 때는 움직임 금지
+            if (_gameUIManager._isOptionOpen || _isGoal || _isDeath) return;
 
-            // 결승점 통과 시 움직임 금지
-            if (_isGoal) return;
+            if (!_isTouch)
+            {
+                _touchStartTime = Time.time;
+                _isTouch = true;
+            }
 
-            _touchStartTime = Time.time;
-            _isTouch = true;
+            // 터치 중일 때 점프 파워 게이지 증가
+            float elapsed = Time.time - _touchStartTime;
+            _guageValue = Mathf.Clamp01(elapsed / _playerstate.MaxTouchTime);
+            _jumpGuageSlider.value = _guageValue;
 
             Vector3 mousePos = Input.mousePosition;
             // 모바일 스크린 기준 중심 x좌표(width)
@@ -142,13 +161,18 @@ public class PlayerController_Map4 : MonoBehaviourPun, IPunObservable
                 _playerRenderer.flipX = false;
             }
         }
+        else
+        {
+            _jumpGuageSlider.value = 0f;
+        }
     }
 
     // 플레이어 점프
     private void PlayerJump()
     {
         if (!_isGround) return;
-        // 화면 터치 끝
+
+        // 화면 터치 끝나면 점프
         if (Input.GetMouseButtonUp(0) && _isGround && _isTouch)
         {
             SoundManager.Instance.PlaySFX(SoundManager.Sfxs.SFX_Jump);
@@ -160,7 +184,6 @@ public class PlayerController_Map4 : MonoBehaviourPun, IPunObservable
             float maxTime = Mathf.Clamp01(_touchEndTime / _playerstate.MaxTouchTime);
             float jumpPower = Mathf.Lerp(_playerstate.JumpPower, _playerstate.MaxJumpPower, maxTime);
 
-            // 앞으로의 점프 방향
             _playerRigid.velocity = Vector2.zero;
             _playerRigid.AddForce(_jumpDir * jumpPower, ForceMode2D.Impulse);
 
@@ -198,36 +221,40 @@ public class PlayerController_Map4 : MonoBehaviourPun, IPunObservable
         if (_isDeath || _isGoal)
         {
             // 다른 플레이어의 카메라로 관찰
-            FindObjectOfType<CameraController_Map4>().OnViewingMode();
+            _gameManager._cameraController.OnViewingMode();
         }
         else
         {
-            Camera.main.GetComponent<CameraController_Map4>().SetTarget(transform);
-            _gameManager._gameUIManager.SetPlayerPosition(transform);
+            _gameManager._cameraController.SetTarget(transform);
+            _gameUIManager.SetPlayerPosition(transform);
         }
     }
 
     // 물리적 충돌
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        // 벽이면 통과 못하게 속도 제로
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Wall"))
+        {
+            _playerRigid.velocity = Vector2.zero;
+        }
+
         if (collision.gameObject.layer == LayerMask.NameToLayer("Ground"))
         {
             _isGround = true;
         }
 
-        // 드릴에 충돌
-        if (collision.gameObject.layer == LayerMask.NameToLayer("Drill"))
+        // 드릴에 충돌, 플레이어가 사라지기전에 충돌 발생으로 조건 처리
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Drill") && !_isDeath)
         {
             _isDeath = true;
+
+            SoundManager.Instance.PlaySFX(SoundManager.Sfxs.SFX_Death);
+            string playerNickname = _playerEmoticonController._nickname;
+
             gameObject.SetActive(false);
-
-            _gameManager.PlayerDeath();
-
-            //// 방장에게 알리기
-            //if (PhotonNetwork.IsMasterClient)
-            //{
-            //    GameManager_Map4.Instance.PlayerDeath();
-            //}
+            _gameManager.StopStopWatch();
+            _gameManager.PlayerDeath(playerNickname);
         }
     }
 
@@ -247,21 +274,17 @@ public class PlayerController_Map4 : MonoBehaviourPun, IPunObservable
         }
 
         // 결승점 도착
-        if (collision.gameObject.layer == LayerMask.NameToLayer("Goal"))
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Goal") && !_isGoal)
         {
-            // 골을 했으면 넘어가기
-            if (_isGoal) return;
-
             // 내 플레이어만 처리
             if (photonView.IsMine)
             {
-                string playerNickname = PhotonNetwork.LocalPlayer.NickName;
+                string playerNickname = _playerEmoticonController._nickname;
                 SoundManager.Instance.PlaySFX(SoundManager.Sfxs.SFX_Goal);
 
-                Debug.Log("결승선 도착");
                 _isGoal = true;
+                _gameManager.StopStopWatch();
 
-                // 도착을 알림
                 photonView.RPC(nameof(ArrivePlayer), RpcTarget.AllViaServer, playerNickname);
             }
         }

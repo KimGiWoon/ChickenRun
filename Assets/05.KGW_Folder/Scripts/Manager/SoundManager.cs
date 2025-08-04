@@ -83,6 +83,12 @@ public class SoundManager : Singleton<SoundManager>
         _bgmAudioSource.Stop();
     }
 
+    // SFX 정지
+    public void StopSFX()
+    {
+        _sfxAudioSource.Stop();
+    }
+
     // SFX 플레이
     public void PlaySFX(Sfxs sfx)
     {

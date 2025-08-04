@@ -55,6 +55,7 @@ public class DrillController : MonoBehaviour
             transform.position = _moveTarget;
             // 이동표시판 활성화
             _attackRangeImage.SetActive(true);
+            SoundManager.Instance.PlaySFX(SoundManager.Sfxs.SFX_Alarm);
 
             yield return _delayTime;
 

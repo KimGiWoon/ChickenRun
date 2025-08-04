@@ -254,6 +254,9 @@ public class PlayLobbyPanel : UIBase, IInRoomCallbacks
                     case MapType.Map3:
                         PhotonNetwork.LoadLevel("GameScene_Map3");
                         break;
+                    case MapType.Map4:
+                        PhotonNetwork.LoadLevel("GameScene_Map4");
+                        break;
                     default:
                         PhotonNetwork.LoadLevel("GameScene_Map1");
                         break;

@@ -16,6 +16,11 @@ public class NetworkManager_Map1 : MonoBehaviourPunCallbacks
 
     private void Start()
     {
+        if (_isStart)
+        {
+            return;
+        }
+
         // 서버에 연결이 되어 있지 않으면 서버 접속
         if (!PhotonNetwork.IsConnected)
         {
@@ -29,13 +34,12 @@ public class NetworkManager_Map1 : MonoBehaviourPunCallbacks
             // 플레이어 생성
             PlayerSpawn();
 
-            // 방에 들어온 플레이어 체크
-            if (PhotonNetwork.IsMasterClient)
+        // 방에 들어온 플레이어 체크
+        if (PhotonNetwork.IsMasterClient)
             {
                 CheckRoomPlayer();
             }
         }
-
     }
 
     // 마스터 서버 접속
@@ -99,7 +103,6 @@ public class NetworkManager_Map1 : MonoBehaviourPunCallbacks
     [PunRPC]
     private void StartGame()
     {
-        _isStart = true;
         _UIManager.photonView.RPC(nameof(_UIManager.StartGameRoutine), RpcTarget.AllViaServer);
     }
 
