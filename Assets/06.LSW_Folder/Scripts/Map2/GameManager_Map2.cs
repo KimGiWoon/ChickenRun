@@ -40,8 +40,6 @@ public class GameManager_Map2 : MonoBehaviourPun
     public event Action OnReadyGame;
     public event Action OnReachGoal;
     public event Action<int> OnGetEgg;
-    //public event Action<Map2Data> OnEndGame;
-    public event Action OnTimeUp;
     public event Action<bool> OnPanelOpened;
     
     public class Map2Data

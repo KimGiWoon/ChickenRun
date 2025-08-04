@@ -18,8 +18,6 @@ public class NetworkManager_Map2 : MonoBehaviourPunCallbacks
 
     private void Start()
     {
-        GameManager_Map2.Instance.OnTimeUp += () => PhotonNetwork.LoadLevel("MainScene");
-        
         if (!PhotonNetwork.IsConnected)
         {
             PhotonNetwork.ConnectUsingSettings();
