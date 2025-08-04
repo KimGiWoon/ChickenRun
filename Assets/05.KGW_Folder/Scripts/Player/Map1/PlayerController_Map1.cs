@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class PlayerController_Map1 : MonoBehaviourPun, IPunObservable
+public class PlayerController_Map1 : MonoBehaviourPun, IPunObservable, IPunInstantiateMagicCallback
 {
     [Header("Player Setting Reference")]
     [SerializeField] PlayerState_Map1 _playerstate;
@@ -302,4 +302,29 @@ public class PlayerController_Map1 : MonoBehaviourPun, IPunObservable
         }
     }
 
+    public void OnPhotonInstantiate(PhotonMessageInfo info)
+    {
+        object[] instantiationData = this.photonView.InstantiationData;
+        string skinName = "Default";
+
+        if (instantiationData != null && instantiationData.Length > 0)
+        {
+            skinName = instantiationData[0] as string;
+        }
+
+        ApplySkin(skinName);
+    }
+
+    private void ApplySkin(string skinName)
+    {
+        Sprite skinSprite = Resources.Load<Sprite>($"Sprites/Skins/{skinName}");
+        if (skinSprite != null)
+        {
+            _playerRenderer.sprite = skinSprite;
+        }
+        else
+        {
+            Debug.LogWarning($"[PlayerController] 스킨 적용 실패: {skinName}");
+        }
+    }
 }
