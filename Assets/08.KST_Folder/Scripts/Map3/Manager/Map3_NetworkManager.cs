@@ -35,30 +35,14 @@ namespace Kst
 
                 // 방에 들어온 플레이어 체크
                 if (PhotonNetwork.IsMasterClient)
-                {
                     CheckRoomPlayer();
-                }
             }
         }
 
         public override void OnConnectedToMaster()
         {
             Debug.Log("Connected to Photon Master Server");
-            PhotonNetwork.JoinLobby(); // 먼저 로비 입장
-        }
-
-        //TODO <김승태> 추후 OnJoinedLobby 제거 필요
-        public override void OnJoinedLobby()
-        {
-            Debug.Log("Joined Lobby");
-            PhotonNetwork.JoinOrCreateRoom("Room", new RoomOptions { MaxPlayers = 4 }, TypedLobby.Default);
-        }
-
-        // 방을 나가기
-        public override void OnLeftRoom()
-        {
-            Debug.Log("방을 나감");
-            //SceneManager.LoadScene("Room")
+            PhotonNetwork.JoinRandomOrCreateRoom(); // 먼저 로비 입장
         }
 
         public override void OnJoinedRoom()
@@ -68,9 +52,7 @@ namespace Kst
             PlayerSpawn();
 
             if (PhotonNetwork.IsMasterClient)
-            {
                 CheckRoomPlayer();
-            }
         }
 
         // 플레이어 생성
@@ -90,10 +72,7 @@ namespace Kst
         // 입장 플레이어 체크
         private void CheckRoomPlayer()
         {
-            if (_isStart)
-            {
-                return;
-            }
+            if (_isStart) return;
 
             // 방에 입장한 플레이어
             int currentPlayer = PhotonNetwork.CurrentRoom.PlayerCount;
@@ -102,10 +81,12 @@ namespace Kst
 
             Debug.Log($"입장 플레이어 : {currentPlayer}/{maxPlayer}");
 
+            if (PhotonNetwork.IsMasterClient)
+                _gameManager._totalPlayerCount = currentPlayer;
+
             if (currentPlayer >= maxPlayer)
             {
                 Debug.Log("모든 플레이어 입장 완료");
-                _gameManager._totalPlayerCount = currentPlayer;
 
                 photonView.RPC(nameof(StartGame), RpcTarget.AllViaServer);
             }
@@ -125,9 +106,7 @@ namespace Kst
             Debug.Log($"Player_{newPlayer.NickName} 입장완료");
 
             if (PhotonNetwork.IsMasterClient)
-            {
                 CheckRoomPlayer();
-            }
         }
 
         //마스터 클라이언트 변경시
@@ -136,7 +115,5 @@ namespace Kst
             if (PhotonNetwork.LocalPlayer == newMasterClient)
                 GameManager_Map3.Instance.PlateSpawner.StartSpawn();
         }
-
-
     }
 }
