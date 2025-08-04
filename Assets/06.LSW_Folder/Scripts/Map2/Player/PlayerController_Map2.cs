@@ -17,7 +17,9 @@ public class PlayerController_Map2 : MonoBehaviourPun, IPunObservable
     private SpriteRenderer _playerRenderer;
     private Vector2 _moveDir;
     private GameObject _partner;
-
+    private Vector3 _networkPos;
+    private Quaternion _networkRot;
+    private float _smooth = 15f;
     
     private bool _isGround;
     private bool _isOnTouch;
@@ -46,6 +48,9 @@ public class PlayerController_Map2 : MonoBehaviourPun, IPunObservable
         _lineRenderer = GetComponent<LineRenderer>();
         _joint.enabled = false;
         _lineRenderer.enabled = false;
+        
+        PhotonNetwork.SendRate = 30;
+        PhotonNetwork.SerializationRate = 20;
     }
 
     private void Start()
@@ -57,6 +62,7 @@ public class PlayerController_Map2 : MonoBehaviourPun, IPunObservable
             GameManager_Map2.Instance.OnReadyGame += () => SetJoint();
             GameManager_Map2.Instance.SetPlayer(transform);
             GameManager_Map2.Instance.OnPanelOpened += SetInputBlocked;
+            GameManager_Map2.Instance.OnReachGoal += ChangeCamera;
         }
         // 자신이 아닌 경우 투명도 낮추기
         else
@@ -107,6 +113,11 @@ public class PlayerController_Map2 : MonoBehaviourPun, IPunObservable
             SetGravity();
             PlayerJump();
             CheckGround();
+        }
+        if (!photonView.IsMine) 
+        {
+            transform.position = Vector3.Lerp(transform.position, _networkPos, Time.fixedDeltaTime * _smooth);
+            transform.rotation = Quaternion.Lerp(transform.rotation, _networkRot, Time.fixedDeltaTime * _smooth);
         }
     }
     
@@ -159,6 +170,12 @@ public class PlayerController_Map2 : MonoBehaviourPun, IPunObservable
             _currentAnimatorHash = Glide_Hash;
             _animator.Play(Glide_Hash);
         }
+    }
+    
+    private void ChangeCamera()
+    {
+        // 다른 플레이어의 카메라로 관찰
+        Camera.main.GetComponent<CameraController_Map2>().OnViewingMode();
     }
     
     // player의 투명도를 다시 1로 리셋하는 메서드
@@ -237,7 +254,7 @@ public class PlayerController_Map2 : MonoBehaviourPun, IPunObservable
         {
             _rigid.gravityScale = 1f;
             _isBounce = false;
-            if (_partner?.GetComponent<Rigidbody2D>().mass < 1f)
+            if (_partner?.GetComponent<Rigidbody2D>().mass < 0.5f)
             {
                 _partner.GetComponent<Rigidbody2D>().mass = 1f;
             }
@@ -245,6 +262,11 @@ public class PlayerController_Map2 : MonoBehaviourPun, IPunObservable
         else
         {
             _rigid.gravityScale = 1f;
+        }
+
+        if (!_isBounce && _isGround && _partner?.GetComponent<Rigidbody2D>().mass < 0.5f)
+        {
+            _partner.GetComponent<Rigidbody2D>().mass = 1f;
         }
     }
 
@@ -379,6 +401,9 @@ public class PlayerController_Map2 : MonoBehaviourPun, IPunObservable
             stream.SendNext(_currentAnimatorHash);  // 현재 플레이어의 애니메이션 데이터 전송
             stream.SendNext(_playerRenderer.flipX); // 플레이어의 방향 데이터 전송
             stream.SendNext(_playerRenderer.flipY); // 플레이어의 방향 데이터 전송
+            
+            stream.SendNext(transform.position);
+            stream.SendNext(transform.rotation);
         }
         else    // 동기화 데이터 받기
         {
@@ -386,6 +411,9 @@ public class PlayerController_Map2 : MonoBehaviourPun, IPunObservable
             _animator.Play(_receiveAnimatorHash);   // 받은 정보로 애니메이션 플레이
             _playerRenderer.flipX = (bool)stream.ReceiveNext();
             _playerRenderer.flipY = (bool)stream.ReceiveNext();
+            
+            _networkPos = (Vector3) stream.ReceiveNext();
+            _networkRot = (Quaternion) stream.ReceiveNext();
         }
     }
 
@@ -395,11 +423,15 @@ public class PlayerController_Map2 : MonoBehaviourPun, IPunObservable
         Vector2 right = (Vector2)transform.position + Vector2.right * 0.1f;
         Vector2 left = (Vector2)transform.position + Vector2.left * 0.1f;
         
-        float distance = 0.03f;
+        float distance = 0.01f;
         RaycastHit2D hit1 = Physics2D.Raycast(origin, Vector2.down, distance,_groundLayer);
         RaycastHit2D hit2 = Physics2D.Raycast(right, Vector2.down, distance,_groundLayer);
         RaycastHit2D hit3 = Physics2D.Raycast(left, Vector2.down, distance,_groundLayer);
 
-        if (hit1.collider != null || hit2.collider != null || hit3.collider != null) _isGround = true;
+        if (hit1.collider != null || hit2.collider != null || hit3.collider != null)
+        {
+            _isGround = true;
+            _isBounce = false;
+        }
     }
 }
