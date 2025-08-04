@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6941282735764371670}
   - component: {fileID: 8801339212465158334}
+  - component: {fileID: 8161093587902264593}
   m_Layer: 0
   m_Name: GameManager_Map4
   m_TagString: Untagged
@@ -45,10 +46,34 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _gameUIManager: {fileID: 0}
+  _drillController: {fileID: 0}
+  _networkManager: {fileID: 0}
   _GamePlayTime: 300
-  _totalPlayerCount: 0
-  _isGoal: 0
   _isFirstPlayer: 0
   _goalPlayerCount: 0
   _currentMapType: 
   _totalPlayTime: 0
+  _alivePlayer: 0
+  _totalPlayerCount: 0
+--- !u!114 &8161093587902264593
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6323456302230725560}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0

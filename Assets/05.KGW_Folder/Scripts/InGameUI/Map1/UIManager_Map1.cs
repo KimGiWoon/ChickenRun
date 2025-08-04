@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using Photon.Pun;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class UIManager_Map4 : MonoBehaviourPun
+public class UIManager_Map1 : MonoBehaviourPun
 {
     [Header("Play Time UI Reference")]
-    [SerializeField] TMP_Text _playTimeText;
+    [SerializeField] public TMP_Text _playTimeText;
 
     [Header("Egg Count UI Reference")]
     [SerializeField] TMP_Text _eggCountText;
@@ -27,13 +28,7 @@ public class UIManager_Map4 : MonoBehaviourPun
     [SerializeField] Slider _playerPosSlider;
     [SerializeField] Transform _playerPosition;
     [SerializeField] Transform _startPosition;
-    [SerializeField] Transform _endPosition;
-    [SerializeField] TMP_Text _distanceText;
-
-    [Header("Drill Slider UI Reference")]
-    [SerializeField] Slider _DrillPosSlider;
-    [SerializeField] Transform _DrillPosition;
-    [SerializeField] Transform _startDrillPosition;
+    [SerializeField] Transform _goalPosition;
 
     [Header("Option Panel UI Reference")]
     [SerializeField] GameObject _optionPanel;
@@ -45,7 +40,7 @@ public class UIManager_Map4 : MonoBehaviourPun
     [SerializeField] CameraController_Map4 _cameraController;
 
     [Header("Emoticon Panel UI Reference")]
-    [SerializeField] PlayerEmoticonController_Map4 _playerEmoticonController;
+    [SerializeField] PlayerEmoticonController_Map1 _playerEmoticonController;
     [SerializeField] GameObject _emoticonPanel;
     [SerializeField] Sprite[] _emoticonSprite;
     [SerializeField] Button _smileEmoticon;
@@ -56,22 +51,23 @@ public class UIManager_Map4 : MonoBehaviourPun
     [SerializeField] Button _weepEmoticon;
 
     [Header("Manager Reference")]
-    [SerializeField] NetworkManager_Map4 _networkManager;
-    [SerializeField] GameManager_Map4 _gameManager;
+    [SerializeField] NetworkManager_Map1 _networkManager;
+    [SerializeField] GameManager_Map1 _gameManager;
+    [SerializeField] PlayerController_Map1 _playerController;
+    [SerializeField] DefeatUIController_Map1 _defeatUIcontroller;
 
     Coroutine _panelRoutine;
     Coroutine _emoticonRoutine;
-    float _playerDistance;
-    float _drillDistance;
+    float _totalDistance;
+    public bool _isExit = false;
     public bool _isOptionOpen = false;
     public bool _isEmoticonPanelOpen = false;
     public float _emoticonTime = 3f;
-    public float _playerEndDistance;
 
     // 맵타입 설정
     private void OnEnable()
     {
-        _gameManager._currentMapType = "Map4";
+        _gameManager._currentMapType = "Map1";
     }
 
     private void Start()
@@ -81,8 +77,7 @@ public class UIManager_Map4 : MonoBehaviourPun
         // 시작할 시 획득한 달걀은 0이므로 UI설정
         UpdateGetEggUI(0);
 
-        SetPlayerDistance();
-        SetDrillDistance();
+        SetTotalDistance();
         InGameUIInit();
         SoundVolumeInit();
     }
@@ -90,13 +85,11 @@ public class UIManager_Map4 : MonoBehaviourPun
     private void Update()
     {
         // 플레이 타임 UI 출력
-        _playTimeText.text = _gameManager.PlayTimeUpdate();
+        string playTime = _gameManager.PlayTimeUpdate();
+        _playTimeText.text = playTime;
 
-        // 플레이어와 끝지점 거리 확인
+        // 플레이어와 결승선의 거리 확인
         PlayerPosUpdate();
-
-        // 드릴과 끝지점 거리 확인
-        DrillPosUpdate();
     }
 
     private void OnDestroy()
@@ -140,7 +133,7 @@ public class UIManager_Map4 : MonoBehaviourPun
         _loveEmoticon.onClick.AddListener(() => OnEmoticon(4));
         _weepEmoticon.onClick.AddListener(() => OnEmoticon(5));
     }
-
+    
     // 카메라 모드 체크 (토글)
     private void CamModeCheck(bool check)
     {
@@ -152,10 +145,6 @@ public class UIManager_Map4 : MonoBehaviourPun
     {
         _musicSlider.value = SettingManager.Instance.BGM.Value;
         _effectSlider.value = SettingManager.Instance.SFX.Value;
-
-        // 사운드 초기값 중간 세팅
-        _musicSlider.value = 0.1f;
-        _effectSlider.value = 0.2f;
     }
 
     // 옵션 창 오픈
@@ -190,7 +179,7 @@ public class UIManager_Map4 : MonoBehaviourPun
     // 플레이어 이모티콘 컨트롤러 가져오기
     public void GetPlayerEmoticonController(GameObject emoticonController)
     {
-        _playerEmoticonController = emoticonController.GetComponent<PlayerEmoticonController_Map4>();
+        _playerEmoticonController = emoticonController.GetComponent<PlayerEmoticonController_Map1>();
     }
 
     // 이모티콘 표시
@@ -207,7 +196,7 @@ public class UIManager_Map4 : MonoBehaviourPun
         // 실행중인 코루틴 무시하고 코루틴 실행
         if (_emoticonRoutine != null)
         {
-            StopCoroutine(_emoticonRoutine);
+            StopCoroutine( _emoticonRoutine );
         }
         // 이모티콘 표시 시간 코루틴 시작
         _emoticonRoutine = StartCoroutine(EmoticonPlayTimeCoroutine());
@@ -223,37 +212,35 @@ public class UIManager_Map4 : MonoBehaviourPun
     // 나가기 버튼 클릭
     private void OnExitPlayGame()
     {
-        string exitPlayer = PhotonNetwork.LocalPlayer.NickName;
-        _gameManager._stopwatch.Stop();
-        // 나감을 알림
-        photonView.RPC(nameof(ExitPlayer), RpcTarget.AllViaServer, exitPlayer);
-    }
+        string exitPlayer = _playerEmoticonController._nickname;
 
-    // 방 나가기
-    [PunRPC]
-    private void ExitPlayer(string PlayerNickname)
-    {
-        Debug.Log($"{PlayerNickname}께서 나갔습니다.");
-        _networkManager._isStart = false;
+        _isExit = true;
+        _gameManager.StopStopWatch();
         SoundManager.Instance.StopBGM();
 
-        // 로비 씬이 있으면 추가해서 씬 이동
-        PhotonNetwork.LoadLevel("MainScene");
+        photonView.RPC(nameof(ExitPlayerCheck), RpcTarget.AllViaServer, exitPlayer);
+    }
+
+    // 나간 플레이어
+    [PunRPC]
+    public void ExitPlayerCheck(string exitPlayer)
+    {
+        Debug.Log($"{exitPlayer}께서 탈주했습니다.");
+        _gameManager.PlayerExit(exitPlayer);
     }
 
     // 출발지점과 도착지점 위치 확인
-    private void SetPlayerDistance()
+    private void SetTotalDistance()
     {
-        _playerDistance = Vector2.Distance(_startPosition.position, _endPosition.position);
+        _totalDistance = Vector2.Distance(_startPosition.position, _goalPosition.position);
     }
 
     // 플레이어의 위치와 거리 업데이트
     private void PlayerPosUpdate()
     {
-        _playerEndDistance = Vector2.Distance(_playerPosition.position, _endPosition.position);
-        float progress = Mathf.Clamp01(1 - (_playerEndDistance / _playerDistance));
+        float distanceToGoal = Vector2.Distance(_playerPosition.position, _goalPosition.position);
+        float progress = Mathf.Clamp01(1 - (distanceToGoal / _totalDistance));
         _playerPosSlider.value = progress;
-        _distanceText.text = $"{((int)_playerEndDistance).ToString()}m";
     }
 
     // 플레이어 위치 세팅
@@ -262,31 +249,11 @@ public class UIManager_Map4 : MonoBehaviourPun
         _playerPosition = player;
     }
 
-    // 드릴의 출발지점과 도착지점 위치 확인
-    private void SetDrillDistance()
-    {
-        _drillDistance = Vector2.Distance(_startDrillPosition.position, _endPosition.position);
-    }
-
-    // 드릴의 위치와 거리 업데이트
-    private void DrillPosUpdate()
-    {
-        float endDistance = Vector2.Distance(_DrillPosition.position, _endPosition.position);
-        float progress = Mathf.Clamp01(1 - (endDistance / _drillDistance));
-        _DrillPosSlider.value = progress;
-    }
-
-    // 플레이어 위치 세팅
-    public void SetDrillPosition(Transform Drill)
-    {
-        _DrillPosition = Drill;
-    }
-
     // 스타트 코루틴
     [PunRPC]
     public void StartGameRoutine()
     {
-        if (_panelRoutine == null)
+        if(_panelRoutine == null)
         {
             _panelRoutine = StartCoroutine(StartPanelCoroutine());
         }
@@ -301,8 +268,8 @@ public class UIManager_Map4 : MonoBehaviourPun
     {
         WaitForSeconds time = new WaitForSeconds(_routineTime);
         int count = 4;
-
-        yield return new WaitForSeconds(2f);
+        _networkManager._isStart = true;
+        yield return new WaitForSeconds(4f);
         _startPanel.SetActive(true);
 
         while (true)
@@ -310,20 +277,20 @@ public class UIManager_Map4 : MonoBehaviourPun
             if (count == 1)
             {
                 SoundManager.Instance.PlaySFX(SoundManager.Sfxs.SFX_Start);
-                _countText.text = "올라가!";
+                _countText.text = "시작!";
             }
             else
             {
                 SoundManager.Instance.PlaySFX(SoundManager.Sfxs.SFX_Count);
-                _countText.text = (count - 1).ToString();
+                _countText.text = (count - 1).ToString();                
             }
 
             yield return time;
             count--;
 
-            if (count == 0)
+            if(count == 0)
             {
-                SoundManager.Instance.PlayBGM(SoundManager.Bgms.BGM_InGame4);
+                SoundManager.Instance.PlayBGM(SoundManager.Bgms.BGM_InGame1);
                 _startPanel.SetActive(false);
                 _gameManager.StartStopWatch();
                 _wall.SetActive(false);
@@ -339,6 +306,4 @@ public class UIManager_Map4 : MonoBehaviourPun
 
         _playerEmoticonController._SpeechBubble.SetActive(false);
     }
-
-
 }

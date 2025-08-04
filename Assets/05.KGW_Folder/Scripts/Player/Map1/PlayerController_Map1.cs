@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class PlayerController_Map1 : MonoBehaviourPun, IPunObservable
 {
@@ -12,18 +13,21 @@ public class PlayerController_Map1 : MonoBehaviourPun, IPunObservable
     [SerializeField] SpriteRenderer _playerRenderer;
     [SerializeField] Animator _playerAni;
     [SerializeField] PlayerEmoticonController_Map1 _playerEmoticonController;
+    [SerializeField] Slider _jumpGuageSlider;
 
     [Header("Correction Setting")]
     [SerializeField] float _correctionValue = 15f;
 
     UIManager_Map1 _gameUIManager;
     GameManager_Map1 _gameManager;
-    Rigidbody2D _playerRigid;
+    public Rigidbody2D _playerRigid;
     Vector2 _jumpDir;
     Vector3 _currentPosition;
     Quaternion _currentRotation;
     float _touchStartTime;
-    float _touchEndTime;
+    float _touchEndtTime;
+    float _touchDuration;
+    float _guageValue;
     bool _isGround;
     bool _isTouch;
     public bool _isGoal = false;
@@ -55,17 +59,23 @@ public class PlayerController_Map1 : MonoBehaviourPun, IPunObservable
 
     private void Start()
     {
-        // 카메라 세팅 이벤트 구독
-        _gameManager.OnPlayerGoal += ChangeCamera;
+        if(_gameManager != null)
+        {
+            // 카메라 세팅 이벤트 구독
+            _gameManager.OnPlayerGoal += ChangeCamera;
 
-        // 플레이어 시작위치 저장
-        _gameManager.StartPosSave(transform);
-
+            // 플레이어 시작위치 저장
+            _gameManager.StartPosSave(transform);
+        }
+        
         // 자기 자신의 카메라 설정
         if (photonView.IsMine) 
         {
-            _gameManager._gameUIManager.SetPlayerPosition(transform);
+            _gameUIManager.SetPlayerPosition(transform);
             ChangeCamera();
+
+            // 점프게이지 활성화
+            _jumpGuageSlider.gameObject.SetActive(true);
         }
     }
 
@@ -83,7 +93,8 @@ public class PlayerController_Map1 : MonoBehaviourPun, IPunObservable
     private void FixedUpdate()
     {
         // 자신을 제외한 플레이어의 이동 위치 보간
-        if (!photonView.IsMine) {
+        if (!photonView.IsMine) 
+        {
             transform.position = Vector3.Lerp(transform.position, _currentPosition, Time.fixedDeltaTime * _correctionValue);
             transform.rotation = Quaternion.Lerp(transform.rotation, _currentRotation, Time.fixedDeltaTime * _correctionValue);
         }
@@ -91,8 +102,11 @@ public class PlayerController_Map1 : MonoBehaviourPun, IPunObservable
 
     private void OnDestroy()
     {
-        // 카메라 세팅 이벤트 구독 취소
-        _gameManager.OnPlayerGoal -= ChangeCamera;
+        if(_gameManager != null)
+        {
+            // 카메라 세팅 이벤트 구독 취소
+            _gameManager.OnPlayerGoal -= ChangeCamera;
+        }
     }
 
     // 매니저 초기화
@@ -112,41 +126,47 @@ public class PlayerController_Map1 : MonoBehaviourPun, IPunObservable
     // 화면 터치 입력
     private void TouchInput()
     {
-        if (!_isGround)
-            return;
+        if (!_isGround) return;
 
         // 화면 터치 시 터치 타임 측정
-        if (Input.GetMouseButtonDown(0)) {
-            // 옵션창 오픈 시 움직임 금지
-            if (_gameUIManager._isOptionOpen) return;
+        if (Input.GetMouseButton(0))
+        {
+            // 해당 상황일 때는 움직임 금지
+            if (_gameUIManager._isOptionOpen || _gameUIManager._isEmoticonPanelOpen || _isGoal) return;
 
-            // 이모티콘창 오픈 시 움직임 금지
-            if (_gameUIManager._isEmoticonPanelOpen) return;
+            if (!_isTouch)
+            {
+                _touchStartTime = Time.time;
+                _isTouch = true;
+            }
 
-            // 결승점 통과 시 움직임 금지
-            if (_isGoal) return;
-
-            _touchStartTime = Time.time;
-            _isTouch = true;
+            // 터치 중일 때 점프 파워 게이지 증가
+            float elapsed = Time.time - _touchStartTime;
+            _guageValue = Mathf.Clamp01(elapsed / _playerstate.MaxTouchTime);
+            _jumpGuageSlider.value = _guageValue;
+        }
+        else
+        {
+            _jumpGuageSlider.value = 0f;
         }
     }
 
     // 플레이어 점프
     private void PlayerJump()
     {
-        if (!_isGround)
-            return;
+        if (!_isGround) return;
 
         // 화면 터치 끝나면 점프
-        if (Input.GetMouseButtonUp(0) && _isGround && _isTouch) {
+        if (Input.GetMouseButtonUp(0) && _isGround && _isTouch)
+        {
             SoundManager.Instance.PlaySFX(SoundManager.Sfxs.SFX_Jump);
-            _touchEndTime = Time.time - _touchStartTime;
+            _touchEndtTime = Time.time;
             _currentAnimatorHash = Jump_Hash;
             _playerAni.Play(Jump_Hash);
 
             // 0 -> 1의 값으로 부드럽게 점프 동작을 보정
-            float maxTime = Mathf.Clamp01(_touchEndTime / _playerstate.MaxTouchTime);
-            float jumpPower = Mathf.Lerp(_playerstate.JumpPower, _playerstate.MaxJumpPower, maxTime);
+            _touchDuration = Mathf.Clamp01((_touchEndtTime - _touchStartTime) / _playerstate.MaxTouchTime);
+            float jumpPower = Mathf.Lerp(_playerstate.JumpPower, _playerstate.MaxJumpPower, _touchDuration);
 
             // 앞으로의 점프 방향
             _jumpDir = new Vector2(_playerstate.JumpXDir, _playerstate.JumpYDir).normalized;
@@ -185,12 +205,12 @@ public class PlayerController_Map1 : MonoBehaviourPun, IPunObservable
         if (_isGoal)
         {
             // 다른 플레이어의 카메라로 관찰
-            FindObjectOfType<CameraController_Map1>().OnViewingMode();
+            _gameManager._cameraController.OnViewingMode();
         }
         else
         {
-            Camera.main.GetComponent<CameraController_Map1>().SetTarget(transform);
-            _gameManager._gameUIManager.SetPlayerPosition(transform);
+            _gameManager._cameraController.SetTarget(transform);
+            _gameUIManager.SetPlayerPosition(transform);
         }
     }
 

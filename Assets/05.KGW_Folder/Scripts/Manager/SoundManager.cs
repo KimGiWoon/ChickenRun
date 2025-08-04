@@ -21,7 +21,12 @@ public class SoundManager : Singleton<SoundManager>
         SFX_Goal,
         SFX_Count,
         SFX_Start,
-        SFX_DropWater
+        SFX_DropWater,
+        SFX_Death,
+        SFX_Alarm,
+        SFX_Drill,
+        SFX_Clear,
+        SFX_Defeat
     }
 
     [Header("BGM, SFX Sound Files")]
@@ -66,6 +71,12 @@ public class SoundManager : Singleton<SoundManager>
     public void StopBGM()
     {
         _bgmAudioSource.Stop();
+    }
+
+    // SFX 정지
+    public void StopSFX()
+    {
+        _sfxAudioSource.Stop();
     }
 
     // SFX 플레이
