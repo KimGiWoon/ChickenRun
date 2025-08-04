@@ -1,5 +1,5 @@
-using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Kst
 {
@@ -21,26 +21,29 @@ namespace Kst
 
             if (string.IsNullOrEmpty(uid))
                 return;
-                
+
             _shopDataLoader.LoadSkinsData(uid);
         }
 
         private void DataLoad(List<SkinData> list)
         {
-            if (list == null) return;
+            if (list == null)
+                return;
 
             //초기화 진행
             _shopView.CleanUpItems();
             _itemControllers.Clear();
 
-            foreach (SkinData data in list)
-            {
-                var view = _shopView.CreateItem();
+            int listCount = 0;
+
+            foreach (SkinData data in list) {
+                var view = _shopView.ActiveItem(listCount);
                 var controller = view.GetComponent<SkinItemController>();
                 controller.Init(data, view, _goldManager, _shopDatabase);
 
                 _shopView.AddItem(controller);
                 _itemControllers.Add(controller);
+                ++listCount;
             }
         }
     }
