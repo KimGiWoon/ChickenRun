@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class SoundManager : Singleton<SoundManager>
@@ -44,7 +42,6 @@ public class SoundManager : Singleton<SoundManager>
     [Header("Audio Source Reference")]
     [SerializeField] public AudioSource _bgmAudioSource;
     [SerializeField] public AudioSource _sfxAudioSource;
-    [SerializeField] public AudioSource _loopSfxAS;
 
     private void Start()
     {
@@ -87,22 +84,6 @@ public class SoundManager : Singleton<SoundManager>
     {
         _sfxAudioSource.PlayOneShot(_sfxFiles[(int)sfx]);
     }
-
-    //Loop SFX 플레이
-    public void PlayLoopSFX(Sfxs sfx)
-    {
-        if (_loopSfxAS.isPlaying && _loopSfxAS.clip == _sfxFiles[(int)sfx]) return;
-
-        _loopSfxAS.clip = _sfxFiles[(int)sfx];
-        _loopSfxAS.loop = true;
-        _loopSfxAS.Play();
-    }
-    public void StopLoopSFX()
-    {
-        _loopSfxAS.Stop();
-        _loopSfxAS.clip = null;
-    }
-
 
     // BGM 볼륨
     public void BgmVolume(float volume)
