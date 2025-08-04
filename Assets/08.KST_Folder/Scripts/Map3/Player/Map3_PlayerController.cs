@@ -15,8 +15,6 @@ namespace Kst
         // 애니메이션
         public readonly int Idle_Hash = Animator.StringToHash("ChickenIdle");
         public readonly int Move_Hash = Animator.StringToHash("ChickenMove");
-        // public readonly int Glide_Hash = Animator.StringToHash("ChickenGlide");
-        // public readonly int Jump_Hash = Animator.StringToHash("ChickenJump");
 
         int _currentAnimatorHash;
         int _reciveAnimatorHash;
@@ -41,11 +39,19 @@ namespace Kst
                 TranslucentSetting();
             }
         }
+        void OnEnable()
+        {
+            _gameUIManager.OnGameStart += GetComponent<PlayerShooter>().SetCanAttack;
+        }
+        void OnDisable()
+        {
+            _gameUIManager.OnGameStart -= GetComponent<PlayerShooter>().SetCanAttack;
+
+        }
         void Start()
         {
             if (!photonView.IsMine) return;
 
-            Camera.main.GetComponent<CameraController_Map3>().SetTarget(transform);
             _gameManager._gameUIManager.SetPlayerPosition(transform);
         }
         void Update()
