@@ -163,6 +163,9 @@ public class UIManager_Map3 : MonoBehaviourPun
         _playerEmoticonController._SpeechBubble.SetActive(true);
         _playerEmoticonController._emoticonImage.sprite = _emoticonSprite[index];
 
+        //이모티콘 사운드 출력
+        SoundManager.Instance.PlaySFX(index);
+
         // 이모티콘을 사용하면 패널 비활성화
         _emoticonPanel.SetActive(false);
         _isEmoticonPanelOpen = false;

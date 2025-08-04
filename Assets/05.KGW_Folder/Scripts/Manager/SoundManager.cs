@@ -27,7 +27,10 @@ public class SoundManager : Singleton<SoundManager>
         SFX_Hit,
         SFX_Win,
         SFX_Lose,
-        SFX_Smile, //웃음
+    }
+    public enum Sfx_Emotion
+    {
+        SFX_Smile=0, //웃음
         SFX_Suprised, // 놀람
         SFX_Quiz, //농락
         SFX_Angry,//분노
@@ -38,6 +41,7 @@ public class SoundManager : Singleton<SoundManager>
     [Header("BGM, SFX Sound Files")]
     [SerializeField] AudioClip[] _bgmFiles;
     [SerializeField] AudioClip[] _sfxFiles;
+    [SerializeField] AudioClip[] _sfxEmotionFiles;
 
     [Header("Audio Source Reference")]
     [SerializeField] public AudioSource _bgmAudioSource;
@@ -83,6 +87,11 @@ public class SoundManager : Singleton<SoundManager>
     public void PlaySFX(Sfxs sfx)
     {
         _sfxAudioSource.PlayOneShot(_sfxFiles[(int)sfx]);
+    }
+    // SFX 플레이
+    public void PlaySFX(int index)
+    {
+        _sfxAudioSource.PlayOneShot(_sfxEmotionFiles[index]);
     }
 
     // BGM 볼륨

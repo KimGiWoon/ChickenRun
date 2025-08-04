@@ -73,6 +73,9 @@ public class PlayerEmoticonController_Map3 : MonoBehaviourPunCallbacks
         _emoticonImage.sprite = _emoticonSprite[index];
         _SpeechBubble.SetActive(true);
 
+        //이모티콘 사운드 출력
+        SoundManager.Instance.PlaySFX(index);
+
         // 실행중인 코루틴 무시하고 코루틴 실행
         if (_emoticonRoutine != null)
         {
