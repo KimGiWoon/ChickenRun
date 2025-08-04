@@ -25,6 +25,13 @@ namespace Kst
             transform.Translate(_moveDir * _speed * Time.deltaTime);
         }
 
+        //벽과 충돌 시
+        void OnCollisionEnter2D(Collision2D collision)
+        {
+            if (collision.gameObject.CompareTag("Wall"))
+                _pooledObj.ReturnPool();
+        }
+
         //장애물과 충돌 시
         void OnTriggerEnter2D(Collider2D collision)
         {
