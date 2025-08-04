@@ -15,6 +15,7 @@ public class PlayerEmoticonController_Map4 : MonoBehaviourPunCallbacks
     [SerializeField] float _emoticonTime = 3f;
 
     Coroutine _emoticonRoutine;
+    public string _nickname;
 
     private void Start()
     {
@@ -25,6 +26,7 @@ public class PlayerEmoticonController_Map4 : MonoBehaviourPunCallbacks
         if (photonView.Owner.CustomProperties.TryGetValue("Nickname", out object nickname))
         {
             _nicknameText.text = nickname.ToString();
+            _nickname = nickname.ToString();
         }
 
         // 닉네임 컬러가 있는지 확인

@@ -9,14 +9,9 @@ namespace Kst
         [SerializeField] ArrowAim _arrow;
         [SerializeField] Transform _shootPos;
         [SerializeField] PooledObject _bulletPrefab;
-        [SerializeField] private string _bulletPath = "Bullet";
         private ObjectPool _bulletPool;
 
-        void Start()
-        {
-            _bulletPool = new(null, _bulletPrefab, 10);
-
-        }
+        void Start() => _bulletPool = new(null, _bulletPrefab, 10);
 
         public void OnAttackBtn()
         {
@@ -25,7 +20,8 @@ namespace Kst
             Vector2 shotDir = _arrow.GetDir();
             int actorNum = PhotonNetwork.LocalPlayer.ActorNumber;
             photonView.RPC(nameof(RPC_ShootBullet), RpcTarget.AllViaServer, _shootPos.position, shotDir, actorNum);
-
+            //TODO <김승태> : SFX 변경 필요
+            SoundManager.Instance.PlaySFX(SoundManager.Sfxs.SFX_Jump); //총알 발사 시 SFX 실행
         }
 
         [PunRPC]
@@ -35,7 +31,7 @@ namespace Kst
 
             bullet.transform.SetPositionAndRotation(shootPos, Quaternion.identity);
             if (bullet.TryGetComponent(out Bullet b))
-                b.Init(dir,actorNum);
+                b.Init(dir, actorNum);
         }
     }
 }

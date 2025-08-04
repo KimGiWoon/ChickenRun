@@ -12,7 +12,7 @@ public class SkinSelectPanel : UIBase
 
     [SerializeField] private SimpleScrollSnap _scrollSnap;
     [SerializeField] private Button _okButton;
-    [SerializeField] private Image _skinPanel;
+    [SerializeField] private GameObject _skinPrefab;
 
     #endregion // Serialized fields
 
@@ -35,7 +35,6 @@ public class SkinSelectPanel : UIBase
     private void Start()
     {
         _okButton.onClick.AddListener(OnClickOK);
-        _selectedSkinIndex = _scrollSnap.SelectedPanel;
     }
 
     #endregion // mono funcs
@@ -108,23 +107,27 @@ public class SkinSelectPanel : UIBase
         }
 
         // 4. 첫 번째로 이동 (SelectedPanel 초기화)
-        _scrollSnap.GoToPanel(0);
-        _selectedSkinIndex = 0;
+        _scrollSnap.GoToPanel(_selectedSkinIndex);
+        //_selectedSkinIndex = 0;
     }
 
     private void AddSkinToScroll(string skinName)
     {
         // 1. AddToBack을 통해 프리팹 추가 (내부에서 Instantiate됨)
-        _scrollSnap.AddToBack(_skinPanel.gameObject);
+        _scrollSnap.AddToBack(_skinPrefab);
 
         // 2. 방금 추가된 패널 가져오기 (가장 마지막에 추가된 자식)
         int lastIndex = _scrollSnap.Content.childCount - 1;
         Transform newPanelTransform = _scrollSnap.Content.GetChild(lastIndex);
-        newPanelTransform.gameObject.SetActive(true); // <- 활성화
+        //newPanelTransform.gameObject.SetActive(true); // <- 활성화
+        newPanelTransform.name = skinName;
 
         // 3. Image 컴포넌트 가져오기
-        Image imageInstance = newPanelTransform.GetComponent<Image>();
-        newPanelTransform.name = skinName;
+        Image imageInstance = newPanelTransform.GetComponentInChildren<Image>();
+        if (imageInstance == null) {
+            Debug.LogWarning($"[SkinSelect] Image component not found in prefab for skin: {skinName}");
+            return;
+        }
 
         // 4. Sprite 설정
         Sprite skinSprite = Resources.Load<Sprite>($"Sprites/Skins/{skinName}");
@@ -138,6 +141,8 @@ public class SkinSelectPanel : UIBase
 
     private void OnClickOK()
     {
+        _selectedSkinIndex = _scrollSnap.SelectedPanel;
+
         string selectedSkinName = _scrollSnap.Content.GetChild(_selectedSkinIndex).name;
         Debug.Log($"[SkinSelect] 선택된 스킨: {selectedSkinName}");
 

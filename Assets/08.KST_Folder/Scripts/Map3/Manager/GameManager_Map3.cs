@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Diagnostics;
 using Photon.Pun;
 using UnityEngine;
@@ -10,17 +11,18 @@ namespace Kst
         private static GameManager_Map3 _instance;
         public static GameManager_Map3 Instance { get { return _instance; } set { _instance = value; } }
 
+        [SerializeField] public UIManager_Map3 _gameUIManager;
         [SerializeField] public float _GamePlayTime;
-        public bool _isFirstPlayer = false;
+        public PlateSpawner PlateSpawner;
         public Stopwatch _stopwatch;
         public string _currentMapType;
         public float _totalPlayTime;
-        public int _totalPlayerCount;
         int _totalEggCount = 0;
+        public int _totalPlayerCount;
         Map3Data _data;
 
         //이벤트
-        public event Action<int> OnEggCountChange;
+        // public event Action<int> OnEggCountChange;
         public event Action<Map3Data> OnEndGame;
 
 
@@ -30,11 +32,34 @@ namespace Kst
                 _instance = this;
             else
                 Destroy(gameObject);
+
+            _stopwatch = new Stopwatch();
+        }
+        void OnEnable()
+        {
+            _gameUIManager.OnGameStart += StartToSpawn;
+        }
+        void OnDisable()
+        {
+            _gameUIManager.OnGameStart -= StartToSpawn;
         }
 
         void Update()
         {
             PlayTimeOverCheck();
+        }
+
+        // IEnumerator DelaySubscribe()
+        // {
+        //     //scoreManager가 생성되기 전까지는 대기
+        //     yield return new WaitUntil(() => _gameUIManager != null);
+        //     ScoreManager.Instance.OnScoreChanged += RefreshScoreUI;
+        //     ScoreManager.Instance.OnEggChanged += RefreshEggUI;
+        // }
+
+        void StartToSpawn()
+        {
+            PlateSpawner.StartSpawn();
         }
 
         private void PlayTimeOverCheck()
@@ -52,6 +77,8 @@ namespace Kst
             _data.EggCount = _totalEggCount;
             OnEndGame?.Invoke(_data);
             UnityEngine.Debug.Log("게임 플레이 시간이 지났습니다.");
+
+            PlateSpawner.StopSpawn();
             photonView.RPC(nameof(GameClearLeaveRoom), RpcTarget.AllViaServer);
         }
 
@@ -70,11 +97,11 @@ namespace Kst
         }
 
         // 달걀 획득
-        public void GetEgg(int eggCount)
-        {
-            _totalEggCount += eggCount;
-            OnEggCountChange?.Invoke(_totalEggCount);   // 이벤트 호출
-        }
+        // public void GetEgg(int eggCount)
+        // {
+        //     _totalEggCount += eggCount;
+        //     // OnEggCountChange?.Invoke(_totalEggCount);   // 이벤트 호출
+        // }
 
         // 스탑워치 시작
         public void StartStopWatch()

@@ -15,6 +15,11 @@ public class NetworkManager_Map4 : MonoBehaviourPunCallbacks
 
     private void Start()
     {
+        if (_isStart)
+        {
+            return;
+        }
+
         // 서버에 연결이 되어 있지 않으면 서버 접속
         if (!PhotonNetwork.IsConnected)
         {
@@ -66,11 +71,6 @@ public class NetworkManager_Map4 : MonoBehaviourPunCallbacks
     // 입장 플레이어 체크
     private void CheckRoomPlayer()
     {
-        if (_isStart)
-        {
-            return;
-        }
-
         // 방에 입장한 플레이어
         _currentPlayer = PhotonNetwork.CurrentRoom.PlayerCount;
         // 방에 입장 가능한 Max 플레이어
@@ -82,7 +82,6 @@ public class NetworkManager_Map4 : MonoBehaviourPunCallbacks
         if (PhotonNetwork.IsMasterClient)
         {
             _gameManager._totalPlayerCount = _currentPlayer;
-            _gameManager._alivePlayer = _currentPlayer;
         }
 
         if (_currentPlayer >= maxPlayer)

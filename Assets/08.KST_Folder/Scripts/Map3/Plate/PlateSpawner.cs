@@ -13,15 +13,22 @@ public class PlateSpawner : MonoBehaviourPunCallbacks
     [SerializeField] private float _spawnTiming = 2f;
     [SerializeField] private float _spawnX;
 
+    private bool _isSpawning = false;
+    private Coroutine _spawnCoroutine;
+
 
     //TODO <김승태> : UImanager에서 게임 시작 시 StartSpawn 호출하도록 변경해야함.
     public void StartSpawn()
     {
+        //스폰 중일 경우 리턴
+        if (_isSpawning) return;
+        _isSpawning = true;
+
         InitPools();
 
         if (PhotonNetwork.IsMasterClient)
         {
-            StartCoroutine(IE_Spawn());
+            _spawnCoroutine = StartCoroutine(IE_Spawn());
         }
     }
 
@@ -64,6 +71,18 @@ public class PlateSpawner : MonoBehaviourPunCallbacks
             plate.transform.SetPositionAndRotation(spawnPos, Quaternion.identity);
             if (plate.TryGetComponent(out PlateMover mover))
                 mover.SetSpeed(speed);
+        }
+    }
+
+    public void StopSpawn()
+    {
+        if (!_isSpawning) return;
+        _isSpawning = false;
+
+        if (_spawnCoroutine != null)
+        {
+            StopCoroutine(_spawnCoroutine);
+            _spawnCoroutine = null;
         }
     }
 }

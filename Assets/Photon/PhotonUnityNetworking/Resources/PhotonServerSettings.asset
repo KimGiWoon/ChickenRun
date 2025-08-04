@@ -59,8 +59,9 @@ MonoBehaviour:
   - AddScore
   - MinusScore
   - EndGame
-  - DelayedPlayer
-  - LoseGame
+  - DeathPlayer
+  - GameDefeatLeaveRoom
+  - ExitPlayerCheck
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

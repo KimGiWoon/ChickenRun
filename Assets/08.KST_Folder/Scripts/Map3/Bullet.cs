@@ -28,6 +28,9 @@ namespace Kst
         //장애물과 충돌 시
         void OnTriggerEnter2D(Collider2D collision)
         {
+            //충돌 위치
+            Vector3 hitTransform = transform.position;
+
             if (collision.TryGetComponent(out Plate plate))
             {
                 if (PhotonNetwork.IsMasterClient)
@@ -42,7 +45,13 @@ namespace Kst
                         else
                             ScoreManager.Instance.photonView.RPC(nameof(ScoreManager.MinusScore), RpcTarget.All, _actorNum, plate.GetScore());
                     }
+                    //TODO <김승태> : SFX 변경 필요
+                    SoundManager.Instance.PlaySFX(SoundManager.Sfxs.SFX_DropWater); //총알과 플레이트 충돌 시 사운드
                 }
+
+                // 해당 시점에 파괴 이펙트 생성 (반납은 해당 애니메이션 끝 단 이벤트에서 실행)
+                PooledObject effect = EffectPoolManager.Instance.GetPool();
+                effect.transform.SetPositionAndRotation(hitTransform, Quaternion.identity);
 
                 //플레이트 반납 요청
                 PlateMover mover = plate.GetComponentInChildren<PlateMover>();
