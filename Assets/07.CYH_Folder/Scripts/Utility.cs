@@ -7,7 +7,7 @@ using UnityEngine;
 static partial class Utility
 {
 
-    #region SaveNickname
+    #region Save/Delete Nickname
 
     /// <summary>
     ///  RankData/UserData 경로에 CurrentUse.DisplayName을 저장하는 메서드
@@ -30,6 +30,34 @@ static partial class Utility
             else
             {
                 Debug.LogError("닉네임 저장 실패");
+            }
+        });
+    }
+
+    /// <summary>
+    /// RankData/UserData 경로의 현재 유저 UID를 삭제하는 메서드
+    /// </summary>
+    public static void DeleteUserUID()
+    {
+        //string uid = CYH_FirebaseManager.User.UserId;
+        string uid = CYH_FirebaseManager.Auth.CurrentUser.UserId;
+
+        Debug.Log($" (DB Delete) 현재 로그인된 유저 uid : {uid}");
+        Dictionary<string, object> dictionary = new Dictionary<string, object>
+        {
+            [$"UserData/{uid}"] = null,   
+            [$"RankData/{uid}"] = null
+        };
+
+        CYH_FirebaseManager.DataReference.UpdateChildrenAsync(dictionary).ContinueWithOnMainThread(task =>
+        {
+            if (task.IsCompletedSuccessfully)
+            {
+                Debug.Log("UserData / RankData 삭제 성공");
+            }
+            else
+            {
+                Debug.LogError($"UserData / RankData 삭제 실패: {task.Exception}");
             }
         });
     }

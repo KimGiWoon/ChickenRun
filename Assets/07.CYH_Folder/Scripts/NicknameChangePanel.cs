@@ -77,9 +77,11 @@ public class NicknameChangePanel : UIBase
 
             // 강제 로그아웃
             CYH_FirebaseManager.Auth.SignOut();
-            
+
             // 로그인 씬 전환
-            SceneManager.LoadScene("LoginScene");
+            //SceneManager.LoadScene("LoginScene");
+            //TODO: <최연호> 테스트씬 삭제
+            SceneManager.LoadScene("[CYH] LoginScene");
         });
     }
 
@@ -104,6 +106,9 @@ public class NicknameChangePanel : UIBase
                     return;
                 }
                 Debug.Log("닉네임 변경 성공");
+                
+                // DB 닉네임 수정
+                Utility.SaveNickname();
             });
     }
 }

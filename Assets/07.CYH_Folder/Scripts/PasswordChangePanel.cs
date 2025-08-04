@@ -71,13 +71,20 @@ public class PasswordChangePanel : UIBase
                 }
                 if (task.IsFaulted)
                 {
-                    Debug.LogError("계정 인증 취소");
+                    Debug.LogError("계정 인증 실패");
                     ShowPopup("계정 인증 실패");
                     return;
                 }
                 if (task.IsCompleted)
                 {
                     Debug.Log("패스워드 일치");
+                    
+                    if (_emailField.text != user.Email)
+                    {
+                        Debug.Log("이메일 불일치");
+                        ShowPopup("계정 인증 실패");
+                        return;
+                    }
 
                     if (_passwordField.text == _newPasswordField.text)
                     {
@@ -129,7 +136,9 @@ public class PasswordChangePanel : UIBase
                     Debug.Log("로그아웃");
 
                     // 로그인 씬 전환
-                    SceneManager.LoadScene("LoginScene");
+                    //SceneManager.LoadScene("LoginScene");
+                    //TODO: <최연호> 테스트씬 삭제
+                    SceneManager.LoadScene("[CYH] LoginScene");
                     Debug.Log("씬 전환 : MainScene -> LoginScene");
                 });
             });

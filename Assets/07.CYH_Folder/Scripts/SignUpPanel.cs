@@ -251,7 +251,7 @@ public class SignUpPanel : UIBase
         //DatabaseReference userData = CYH_FirebaseManager.Database.GetReference("UserData");
         DatabaseReference userData = CYH_FirebaseManager.Database.RootReference.Child("UserData");
 
-        userData.OrderByChild("Public/Nickname").EqualTo(_nicknameField.text).GetValueAsync().ContinueWithOnMainThread(task=>
+        userData.OrderByChild("NickName").EqualTo(_nicknameField.text).GetValueAsync().ContinueWithOnMainThread(task=>
         {
             if (task.IsFaulted)
             {
@@ -271,7 +271,7 @@ public class SignUpPanel : UIBase
             foreach (DataSnapshot user in snapshot.Children)
             {
                 string uid = user.Key;
-                string nickname = user.Child("Public").Child("Nickname").Value?.ToString();
+                string nickname = user.Child("NickName").Value?.ToString();
                 Debug.Log($"중복된 닉네임: {nickname}, uid: {uid}");
 
                 // 팝업 (중복된 닉네임)

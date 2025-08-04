@@ -1,6 +1,7 @@
 using Firebase.Auth;
 using Firebase.Extensions;
 using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -12,6 +13,8 @@ public class AccountPanel : UIBase
     [SerializeField] private Button _passwordChangeButton;
     [SerializeField] private Button _deleteAccountButton;
     [SerializeField] private Button _signoutButton;
+
+    [SerializeField] private TMP_Text _nicknameText;
 
     public Action OnClickClosePopup;
     public Action OnClickNicknameChange;
@@ -49,6 +52,12 @@ public class AccountPanel : UIBase
         });
     }
 
+    private void OnEnable()
+    {
+        FirebaseUser user = CYH_FirebaseManager.Auth.CurrentUser;
+        _nicknameText.text = $"{user.DisplayName}";
+    }
+
     #region deleteAccount
 
     private void OnClick_DelteButton()
@@ -57,6 +66,7 @@ public class AccountPanel : UIBase
             "탈퇴", () =>
             {
                 DeleteUser();
+
                 CYH_FirebaseManager.Auth.SignOut();
                 PopupManager.Instance.HidePopup();
                 //TODO: <최연호> 테스트씬 삭제
@@ -71,6 +81,9 @@ public class AccountPanel : UIBase
     {
         FirebaseUser currentUser = CYH_FirebaseManager.Auth.CurrentUser;
 
+        // DB 데이터 삭제
+        Utility.DeleteUserUID();
+
         currentUser.DeleteAsync()
             .ContinueWithOnMainThread(task =>
             {
@@ -82,8 +95,7 @@ public class AccountPanel : UIBase
                 {
                     Debug.LogError("유저 삭제 실패");
                 }
-
-                currentUser.DeleteAsync();
+;
                 Debug.Log("유저 삭제 성공");
 
                 // 현재 로그인된 유저가 있으면 로그아웃
@@ -91,6 +103,7 @@ public class AccountPanel : UIBase
                 {
                     CYH_FirebaseManager.Auth.SignOut();
                 }
+
                 // LoginScene으로 씬 전환
                 OnClickDeleteAccount?.Invoke();
             });

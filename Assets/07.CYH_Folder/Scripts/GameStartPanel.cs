@@ -115,7 +115,13 @@ public class GameStartPanel : UIBase
     private void OnClick_DelteButton()
     {
         PopupManager.Instance.ShowOKCancelPopup("정말로 탈퇴하시겠습니까?\r\n모든 기록이 삭제될 수 있습니다.\r\n",
-            "탈퇴", () => DeleteUser(), "취소", () => PopupManager.Instance.HidePopup());
+            "탈퇴", () =>
+            { 
+                DeleteUser();
+                // DB에서 UID 삭제
+                //Utility.DeleteUserUID();
+            }, 
+            "취소", () => PopupManager.Instance.HidePopup());
     }
 
     /// <summary>
@@ -124,6 +130,10 @@ public class GameStartPanel : UIBase
     private void DeleteUser()
     {
         FirebaseUser currentUser = CYH_FirebaseManager.Auth.CurrentUser;
+        Debug.Log($" (Auth Delete_1) 현재 로그인된 유저 uid : {currentUser.UserId}");
+
+        // DB 데이터 삭제
+        Utility.DeleteUserUID();
 
         currentUser.DeleteAsync()
             .ContinueWithOnMainThread(task =>
@@ -137,8 +147,9 @@ public class GameStartPanel : UIBase
                     Debug.LogError("유저 삭제 실패");
                 }
 
-                currentUser.DeleteAsync();
+            
                 Debug.Log("유저 삭제 성공");
+                Debug.Log($" (Auth Delete_2) 현재 로그인된 유저 uid : {currentUser.UserId}");
 
                 // 현재 로그인된 유저가 있으면 로그아웃
                 if (currentUser != null)

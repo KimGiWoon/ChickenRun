@@ -34,7 +34,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: -422.1, y: 0}
+  m_AnchoredPosition: {x: -449.4, y: 0}
   m_SizeDelta: {x: 250, y: 80}
   m_Pivot: {x: 0, y: 1}
 --- !u!222 &8784939470452943319
@@ -289,8 +289,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: -149, y: 0}
-  m_SizeDelta: {x: 337.4, y: 80}
+  m_AnchoredPosition: {x: -185.1, y: 0}
+  m_SizeDelta: {x: 400, y: 80}
   m_Pivot: {x: 0, y: 1}
 --- !u!222 &7840465211271305729
 CanvasRenderer:
@@ -559,7 +559,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 299.34, y: -43.4}
+  m_AnchoredPosition: {x: 328.8, y: -43.4}
   m_SizeDelta: {x: 200, y: 120}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1019411413388023225
@@ -1050,6 +1050,7 @@ MonoBehaviour:
   _passwordChangeButton: {fileID: 9014418722740865386}
   _deleteAccountButton: {fileID: 6566062568384533408}
   _signoutButton: {fileID: 1425173656608341011}
+  _nicknameText: {fileID: 6215301067874723926}
 --- !u!1 &5688653399727521486
 GameObject:
   m_ObjectHideFlags: 0
