@@ -21,7 +21,6 @@ public class UIManager_Map3 : MonoBehaviourPun
     [SerializeField] GameObject _startPanel;
     [SerializeField] TMP_Text _countText;
     [SerializeField] float _routineTime = 1f;
-    [SerializeField] GameObject _wall; //TODO <김승태> 이 타이밍에 spwanPlate 호출하도록 변경하기.
 
     [Header("Goal Slider UI Reference")]
     [SerializeField] Transform _playerPosition;
@@ -31,7 +30,6 @@ public class UIManager_Map3 : MonoBehaviourPun
     [SerializeField] Button _backButton, _exitButton;
     [SerializeField] Slider _musicSlider, _effectSlider;
     [SerializeField] Toggle _camModeCheckToggle;
-    [SerializeField] CameraController_Map3 _cameraController; //TODO <김승태> 추후 수정부탁드립니다.
 
     [Header("Emoticon Panel UI Reference")]
     [SerializeField] PlayerEmoticonController_Map3 _playerEmoticonController;
@@ -80,7 +78,6 @@ public class UIManager_Map3 : MonoBehaviourPun
         // GameManager_Map3.Instance.OnEggCountChange -= UpdateGetEggUI;
 
         // 메모리 누수 방지로 리셋
-        _camModeCheckToggle.onValueChanged.RemoveListener(CamModeCheck);
         _optionButton.onClick.RemoveListener(OnOptionWindow);
         _backButton.onClick.RemoveListener(OffOptionWindow);
         _exitButton.onClick.RemoveListener(OnExitPlayGame);
@@ -96,9 +93,6 @@ public class UIManager_Map3 : MonoBehaviourPun
     // 버튼, 토글 UI 초기화
     private void InGameUIInit()
     {
-        // 카메라 모드 체크 토글 
-        _camModeCheckToggle.onValueChanged.AddListener(CamModeCheck);
-
         // 사운드 볼륨
         _musicSlider.onValueChanged.AddListener((volume) => SettingManager.Instance.SetBGM(volume));
         _effectSlider.onValueChanged.AddListener((volume) => SettingManager.Instance.SetSFX(volume));
@@ -114,12 +108,6 @@ public class UIManager_Map3 : MonoBehaviourPun
         _angryEmoticon.onClick.AddListener(() => OnEmoticon(3));
         _loveEmoticon.onClick.AddListener(() => OnEmoticon(4));
         _weepEmoticon.onClick.AddListener(() => OnEmoticon(5));
-    }
-
-    // 카메라 모드 체크 (토글)
-    private void CamModeCheck(bool check)
-    {
-        _cameraController._isDelayMove = check;
     }
 
     // BGM, SFX 볼륨 초기화
@@ -278,10 +266,8 @@ public class UIManager_Map3 : MonoBehaviourPun
             {
                 SoundManager.Instance.PlayBGM(SoundManager.Bgms.BGM_InGame4);
                 _startPanel.SetActive(false);
-                //TODO <김승태> 스포너 생성 시작 시점
                 GameManager_Map3.Instance.StartStopWatch();
                 OnGameStart?.Invoke();
-                // GameManager_Map3.Instance.PlateSpawner.StartSpawn();
                 break;
             }
         }

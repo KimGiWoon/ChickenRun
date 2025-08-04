@@ -387,6 +387,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5708643803149600639, guid: a13b2189128fa5542b1ba5e1e3ac0783, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -301
+      objectReference: {fileID: 0}
     - target: {fileID: 6809265708865544192, guid: a13b2189128fa5542b1ba5e1e3ac0783, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -476,21 +480,11 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 8305835583658559891, guid: a13b2189128fa5542b1ba5e1e3ac0783, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a13b2189128fa5542b1ba5e1e3ac0783, type: 3}
---- !u!114 &373279751 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3717081380243221206, guid: a13b2189128fa5542b1ba5e1e3ac0783, type: 3}
-  m_PrefabInstance: {fileID: 373279750}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9085046f02f69544eb97fd06b6048fe2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!224 &373279752 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 8533631701368239956, guid: a13b2189128fa5542b1ba5e1e3ac0783, type: 3}
@@ -1466,6 +1460,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _followSpeed: 0
   _isDelayMove: 0
+  _followTarget: {fileID: 0}
+  _offset: {x: 0, y: 2, z: -10}
+  _alivePlayers: []
+  _index: 0
+  _isViewing: 0
 --- !u!114 &747629083
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2874,15 +2873,13 @@ MonoBehaviour:
   _startPanel: {fileID: 786750019}
   _countText: {fileID: 786750018}
   _routineTime: 1
-  _wall: {fileID: 0}
   _playerPosition: {fileID: 6455968735544969216, guid: fac0335b6c5570442a590160b02fbefc, type: 3}
   _optionPanel: {fileID: 373279757}
   _backButton: {fileID: 373279756}
   _exitButton: {fileID: 373279755}
   _musicSlider: {fileID: 373279754}
   _effectSlider: {fileID: 373279753}
-  _camModeCheckToggle: {fileID: 373279751}
-  _cameraController: {fileID: 0}
+  _camModeCheckToggle: {fileID: 0}
   _playerEmoticonController: {fileID: 0}
   _emoticonPanel: {fileID: 786750017}
   _emoticonSprite:
