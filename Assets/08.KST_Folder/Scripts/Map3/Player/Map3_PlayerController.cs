@@ -1,3 +1,4 @@
+using System.Collections;
 using Photon.Pun;
 using UnityEngine;
 
@@ -15,8 +16,6 @@ namespace Kst
         // 애니메이션
         public readonly int Idle_Hash = Animator.StringToHash("ChickenIdle");
         public readonly int Move_Hash = Animator.StringToHash("ChickenMove");
-        // public readonly int Glide_Hash = Animator.StringToHash("ChickenGlide");
-        // public readonly int Jump_Hash = Animator.StringToHash("ChickenJump");
 
         int _currentAnimatorHash;
         int _reciveAnimatorHash;
@@ -24,6 +23,9 @@ namespace Kst
         //매니저
         UIManager_Map3 _gameUIManager;
         GameManager_Map3 _gameManager;
+
+        private Coroutine _stepCoroutine;
+        private bool _isWalking = false;
         private void Awake()
         {
             _rb = GetComponent<Rigidbody2D>();
@@ -41,11 +43,19 @@ namespace Kst
                 TranslucentSetting();
             }
         }
+        void OnEnable()
+        {
+            _gameUIManager.OnGameStart += GetComponent<PlayerShooter>().SetCanAttack;
+        }
+        void OnDisable()
+        {
+            _gameUIManager.OnGameStart -= GetComponent<PlayerShooter>().SetCanAttack;
+
+        }
         void Start()
         {
             if (!photonView.IsMine) return;
 
-            Camera.main.GetComponent<CameraController_Map3>().SetTarget(transform);
             _gameManager._gameUIManager.SetPlayerPosition(transform);
         }
         void Update()
@@ -96,14 +106,35 @@ namespace Kst
             {
                 _currentAnimatorHash = Idle_Hash;
                 _animator.Play(Idle_Hash);
+
+                _isWalking = false;
+
+                if (_stepCoroutine != null)
+                {
+                    StopCoroutine(_stepCoroutine);
+                    _stepCoroutine = null;
+                }
+
             }
             else if (_rb.velocity.x > 0.1f || _rb.velocity.x < -0.1f)
             {
                 _currentAnimatorHash = Move_Hash;
-                //TODO <김승태> : SFX 변경 필요
                 _animator.Play(Move_Hash);
-                // 루프용 SFX로 변경 필요. -> SoundManager의 구조 변화 필요.
-                // SoundManager.Instance.PlaySFX(SoundManager.Sfxs.SFX_Jump);
+                if (!_isWalking)
+                {
+                    _isWalking = true;
+                    if (_stepCoroutine == null)
+                        _stepCoroutine = StartCoroutine(IE_PlayerStep());
+                }
+
+            }
+        }
+        IEnumerator IE_PlayerStep()
+        {
+            while (_isWalking)
+            {
+                SoundManager.Instance.PlaySFX(SoundManager.Sfxs.SFX_Walk);
+                yield return new WaitForSeconds(0.5f);
             }
         }
 

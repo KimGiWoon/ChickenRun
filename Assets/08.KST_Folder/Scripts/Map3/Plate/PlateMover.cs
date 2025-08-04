@@ -4,10 +4,7 @@ using UnityEngine;
 
 public class PlateMover : MonoBehaviourPun
 {
-    [SerializeField] private float _minspeed = 1f;
-    [SerializeField] private float _maxSpeed = 4f;
     private float _speed;
-    // private PhotonPooledObject _pooled;
     private PooledObject _pooled;
     void Awake()
     {
