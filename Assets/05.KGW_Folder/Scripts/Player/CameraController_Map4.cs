@@ -73,9 +73,10 @@ public class CameraController_Map4 : MonoBehaviour
         // 살아 있는 플레이어 순회
         foreach(var player in FindObjectsOfType<PlayerController_Map4>())
         {
-            // 플레이어가 죽지 않았으면
-            if (!player._isDeath || !player._isGoal)
+            // 결승점에 들어가지 않고 죽지않은 플레이거가 있으면 관찰리스트에 추가
+            if (!player._isDeath && !player._isGoal)
             {
+                Debug.Log("여기");
                 _observePlayers.Add(player);
             }
         }
