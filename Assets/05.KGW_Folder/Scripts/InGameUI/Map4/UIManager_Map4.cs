@@ -226,18 +226,20 @@ public class UIManager_Map4 : MonoBehaviourPun
 
         _isExit = true;
         _gameManager.StopStopWatch();
-        _networkManager._isStart = false;
-        SoundManager.Instance.StopBGM();
 
-        photonView.RPC(nameof(ExitPlayerCheck), RpcTarget.AllViaServer, exitPlayer);
+        photonView.RPC(nameof(ExitPlayerCheck), RpcTarget.MasterClient, exitPlayer);
+        _gameManager.GameDefeatLeaveRoom();
     }
 
-    // 나간 플레이어
+    // 나간 플레이어 알림
     [PunRPC]
     public void ExitPlayerCheck(string exitPlayer)
     {
-        Debug.Log($"{exitPlayer}께서 탈주했습니다.");
-        _gameManager.PlayerExit(exitPlayer);
+        if (PhotonNetwork.IsMasterClient)
+        {
+            _gameManager._exitPlayerCount++;
+            Debug.Log($"나간 플레이어 : {exitPlayer}");
+        }
     }
 
     // 출발지점과 도착지점 위치 확인

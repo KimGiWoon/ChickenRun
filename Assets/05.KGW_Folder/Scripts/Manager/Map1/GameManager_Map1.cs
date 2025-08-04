@@ -105,28 +105,6 @@ public class GameManager_Map1 : MonoBehaviourPunCallbacks
         OnEggCountChange?.Invoke(_totalEggCount);   // 이벤트 호출
     }
 
-    // 플레이어 탈주
-    public void PlayerExit(string exitPlayer)
-    {
-        if (PhotonNetwork.IsMasterClient)
-        {
-            _exitPlayerCount++;
-            UnityEngine.Debug.Log($"나간 사람 수 : {_exitPlayerCount}");
-        }
-
-        if (PhotonNetwork.LocalPlayer.CustomProperties.TryGetValue("Nickname", out object nickname))
-        {
-            string myNickname = nickname.ToString();
-
-            if (exitPlayer == myNickname)
-            {
-                UnityEngine.Debug.Log($"{exitPlayer}께서 나갔습니다.");
-
-                _defeatUIController.gameObject.SetActive(true);
-            }
-        }
-    }
-
     // 플레이어 결승점 도착
     public void PlayerReachedGoal(string playerNickname)
     {
@@ -189,6 +167,8 @@ public class GameManager_Map1 : MonoBehaviourPunCallbacks
     {
         SoundManager.Instance.StopBGM();
         SoundManager.Instance.StopSFX();
+        _networkManager._isStart = false;
+        _gameUIManager.ClearPlayerReference();
 
         // 클리어 UI 활성화
         _clearUIController.gameObject.SetActive(true);
@@ -200,6 +180,8 @@ public class GameManager_Map1 : MonoBehaviourPunCallbacks
     {
         SoundManager.Instance.StopBGM();
         SoundManager.Instance.StopSFX();
+        _networkManager._isStart = false;
+        _gameUIManager.ClearPlayerReference();
 
         // 실패 UI 활성화
         _defeatUIController.gameObject.SetActive(true);
