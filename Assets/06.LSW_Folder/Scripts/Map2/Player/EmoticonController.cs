@@ -2,11 +2,14 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Photon.Pun;
+using Photon.Realtime;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using ExitGames.Client.Photon;
+using Hashtable = ExitGames.Client.Photon.Hashtable;
 
-public class EmoticonController : MonoBehaviourPun
+public class EmoticonController : MonoBehaviourPunCallbacks
 {
     [SerializeField] private Sprite[] _emoticonSprite;
     [SerializeField] private GameObject _speechBubble;
@@ -37,7 +40,8 @@ public class EmoticonController : MonoBehaviourPun
     {
         if (photonView.Owner.CustomProperties.TryGetValue("Nickname", out object nickname))
         {
-            _playerNickname.text = nickname?.ToString();
+            Debug.Log(nickname);
+            _playerNickname.text = nickname.ToString();
         }
         if (photonView.Owner.CustomProperties.TryGetValue("Color", out object colors))
         {
@@ -102,4 +106,6 @@ public class EmoticonController : MonoBehaviourPun
         // 이모티콘 표시 시간 코루틴 시작
         _emoticonRoutine = StartCoroutine(EmoticonPlayTimeCoroutine());
     }
+    
+    
 }
