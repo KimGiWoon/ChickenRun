@@ -106,21 +106,26 @@ public class PlayerController_Map2 : MonoBehaviourPun, IPunObservable
         {
             SetGravity();
             PlayerJump();
+            CheckGround();
         }
     }
     
     // GroundLayer에 2개 이상의 layer가 포함될 수 있어 비트 연산으로 코드 수정
-    private void OnCollisionEnter2D(Collision2D collision)
+    /*private void OnCollisionEnter2D(Collision2D collision)
     {
-        if(((1 << collision.gameObject.layer) & _groundLayer) != 0)
+        Debug.Log("진입5");
+        Debug.Log($"[DEBUG] 이 오브젝트의 Owner: {photonView.Owner.NickName}, IsMine: {photonView.IsMine}");
+        
+        if (photonView.IsMine)
         {
-            _isGround = true;
+            Debug.Log("진입6");
+            if(((1 << collision.gameObject.layer) & _groundLayer) != 0)
+            {
+                Debug.Log("진입7");
+                _isGround = true;
+            }
         }
-        else
-        {
-            _isGround = false;
-        }
-    }
+    }*/
 
     // 트리거 충돌
     private void OnTriggerEnter2D(Collider2D collision)
@@ -132,10 +137,13 @@ public class PlayerController_Map2 : MonoBehaviourPun, IPunObservable
             GameManager_Map2.Instance.GetEgg();
             Destroy(collision.gameObject);
         }
-        
-        if(collision.gameObject.layer == LayerMask.NameToLayer("Goal"))
+
+        if (photonView.IsMine)
         {
-            GameManager_Map2.Instance.ReachGoalPoint();
+            if(collision.gameObject.layer == LayerMask.NameToLayer("Goal"))
+            {
+                GameManager_Map2.Instance.ReachGoalPoint();
+            }
         }
     }
     
@@ -379,5 +387,19 @@ public class PlayerController_Map2 : MonoBehaviourPun, IPunObservable
             _playerRenderer.flipX = (bool)stream.ReceiveNext();
             _playerRenderer.flipY = (bool)stream.ReceiveNext();
         }
+    }
+
+    private void CheckGround()
+    {
+        Vector2 origin = (Vector2)transform.position;
+        Vector2 right = (Vector2)transform.position + Vector2.right * 0.1f;
+        Vector2 left = (Vector2)transform.position + Vector2.left * 0.1f;
+        
+        float distance = 0.03f;
+        RaycastHit2D hit1 = Physics2D.Raycast(origin, Vector2.down, distance,_groundLayer);
+        RaycastHit2D hit2 = Physics2D.Raycast(right, Vector2.down, distance,_groundLayer);
+        RaycastHit2D hit3 = Physics2D.Raycast(left, Vector2.down, distance,_groundLayer);
+
+        if (hit1.collider != null || hit2.collider != null || hit3.collider != null) _isGround = true;
     }
 }
