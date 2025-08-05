@@ -60,4 +60,13 @@ public enum ColorType
     Cyan,
 }
 
+// 스킨 타입
+public enum  SkinType
+{
+    Default = 0,
+    OwletMonster,
+    Pig,
+    PinkMonster
+}
+
 #endregion // Type Def

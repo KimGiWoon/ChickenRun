@@ -198,6 +198,10 @@ public class UIManager_Map1 : MonoBehaviourPun
         {
             StopCoroutine( _emoticonRoutine );
         }
+
+        // 이모티콘 효과음
+        SoundManager.Instance.PlaySFX(index);
+
         // 이모티콘 표시 시간 코루틴 시작
         _emoticonRoutine = StartCoroutine(EmoticonPlayTimeCoroutine());
 
@@ -242,7 +246,9 @@ public class UIManager_Map1 : MonoBehaviourPun
     private void PlayerPosUpdate()
     {
         if (_playerPosition == null || _goalPosition == null || _playerPosSlider == null)
+        {
             return;
+        } 
 
         float distanceToGoal = Vector2.Distance(_playerPosition.position, _goalPosition.position);
         float progress = Mathf.Clamp01(1 - (distanceToGoal / _totalDistance));
