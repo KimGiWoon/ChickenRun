@@ -249,7 +249,9 @@ public class PlayerController_Map1 : MonoBehaviourPun, IPunObservable, IPunInsta
         // 체크 포인트 접촉
         if (collision.gameObject.layer == LayerMask.NameToLayer("CheckPoint")) {
             // 자신의 리스폰 위치 변경
-            if (photonView.IsMine) {
+            if (photonView.IsMine) 
+            {
+                SoundManager.Instance.PlaySFX(SoundManager.Sfxs.SFX_CheckPoint);
                 _gameManager._startPos = collision.transform.position;
             }
         }
