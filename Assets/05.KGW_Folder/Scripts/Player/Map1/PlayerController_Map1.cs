@@ -360,6 +360,10 @@ public class PlayerController_Map1 : MonoBehaviourPun, IPunObservable, IPunInsta
                         Debug.Log("핑크몬스터 스킨 입니다.");
                         controller = Resources.Load<RuntimeAnimatorController>("Sprites/Animations/PinkMonsterAnimation/PinkMonsterAnimatorController");
                         break;
+                    case SkinType.DudeMonster:
+                        Debug.Log("듀드몬스터 스킨입니다.");
+                        controller = Resources.Load<RuntimeAnimatorController>("Sprites/Animations/DudeMonsterAnimation/DudeMonsterAnimatorController");
+                        break;
                     default:
                         break;
                 }
