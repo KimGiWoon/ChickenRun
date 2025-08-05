@@ -76,7 +76,7 @@ namespace Kst
                 }
 
                 // 해당 시점에 파괴 이펙트 생성 (반납은 해당 애니메이션 끝 단 이벤트에서 실행)
-                PooledObject effect = EffectPoolManager.Instance.GetPool();
+                PooledObject effect = GameManager_Map3.Instance._effectPoolManager.GetPool();
                 effect.transform.SetPositionAndRotation(hitTransform, Quaternion.identity);
 
                 //플레이트 반납 요청

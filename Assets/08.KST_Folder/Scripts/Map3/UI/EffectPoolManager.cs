@@ -1,6 +1,6 @@
 using Kst;
 using UnityEngine;
-public class EffectPoolManager : Singleton<EffectPoolManager>
+public class EffectPoolManager : MonoBehaviour
 {
     [SerializeField] PooledObject _destoryEffectPrefab;
     private ObjectPool _effectPool;

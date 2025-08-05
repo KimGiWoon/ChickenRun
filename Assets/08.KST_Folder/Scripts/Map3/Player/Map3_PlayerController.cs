@@ -47,11 +47,12 @@ namespace Kst
         void OnEnable()
         {
             _gameUIManager.OnGameStart += GetComponent<PlayerShooter>().SetCanAttack;
+            _gameManager.OnGameEnd += GetComponent<PlayerShooter>().SetUnableAttack;
         }
         void OnDisable()
         {
             _gameUIManager.OnGameStart -= GetComponent<PlayerShooter>().SetCanAttack;
-
+            _gameManager.OnGameEnd -= GetComponent<PlayerShooter>().SetUnableAttack;
         }
         void Start()
         {

@@ -224,6 +224,12 @@ public class UIManager_Map3 : MonoBehaviourPun
         _playerPosition = player;
     }
 
+    // 플레이어 위치 참조 초기화
+    public void ClearPlayerReference()
+    {
+        _playerPosition = null;
+    }
+
     // 스타트 코루틴
     [PunRPC]
     public void StartGameRoutine()

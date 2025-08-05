@@ -63,6 +63,11 @@ namespace Kst
             _canAttack = true;
             _cooldownImg.fillAmount = 0f;
         }
+        public void SetUnableAttack()
+        {
+            _canAttack = false;
+            _cooldownImg.fillAmount = 1f;
+        }
         public void SetImg(Image img) => _cooldownImg = img;
     }
 }
