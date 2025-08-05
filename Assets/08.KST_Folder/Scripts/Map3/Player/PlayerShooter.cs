@@ -14,6 +14,7 @@ namespace Kst
         private ObjectPool _bulletPool;
         private bool _canAttack = false;
         private Image _cooldownImg;
+        public Image CooldownImg { get { return _cooldownImg; } }
 
         void Start() => _bulletPool = new(null, _bulletPrefab, 10);
 
@@ -68,6 +69,9 @@ namespace Kst
             _canAttack = false;
             _cooldownImg.fillAmount = 1f;
         }
-        public void SetImg(Image img) => _cooldownImg = img;
+        public void SetImg(Image img)
+        {
+            _cooldownImg = img;
+        } 
     }
 }

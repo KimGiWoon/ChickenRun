@@ -4957,7 +4957,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _networkManager: {fileID: 741950609}
   _gameUIManager: {fileID: 1909447668}
-  _GamePlayTime: 120
+  _GamePlayTime: 10
   PlateSpawnerSys: {fileID: 1427744986}
   _currentMapType: Map3
   _totalPlayTime: 0
@@ -6018,7 +6018,7 @@ MonoBehaviour:
   - {fileID: -3140800635631123014, guid: 31e08539e0478ca40a6911e9068aaaf2, type: 3}
   - {fileID: -6079401750450398109, guid: 759d203bef7d13641804a383cc654a3c, type: 3}
   - {fileID: -4816245575736162163, guid: 65184dc8587668a4da7441a7acac4226, type: 3}
-  _spawnTiming: 2
+  _spawnTiming: 0.5
   _spawnX: 9
 --- !u!114 &1427744987
 MonoBehaviour:

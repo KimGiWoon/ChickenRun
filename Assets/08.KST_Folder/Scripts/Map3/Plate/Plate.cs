@@ -13,9 +13,9 @@ namespace Kst
             switch (_type)
             {
                 case PlateType.NormalEgg:
-                    return 0;
+                    return 1;
                 case PlateType.Bomb:
-                    return -2;
+                    return -20;
                 case PlateType.Rock:
                     return 2;
                 case PlateType.Coin:
