@@ -64,7 +64,16 @@ public class NetworkManager_Map1 : MonoBehaviourPunCallbacks
         }
 
         Vector2 spawnPos = new Vector2(0, 0);
-        PhotonNetwork.Instantiate($"Player_Map1", spawnPos, Quaternion.identity);
+
+        // 커스텀 속성에서 스킨 이름 가져오기
+        string skinName = "Default";
+        if (PhotonNetwork.LocalPlayer.CustomProperties.TryGetValue("Skin", out object skinObj))
+        {
+            skinName = skinObj.ToString();
+        }
+
+        // Instantiate 시 스킨 이름 전달
+        PhotonNetwork.Instantiate("Player_Map1", spawnPos, Quaternion.identity, 0, new object[] { skinName });
     }
 
     // 입장 플레이어 체크

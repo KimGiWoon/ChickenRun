@@ -257,6 +257,12 @@ public class UIManager_Map4 : MonoBehaviourPun
         _distanceText.text = $"{((int)_playerEndDistance).ToString()}m";
     }
 
+    // 플레이어 위치 참조 초기화
+    public void ClearPlayerReference()
+    {
+        _playerPosition = null;
+    }
+
     // 플레이어 위치 세팅
     public void SetPlayerPosition(Transform player)
     {

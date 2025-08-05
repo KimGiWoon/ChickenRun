@@ -62,7 +62,7 @@ public class SettingUI : MonoBehaviourPun
     // 나가기 버튼 클릭
     private void OnExitPlayGame()
     {
-        string exitPlayer = PhotonNetwork.LocalPlayer.NickName;
+        string exitPlayer = PhotonNetwork.LocalPlayer.CustomProperties["Nickname"].ToString();
         
         // 나감을 알림
         photonView.RPC(nameof(ExitPlayer), RpcTarget.AllViaServer, exitPlayer);
@@ -73,7 +73,7 @@ public class SettingUI : MonoBehaviourPun
     private void ExitPlayer(string playerNickname)
     {
         Debug.Log($"{playerNickname}께서 나갔습니다.");
-        if (PhotonNetwork.LocalPlayer.NickName == playerNickname)
+        if (PhotonNetwork.LocalPlayer.CustomProperties["Nickname"].ToString() == playerNickname)
         {
             PhotonNetwork.LoadLevel("MainScene");
             PhotonNetwork.LeaveRoom();
