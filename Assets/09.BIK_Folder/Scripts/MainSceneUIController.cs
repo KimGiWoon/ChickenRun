@@ -16,6 +16,9 @@ public class MainSceneUIController : MonoBehaviour
     [Header("Main UI")]
     [SerializeField] private List<UIBase> _uiList;
 
+    [Header("Popup")]
+    [SerializeField] private MainSceneOptionPanel _optionPanel;
+
     #endregion // Serialized fields
 
 
@@ -211,7 +214,7 @@ public class MainSceneUIController : MonoBehaviour
 
     private void OpenSettingPopup()
     {
-        //PopupManager.Instance.ShowSettingPopup(); // TODO백인권 : 설정 팝업 구현 예정
+        _optionPanel.SetShow();
     }
 
     #endregion // private funcs
