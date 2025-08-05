@@ -33,7 +33,6 @@ public class GameManager_Map1 : MonoBehaviourPunCallbacks
     // 달걀 획득에 대한 이벤트 (UI 적용)
     public event Action<int> OnEggCountChange;
     public event Action OnPlayerGoal;
-    public event Action<Map1Data> OnEndGame;
 
     // 데이터 베이스에 전달할 맵1 데이터 저장
     public class Map1Data
@@ -117,14 +116,13 @@ public class GameManager_Map1 : MonoBehaviourPunCallbacks
             if(myNickname == playerNickname)
             {
                 UnityEngine.Debug.Log(playerNickname);
+
                 // 골인하면 카메라 전환 이벤트 호출
                 OnPlayerGoal?.Invoke();
-                SoundManager.Instance.StopBGM();
 
                 // 랭킹 데이터 저장
                 _data.EggCount = _totalEggCount;
                 _data.Record = _stopwatch.ElapsedMilliseconds;
-                OnEndGame?.Invoke(_data);
             }
         }       
 
@@ -132,12 +130,9 @@ public class GameManager_Map1 : MonoBehaviourPunCallbacks
         {
             _goalPlayerCount++;
 
-            UnityEngine.Debug.Log($"현재 결승점에 도착한 플레이어 : {_goalPlayerCount}/{_totalPlayerCount}");
-
-            // 모든 플레이어 결승점 도착
+            // 결승점 도착
             if (_exitPlayerCount + _goalPlayerCount >= _totalPlayerCount)
             {
-                UnityEngine.Debug.Log("모든 플레이어 도착");
                 photonView.RPC(nameof(GameClearLeaveRoom), RpcTarget.AllViaServer);
             }
         }       
@@ -168,8 +163,12 @@ public class GameManager_Map1 : MonoBehaviourPunCallbacks
     {
         SoundManager.Instance.StopBGM();
         SoundManager.Instance.StopSFX();
+
         _networkManager._isStart = false;
         _gameUIManager.ClearPlayerReference();
+
+        // 점수, 달걀, 시간 저장
+        Database_RecordManager.Instance.SaveUserMap1Record(_data);
 
         // 클리어 UI 활성화
         _clearUIController.gameObject.SetActive(true);
@@ -181,6 +180,7 @@ public class GameManager_Map1 : MonoBehaviourPunCallbacks
     {
         SoundManager.Instance.StopBGM();
         SoundManager.Instance.StopSFX();
+
         _networkManager._isStart = false;
         _gameUIManager.ClearPlayerReference();
 

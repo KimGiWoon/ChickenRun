@@ -44,8 +44,6 @@ public class DefeatUIController_Map4 : MonoBehaviour
 
         yield return _time;
 
-        SoundManager.Instance.StopSFX();
-
         // 씬 이동
         PhotonNetwork.LoadLevel("MainScene");
     }
@@ -57,8 +55,6 @@ public class DefeatUIController_Map4 : MonoBehaviour
         SoundManager.Instance.PlaySFX(SoundManager.Sfxs.SFX_Defeat);
 
         yield return _time;
-
-        SoundManager.Instance.StopSFX();
 
         // 씬 이동
         PhotonNetwork.LeaveRoom();
