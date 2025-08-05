@@ -33,6 +33,7 @@ public class Database_RecordManager : Singleton<Database_RecordManager>
         public long Map1Record;
         public long Map2Record;
         public long Map3Record;
+        public long Map4Record;
         public long Score;
     }
 
@@ -179,6 +180,9 @@ public class Database_RecordManager : Singleton<Database_RecordManager>
                         case "Map3Record":
                             recordValue = (int)rankData.Map3Record;
                             break;
+                        case "Map4Record":
+                            recordValue = (int)rankData.Map4Record;
+                            break;
                     }
 
                     if (recordValue != 0) {
@@ -232,6 +236,9 @@ public class Database_RecordManager : Singleton<Database_RecordManager>
             case "Map3Record":
                 myRecord = (int)userRankData.Map3Record;
                 break;
+            case "Map4Record":
+                myRecord = (int)userRankData.Map4Record;
+                break;
         }
         if (myRecord == 0)
             return info;
@@ -260,6 +267,9 @@ public class Database_RecordManager : Singleton<Database_RecordManager>
                         break;
                     case "Map3Data":
                         recordValue = (int)rankData.Map3Record;
+                        break;
+                    case "Map4Data":
+                        recordValue = (int)rankData.Map4Record;
                         break;
                 }
 

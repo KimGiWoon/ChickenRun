@@ -26,8 +26,8 @@ public class NetworkManager_Map1 : MonoBehaviourPunCallbacks
         {
             UnityEngine.Debug.Log("입장 완료");
     
-        // 방에 들어온 플레이어 체크
-        if (PhotonNetwork.IsMasterClient)
+            // 방에 들어온 플레이어 체크
+            if (PhotonNetwork.IsMasterClient)
             {
                 CheckRoomPlayer();
             }
@@ -72,7 +72,7 @@ public class NetworkManager_Map1 : MonoBehaviourPunCallbacks
             skinName = skinObj.ToString();
         }
 
-        // Instantiate 시 스킨 이름 전달
+        // 플레이어 생성 시 스킨 데이터 전달
         PhotonNetwork.Instantiate("Player_Map1", spawnPos, Quaternion.identity, 0, new object[] { skinName });
     }
 

@@ -34,10 +34,10 @@ public class PlayerController_Map1 : MonoBehaviourPun, IPunObservable, IPunInsta
     int _currentAnimatorHash;
     int _reciveAnimatorHash;
 
-    // Idle 애니메이션
-    public readonly int Idle_Hash = Animator.StringToHash("ChickenIdle");
-    public readonly int Glide_Hash = Animator.StringToHash("ChickenGlide");
-    public readonly int Jump_Hash = Animator.StringToHash("ChickenJump");
+    // 플레이어 애니메이션
+    public readonly int Idle_Hash = Animator.StringToHash("Idle");
+    public readonly int Glide_Hash = Animator.StringToHash("Glide");
+    public readonly int Jump_Hash = Animator.StringToHash("Jump");
 
     private void Awake()
     {
@@ -302,25 +302,74 @@ public class PlayerController_Map1 : MonoBehaviourPun, IPunObservable, IPunInsta
         }
     }
 
+    // 포톤 네트워크로 플레이어 생성 시 호출
     public void OnPhotonInstantiate(PhotonMessageInfo info)
     {
-        object[] instantiationData = this.photonView.InstantiationData;
-        string skinName = "Default";
+        // 오브젝트 배열을 저장
+        var data = info.photonView.InstantiationData;
 
-        if (instantiationData != null && instantiationData.Length > 0)
+        // 데이터가 Null이 아니고, 데이터가 최소 하나 이상 있는지 확인
+        if (data != null && data.Length > 0)
         {
-            skinName = instantiationData[0] as string;
-        }
+            // 첫번째 데이터 스킨
+            string skinName = data[0].ToString();
 
-        ApplySkin(skinName);
+            Debug.Log($"적용 스킨 : {skinName}");
+            ApplySkin(skinName);
+        }
     }
 
+    // 스킨 적용
     private void ApplySkin(string skinName)
     {
+        // 스킨의 스프라이트 불러오기
         Sprite skinSprite = Resources.Load<Sprite>($"Sprites/Skins/{skinName}");
         if (skinSprite != null)
         {
+            Debug.Log($"적용 완료 : {skinSprite}");
+
+            // 스킨 적용
             _playerRenderer.sprite = skinSprite;
+
+            // Common의 enum 스킨 타입 확인
+            if (Enum.TryParse<SkinType>(skinName, out SkinType skinType))
+            {
+                Debug.Log($"스킨 컨트롤러 타입은 {skinType}");
+
+                // 애니메이션 컨트롤러 변수 선언 및 Null로 초기화
+                RuntimeAnimatorController controller = null;
+
+                // 스킨의 애니메이션 컨트롤러 불러오기
+                switch (skinType)
+                {
+                    case SkinType.Default:
+                        Debug.Log("닭 스킨입니다.");
+                        controller = Resources.Load<RuntimeAnimatorController>("Sprites/Animations/ChickenAnimation/ChickenAnimation");
+                        break;
+                    case SkinType.OwletMonster:
+                        Debug.Log("올빼미 스킨 입니다.");
+                        controller = Resources.Load<RuntimeAnimatorController>("Sprites/Animations/OwletMonsterAnimation/OwletMonsterAnimatorController");
+                        break;
+                    case SkinType.Pig:
+                        Debug.Log("돼지 스킨 입니다.");
+                        controller = Resources.Load<RuntimeAnimatorController>("Sprites/Animations/PigAnimation/PigAnimatorController");
+                        break;
+                    case SkinType.PinkMonster:
+                        Debug.Log("핑크몬스터 스킨 입니다.");
+                        controller = Resources.Load<RuntimeAnimatorController>("Sprites/Animations/PinkMonsterAnimation/PinkMonsterAnimatorController");
+                        break;
+                    default:
+                        break;
+                }
+
+                // 컨트롤러가 Null이 아니라면 스킨에 맞는 컨트롤러 체인지
+                if (controller != null)
+                {
+                    _playerAni.runtimeAnimatorController = controller;
+                }
+            }
+
+            Debug.Log("적용이 되었습니다.");
         }
         else
         {

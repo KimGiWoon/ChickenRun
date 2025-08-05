@@ -22,6 +22,9 @@ public class PopupManager : Singleton<PopupManager>
     [SerializeField] private PopupPanel _popupPanel;
     [SerializeField] private PlayerInfoUI _playerInfoUI;
     [SerializeField] private PopupPassword _popupPassword;
+    [SerializeField] private PopupPassword _accountPanel;
+    [SerializeField] private PopupPassword _changeNicknamePanel;
+    [SerializeField] private PopupPassword _changePasswordPanel;
 
     #endregion // serialized Fields
 

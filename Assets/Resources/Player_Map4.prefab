@@ -109,7 +109,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -539.95435, y: -1139}
+  m_AnchoredPosition: {x: -539.95435, y: -1138.9}
   m_SizeDelta: {x: 1.2, y: 0.25786}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1762767653372199044
@@ -243,7 +243,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -539.95935, y: -1139}
+  m_AnchoredPosition: {x: -539.95935, y: -1138.9}
   m_SizeDelta: {x: 1.2, y: 0.2662}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8649441383501007154
@@ -376,11 +376,11 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
-  m_VertexColorAlwaysGammaSpace: 0
+  m_VertexColorAlwaysGammaSpace: 1
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 2
+  m_SortingOrder: 3
   m_TargetDisplay: 0
 --- !u!114 &7453748246289758669
 MonoBehaviour:
@@ -1120,8 +1120,8 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
-  m_Sprite: {fileID: 2077657384, guid: 2290bbf2ec25fb4469d95164afb3ee0d, type: 3}
+  m_SortingOrder: 3
+  m_Sprite: {fileID: 21300000, guid: c1cdd568750ee5d40bdf9237eaca2539, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

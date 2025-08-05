@@ -28,7 +28,7 @@ public class GuestLogin : MonoBehaviour
             return;
         }
 
-        CYH_FirebaseManager.Auth.SignInAnonymouslyAsync().ContinueWithOnMainThread(task =>
+        CYH_FirebaseManager.Auth.SignInAnonymouslyAsync().ContinueWithOnMainThread(async task =>
         {
             if (task.IsCanceled)
             {
@@ -44,10 +44,12 @@ public class GuestLogin : MonoBehaviour
             Firebase.Auth.AuthResult result = task.Result;
 
             FirebaseUser user = CYH_FirebaseManager.Auth.CurrentUser;
-            //SetUserNickname(user);
 
-            // 새로고침
-            user.ReloadAsync();
+            Debug.Log("게스트 생성 완료");
+
+            // 게스트 닉네임 변경 
+            await Utility.SetGuestNickname(user);
+            await user.ReloadAsync();
 
             Debug.Log("------유저 정보------");
             Debug.Log($"유저 닉네임 : {user.DisplayName}");
@@ -57,36 +59,9 @@ public class GuestLogin : MonoBehaviour
             // LoginPanel -> GameStartPanel 로 변경
             if (user != null)
             {
-                Debug.Log("게스트 로그인 성공. GameStart패널 활성화");
+                Debug.Log("게스트 정보 업데이트 완료. GameStart패널 활성화");
                 LoginCompleted?.Invoke();
             }
         });
     }
-
-    /// <summary>
-    /// 익명 유저 닉네임을 설정하는 메서드
-    /// </summary>
-    /// <param name="currentUser">닉네임을 설정할 유저</param>
-    //private void SetUserNickname(FirebaseUser currentUser)
-    //{
-    //    UserProfile profile = new UserProfile();
-    //    profile.DisplayName = $"게스트 + {UnityEngine.Random.Range(1000, 10000)}";
-
-    //    currentUser.UpdateUserProfileAsync(profile)
-    //        .ContinueWithOnMainThread(task =>
-    //        {
-    //            if (task.IsCanceled)
-    //            {
-    //                Debug.LogError("닉네임 설정 취소");
-    //                return;
-    //            }
-
-    //            if (task.IsFaulted)
-    //            {
-    //                Debug.LogError("닉네임 설정 실패");
-    //                return;
-    //            }
-    //            Debug.Log("닉네임 설정 성공");
-    //        });
-    //}
 }

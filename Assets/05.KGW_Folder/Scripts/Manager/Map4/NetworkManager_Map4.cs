@@ -1,8 +1,10 @@
 using System.Collections.Generic;
-using ExitGames.Client.Photon;
+using System.Diagnostics;
+using System.Linq;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
+using ExitGames.Client.Photon;
 
 public class NetworkManager_Map4 : MonoBehaviourPunCallbacks
 {
@@ -61,7 +63,16 @@ public class NetworkManager_Map4 : MonoBehaviourPunCallbacks
         }
 
         Vector2 spawnPos = new Vector2(0, -4f);
-        PhotonNetwork.Instantiate($"Player_Map4", spawnPos, Quaternion.identity);
+
+        // 커스텀 속성에서 스킨 이름 가져오기
+        string skinName = "Default";
+        if (PhotonNetwork.LocalPlayer.CustomProperties.TryGetValue("Skin", out object skinObj))
+        {
+            skinName = skinObj.ToString();
+        }
+
+        // 플레이어 생성 시 스킨 데이터 전달
+        PhotonNetwork.Instantiate("Player_Map4", spawnPos, Quaternion.identity, 0, new object[] { skinName });
     }
 
     // 입장 플레이어 체크

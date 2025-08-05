@@ -1,6 +1,7 @@
 using Firebase;
 using Firebase.Auth;
 using Firebase.Database;
+using Firebase.Extensions;
 using Google;
 using Photon.Pun;
 using System.Collections;
@@ -107,6 +108,9 @@ public class CYH_FirebaseManager : Singleton<CYH_FirebaseManager>
     {
         user = auth.CurrentUser;
 
+        // 데이터베이스에 유저 닉네임 데이터 생성
+        Utility.SaveNickname();
+
         if (!PhotonNetwork.IsConnected)
         {
             //PhotonNetwork.AutomaticallySyncScene = true;
@@ -126,4 +130,30 @@ public class CYH_FirebaseManager : Singleton<CYH_FirebaseManager>
         Debug.Log($"IsLoggedIn 실행");
         return (auth != null && auth.CurrentUser != null) ? true : false;
     }
+
+    /// <summary>
+    /// 게임 실행 시 CurrentUser(로그인 유저) 여부를 체크하고 게스트라면 계정 자동 삭제하는 메서드
+    /// true: 로그인된 유저가 있음 (자동 로그인 상태) -> GameStartPanel
+    /// false: 로그인된 유저가 없음 (로그인 필요) -> LoginPanel
+    /// </summary>
+    /// <returns></returns>
+    //public bool IsLoggedIn()
+    //{
+    //    Debug.Log($"IsLoggedIn 실행");
+    //    if (auth != null && auth.CurrentUser != null)
+    //    {
+    //        if (auth.CurrentUser.IsAnonymous)
+    //        {
+    //            Utility.DeleteUserUID();
+    //            // 게스트 계정 -> 앱 재실행 시 자동 삭제
+    //            auth.CurrentUser.DeleteAsync().ContinueWithOnMainThread(task =>
+    //            {
+    //                Debug.Log("앱 재실행 / 게스트 계정 삭제됨");
+    //            });
+    //            return false; 
+    //        }
+    //        return true; 
+    //    }
+    //    return false;
+    //}
 }
