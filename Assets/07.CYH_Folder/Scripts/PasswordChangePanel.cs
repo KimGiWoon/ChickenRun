@@ -3,8 +3,8 @@ using Firebase.Extensions;
 using System;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 
 public class PasswordChangePanel : UIBase
@@ -60,34 +60,28 @@ public class PasswordChangePanel : UIBase
         var credential = EmailAuthProvider.GetCredential(user.Email, _passwordField.text);
 
         user.ReauthenticateAsync(credential)
-            .ContinueWithOnMainThread(task =>
-            {
-                if (task.IsCanceled)
-                {
+            .ContinueWithOnMainThread(task => {
+                if (task.IsCanceled) {
                     Debug.LogError("계정 인증 취소");
                     ShowPopup("계정 인증 취소");
 
                     return;
                 }
-                if (task.IsFaulted)
-                {
+                if (task.IsFaulted) {
                     Debug.LogError("계정 인증 실패");
                     ShowPopup("계정 인증 실패");
                     return;
                 }
-                if (task.IsCompleted)
-                {
+                if (task.IsCompleted) {
                     Debug.Log("패스워드 일치");
-                    
-                    if (_emailField.text != user.Email)
-                    {
+
+                    if (_emailField.text != user.Email) {
                         Debug.Log("이메일 불일치");
                         ShowPopup("계정 인증 실패");
                         return;
                     }
 
-                    if (_passwordField.text == _newPasswordField.text)
-                    {
+                    if (_passwordField.text == _newPasswordField.text) {
                         Debug.Log("새 비밀번호가 기존 비밀번호랑 같음");
                         ShowPopup("새 비밀번호가 기존 비밀번호와 동일합니다.");
                         return;
@@ -106,25 +100,21 @@ public class PasswordChangePanel : UIBase
     {
         FirebaseUser user = CYH_FirebaseManager.Auth.CurrentUser;
         user.UpdatePasswordAsync(_newPasswordField.text)
-            .ContinueWithOnMainThread(task =>
-            {
-                if (task.IsCanceled)
-                {
+            .ContinueWithOnMainThread(task => {
+                if (task.IsCanceled) {
                     Debug.LogError("비밀번호 변경 취소");
                     ShowPopup("비밀번호 변경 취소");
                     return;
                 }
 
-                if (task.IsFaulted)
-                {
+                if (task.IsFaulted) {
                     Debug.LogError("비밀번호 변경 실패");
                     ShowPopup("비밀번호 변경 실패");
                     return;
                 }
                 Debug.Log("비밀번호 변경 성공");
-                
-                PopupManager.Instance.ShowOKPopup("비밀번호 변경 성공\r\n다시 로그인해 주세요.", "OK", () =>
-                {
+
+                PopupManager.Instance.ShowOKPopup("비밀번호 변경 성공\r\n다시 로그인해 주세요.", "OK", () => {
                     PopupManager.Instance.HidePopup();
 
                     // 비밀번호 변경 패널 비활성화
@@ -132,13 +122,11 @@ public class PasswordChangePanel : UIBase
                     Debug.Log("비밀번호 변경 패널 비활성화");
 
                     // 강제 로그아웃
-                    CYH_FirebaseManager.Auth.SignOut(); 
+                    CYH_FirebaseManager.Auth.SignOut();
                     Debug.Log("로그아웃");
 
                     // 로그인 씬 전환
-                    //SceneManager.LoadScene("LoginScene");
-                    //TODO: <최연호> 테스트씬 삭제
-                    SceneManager.LoadScene("[CYH] LoginScene");
+                    SceneManager.LoadScene("LoginScene");
                     Debug.Log("씬 전환 : MainScene -> LoginScene");
                 });
             });
