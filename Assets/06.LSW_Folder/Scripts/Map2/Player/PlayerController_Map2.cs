@@ -110,7 +110,7 @@ public class PlayerController_Map2 : MonoBehaviourPun, IPunObservable, IPunInsta
     {
         if (photonView.IsMine)
         {
-            SetGravity();
+            SetMass();
             PlayerJump();
             CheckGround();
         }
@@ -253,25 +253,15 @@ public class PlayerController_Map2 : MonoBehaviourPun, IPunObservable, IPunInsta
     }
     
     // 떨어질 때 중력값 보정
-    private void SetGravity()
+    private void SetMass()
     {
-        if (_rigid.velocity.y < 0 && !_isGround)
+        if (_rigid.velocity.y <= 0)
         {
-            _rigid.gravityScale = 1f;
             _isBounce = false;
             if (_partner?.GetComponent<Rigidbody2D>().mass < 0.5f)
             {
                 _partner.GetComponent<Rigidbody2D>().mass = 1f;
             }
-        }
-        else
-        {
-            _rigid.gravityScale = 1f;
-        }
-
-        if (!_isBounce && _rigid.velocity.y < 0 && _partner?.GetComponent<Rigidbody2D>().mass < 0.5f)
-        {
-            _partner.GetComponent<Rigidbody2D>().mass = 1f;
         }
     }
 
