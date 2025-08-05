@@ -69,7 +69,7 @@ public class GoogleLogin : MonoBehaviour
     {
         Firebase.Auth.Credential credential =
         Firebase.Auth.GoogleAuthProvider.GetCredential(userTask.Result.IdToken, null);
-        CYH_FirebaseManager.Auth.SignInAndRetrieveDataWithCredentialAsync(credential).ContinueWithOnMainThread(task =>
+        CYH_FirebaseManager.Auth.SignInAndRetrieveDataWithCredentialAsync(credential).ContinueWithOnMainThread(async task =>
         {
             if (task.IsCanceled)
             {
@@ -93,6 +93,10 @@ public class GoogleLogin : MonoBehaviour
 
             // 구글 로그인 한 계정을 CurrentUser로 설정
             FirebaseUser user = CYH_FirebaseManager.Auth.CurrentUser;
+
+            await Utility.SaveNicknameAsync();
+            await user.ReloadAsync();
+
 
             // LoginPanel -> GameStartPanel 로 변경
             if (user != null)
