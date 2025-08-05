@@ -12,7 +12,7 @@ static partial class Utility
     #region Save/Delete Nickname
 
     /// <summary>
-    ///  RankData/UserData 경로에 CurrentUse.DisplayName을 저장하는 메서드
+    ///  RankData/UserData 경로에 CurrentUser.DisplayName을 저장하는 메서드
     /// </summary>
     public static void SaveNickname()
     {
@@ -35,6 +35,30 @@ static partial class Utility
                 Debug.LogError("닉네임 저장 실패");
             }
         });
+    }
+
+    public static async Task<bool> SaveNicknameAsync()
+    {
+        string uid = CYH_FirebaseManager.Auth.CurrentUser.UserId;
+        string userNickname = CYH_FirebaseManager.Auth.CurrentUser.DisplayName;
+
+        Dictionary<string, object> dictionary = new Dictionary<string, object>();
+        dictionary[$"UserData/{uid}/Nickname"] = userNickname;
+        dictionary[$"RankData/{uid}/Nickname"] = userNickname;
+
+        var task = CYH_FirebaseManager.DataReference.UpdateChildrenAsync(dictionary);
+        await task; 
+
+        if (task.IsCompletedSuccessfully)
+        {
+            Debug.Log("UserData / RankData 에 닉네임 저장 성공");
+            return true;
+        }
+        else
+        {
+            Debug.LogError("닉네임 저장 실패");
+            return false;
+        }
     }
 
     /// <summary>
@@ -232,10 +256,10 @@ static partial class Utility
                 }
 
                 // 초기화
-                //currentUser.ReloadAsync();
+                currentUser.ReloadAsync();
 
                 // Firebase DB에 닉네임 저장
-                SaveNickname();
+                await SaveNicknameAsync();
 
                 await currentUser.ReloadAsync();
 
@@ -254,6 +278,7 @@ static partial class Utility
     {
         UserProfile profile = new UserProfile();
         profile.DisplayName = googleDisplayName;
+        Debug.Log($"SetGoogleNickname : googleDisplayName = {googleDisplayName}" );
 
         currentUser.UpdateUserProfileAsync(profile)
             .ContinueWithOnMainThread(async task =>
@@ -274,8 +299,7 @@ static partial class Utility
                 //currentUser.ReloadAsync();
 
                 // Firebase DB에 닉네임 저장
-                SaveNickname();
-
+                await SaveNicknameAsync();
                 await currentUser.ReloadAsync();
 
                 Debug.Log("닉네임 설정 성공");

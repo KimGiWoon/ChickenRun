@@ -47,11 +47,13 @@ public class GuestLogin : MonoBehaviour
 
             Debug.Log("게스트 생성 완료");
 
+            user.ReloadAsync();
+
             // 게스트 닉네임 변경 
             await Utility.SetGuestNickname(user);
             await user.ReloadAsync();
 
-            Debug.Log("------유저 정보------");
+            Debug.Log("------유저 정보(GuestLogin)------");
             Debug.Log($"유저 닉네임 : {user.DisplayName}");
             Debug.Log($"유저 ID : {user.UserId}");
             Debug.Log($"이메일 : {user.Email}");
