@@ -9,7 +9,7 @@ EditorBuildSettings:
     path: Assets/04.Scenes/LoginScene.unity
     guid: 991a7c76d093752479f56b41ff11c4ef
   - enabled: 1
-    path: Assets/07.CYH_Folder/Scenes/LoadingScene.unity
+    path: Assets/04.Scenes/LoadingScene.unity
     guid: b84d8c536a15fff43908fbb785aa0acb
   - enabled: 1
     path: Assets/04.Scenes/MainScene.unity

@@ -51,7 +51,7 @@ public class AccountUIController : MonoBehaviour
             else if (ui is NicknameChangePanel nicknameChangePanel)
             {
                 // 팝업 닫기 버튼
-                nicknameChangePanel.OnClickClosePopup = () => HideUI(AccountUIType.AccountPanel);
+                nicknameChangePanel.OnClickClosePopup = () => HideUI(AccountUIType.NicknameChangePanel);
 
                 // 닉네임 변경 버튼
                 nicknameChangePanel.OnClickNicknameChange =() => HideUI(AccountUIType.NicknameChangePanel);
@@ -59,7 +59,7 @@ public class AccountUIController : MonoBehaviour
             else if (ui is PasswordChangePanel passwordChangePanel)
             {
                 // 팝업 닫기 버튼
-                passwordChangePanel.OnClickClosePopup = () => HideUI(AccountUIType.AccountPanel);
+                passwordChangePanel.OnClickClosePopup = () => HideUI(AccountUIType.PasswordChangePanel);
                
                 // 비밀번호 변경 버튼
                 passwordChangePanel.OnClickPasswordChange = () => HideUI(AccountUIType.PasswordChangePanel);
