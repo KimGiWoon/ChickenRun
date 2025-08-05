@@ -66,6 +66,8 @@ public class EmoticonController : MonoBehaviourPunCallbacks
             StopCoroutine( _emoticonRoutine );
         }
         
+        SoundManager.Instance.PlaySFX(index);
+        
         // 이모티콘 표시 시간 코루틴 시작
         _emoticonRoutine = StartCoroutine(EmoticonPlayTimeCoroutine());
 

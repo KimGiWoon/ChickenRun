@@ -12,6 +12,7 @@ public class RankUIController: MonoBehaviour
         Map1,
         Map2,
         Map3,
+        Map4,
         Score,
     }
     
@@ -40,6 +41,11 @@ public class RankUIController: MonoBehaviour
               {
                   ShowBoard(PanelType.Map3);
                   await ShowRank("Map3Record");
+              },
+              onClickMap4Rank: async () =>
+              {
+                  ShowBoard(PanelType.Map4);
+                  await ShowRank("Map4Record");
               },
               onClickScoreRank: async () =>
               {
