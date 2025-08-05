@@ -3059,7 +3059,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _networkManager: {fileID: 741950609}
   _gameUIManager: {fileID: 1909447668}
-  _GamePlayTime: 10
+  _GamePlayTime: 120
   PlateSpawnerSys: {fileID: 1427744986}
   _currentMapType: Map3
   _totalPlayTime: 0
