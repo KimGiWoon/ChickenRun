@@ -160,12 +160,23 @@ public class GameManager_Map2 : MonoBehaviourPun
         //PhotonNetwork.LeaveRoom();
         // 로비 씬이 있으면 추가해서 씬 이동
         PhotonNetwork.LoadLevel("MainScene");
+        SoundManager.Instance.StopBGM();
+        SoundManager.Instance.StopSFX();
     }
 
     [PunRPC]
     public void LoseGame()
     {
         _isLose = true;
+    }
+    
+    public void GameDefeatLeaveRoom()
+    {
+        SoundManager.Instance.StopBGM();
+        SoundManager.Instance.StopSFX();
+
+        // 실패 UI 활성화
+        //_defeatUIController.gameObject.SetActive(true);
     }
     
     // 달걀 획득
