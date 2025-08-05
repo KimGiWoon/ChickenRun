@@ -61,12 +61,13 @@ public enum ColorType
 }
 
 // 스킨 타입
-public enum  SkinType
+public enum SkinType
 {
     Default = 0,
     OwletMonster,
     Pig,
-    PinkMonster
+    PinkMonster,
+    DudeMonster
 }
 
 #endregion // Type Def

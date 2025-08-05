@@ -60,7 +60,16 @@ namespace Kst
         // 플레이어 생성
         private void PlayerSpawn()
         {
-            GameObject go = PhotonNetwork.Instantiate(playerPrefabName, spawnPoint.position, Quaternion.identity);
+            // if (_isStart) return;
+
+            // 커스텀 속성에서 스킨 이름 가져오기
+            string skinName = "Default";
+            if (PhotonNetwork.LocalPlayer.CustomProperties.TryGetValue("Skin", out object skinObj))
+            {
+                skinName = skinObj.ToString();
+            }
+
+            GameObject go = PhotonNetwork.Instantiate(playerPrefabName, spawnPoint.position, Quaternion.identity, 0, new object[] { skinName });
             if (go.TryGetComponent(out PhotonView pv) && pv.IsMine)
             {
                 Map3_PlayerController player = go.GetComponent<Map3_PlayerController>();

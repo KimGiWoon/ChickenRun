@@ -89,6 +89,8 @@ namespace Kst
             UnityEngine.Debug.Log($"계란 : {_data.EggCount}");
             UnityEngine.Debug.Log("게임 플레이 시간이 지났습니다.");
 
+            //TODO <김승태> : 게임 종료 패널 만든 후 띄우기
+
             PlateSpawnerSys.StopSpawn();
             photonView.RPC(nameof(GameClearLeaveRoom), RpcTarget.AllViaServer);
         }
