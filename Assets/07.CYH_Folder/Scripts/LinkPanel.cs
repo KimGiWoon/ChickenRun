@@ -200,7 +200,7 @@ public class LinkPanel : UIBase
                 Debug.Log("닉네임 설정 성공");
                 Debug.Log($"변경된 유저 닉네임 : {currentUser.DisplayName}");
 
-                _gameStartPanel.OnSetNicknameField?.Invoke(googleDisplayName);
+                //_gameStartPanel.OnSetNicknameField?.Invoke(googleDisplayName);
             });
     }
 

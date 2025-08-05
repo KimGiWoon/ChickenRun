@@ -26,10 +26,11 @@ public class GameStartPanel : UIBase
         // 로비 씬으로 전환
         _gameStartButton.onClick.AddListener(() =>
         {
-            //TODO: <최연호> 테스트씬 삭제
-            SceneManager.LoadScene("MainScene");
-            //SceneManager.LoadScene("[CYH] MainScene");
-            
+            // TODO : <최연호> Load Test
+
+            LoadingManager.Instance.LoadSceneWithLoading("LoadingScene", "MainScene", 2f);
+            //LoadingManager.Instance.LoadSceneAsync("MainScene");
+
             // 포톤 초기화
             CYH_FirebaseManager.Instance.OnFirebaseLoginSuccess();
         });
@@ -42,17 +43,34 @@ public class GameStartPanel : UIBase
 
         _deleteAccountButton.onClick.AddListener(() => OnClick_DelteButton());
 
-        OnSetNicknameField += SetNicknameField;
+        //OnSetNicknameField += SetNicknameField;
 
-        //Debug.Log("------유저 정보------");
-        //Debug.Log($"유저 닉네임 : {CYH_FirebaseManager.Auth.CurrentUser.DisplayName}");
-        //Debug.Log($"유저 ID : {CYH_FirebaseManager.Auth.CurrentUser.UserId}");
-        //Debug.Log($"이메일 : {CYH_FirebaseManager.Auth.CurrentUser.Email}");
+        Debug.Log("------유저 정보------");
+        Debug.Log($"유저 닉네임 : {CYH_FirebaseManager.Auth.CurrentUser.DisplayName}");
+        Debug.Log($"유저 ID : {CYH_FirebaseManager.Auth.CurrentUser.UserId}");
+        Debug.Log($"이메일 : {CYH_FirebaseManager.Auth.CurrentUser.Email}");
+
+        NicknameField();
     }
 
     private void OnEnable()
     {
-        SetNicknameField();
+        NicknameField();
+    }
+
+    private void NicknameField()
+    {
+        FirebaseUser user = CYH_FirebaseManager.Auth.CurrentUser;
+        Debug.Log("GameStartPanel 이벤트 호출");
+
+        if (user != null)
+        {
+            SetNicknameField();
+        }
+        else
+        {
+            Debug.LogError("user == null");
+        }
     }
 
     private void OnDisable()
@@ -68,20 +86,40 @@ public class GameStartPanel : UIBase
         //StartCoroutine(SetNicknameFieldCoroutine());
 
         FirebaseUser user = CYH_FirebaseManager.Auth.CurrentUser;
-        Debug.Log("GameStartPanel 이벤트 호출");
+        //Debug.Log("GameStartPanel 이벤트 호출");
 
-        if (user != null)
-        {
-            Debug.Log("현재 유저 상태: 닉네임 null 아님, 유저 null 아님");
-            _nicknameText.text = $"{user.DisplayName} 님";
-            Debug.Log($"Utility.LoadNickname() : {user.DisplayName}");
+        _nicknameText.text = $"{user.DisplayName} 님";
+        Debug.Log($"user.DisplayName : {user.DisplayName}");
 
-        }
-        else
-        {
-            _nicknameText.text = $" null 님";
-            Debug.Log("현재 유저 상태: null");
-        }
+        //if (user != null)
+        //{
+        //    if(user.IsAnonymous)
+        //    {
+        //        Debug.Log("현재 유저 상태: 게스트");
+        //        _nicknameText.text = $"{user.DisplayName} 님";
+        //        Debug.Log($"user.DisplayName : {user.DisplayName}");
+        //    }
+        //    else if(user.ProviderId == "google.com")
+        //    {
+        //        foreach (var provider in user.ProviderData)
+        //        {
+        //            if (provider.ProviderId == "google.com")
+        //            {
+                       
+        //                break;
+        //            }
+        //        }
+
+        //        Debug.Log("현재 유저 상태: ");
+        //        _nicknameText.text = $"{Utility.LoadNickname()} 님";
+        //        Debug.Log($"Utility.LoadNickname() : {Utility.LoadNickname()}");
+        //    }
+        //}
+        //else
+        //{
+        //    _nicknameText.text = $" 님";
+        //    Debug.LogError("현재 유저 상태: null");
+        //}
 
         //if (user != null && !string.IsNullOrEmpty(user.DisplayName))
         //{
@@ -100,20 +138,11 @@ public class GameStartPanel : UIBase
     /// 닉네임 text에 표시되는 닉네임을 변경하는 메세드
     /// </summary>
     /// <param name="googleDisplayName">구글 계정 Displayname</param>
-    public void SetNicknameField(string googleDisplayName)
+    public void SetNicknameField_google()
     {
         FirebaseUser user = CYH_FirebaseManager.Auth.CurrentUser;
-        Debug.Log("GameStartPanel 이벤트 호출");
-
-        if (user != null)
-        {
-            Debug.Log("현재 유저 상태: 닉네임 null 아님, 유저 null 아님");
-            _nicknameText.text = $"{Utility.LoadNickname()} 님";
-        }
-        else
-        {
-            Debug.Log("현재 유저 상태: null");
-        }
+        
+        _nicknameText.text = $"{Utility.LoadNickname()} 님";
 
         //if (user != null)
         //{

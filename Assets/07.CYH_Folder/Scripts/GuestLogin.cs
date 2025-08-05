@@ -45,8 +45,7 @@ public class GuestLogin : MonoBehaviour
 
             FirebaseUser user = CYH_FirebaseManager.Auth.CurrentUser;
 
-            // 게스트 닉네임 변경 
-            //Utility.SetGuestNickname(user);
+            Debug.Log("게스트 생성 완료");
 
             // 게스트 닉네임 변경 
             await Utility.SetGuestNickname(user);
@@ -60,7 +59,7 @@ public class GuestLogin : MonoBehaviour
             // LoginPanel -> GameStartPanel 로 변경
             if (user != null)
             {
-                Debug.Log("게스트 로그인 성공. GameStart패널 활성화");
+                Debug.Log("게스트 정보 업데이트 완료. GameStart패널 활성화");
                 LoginCompleted?.Invoke();
             }
         });

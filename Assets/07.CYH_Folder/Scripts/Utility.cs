@@ -232,10 +232,10 @@ static partial class Utility
                 }
 
                 // 초기화
-                currentUser.ReloadAsync();
+                //currentUser.ReloadAsync();
 
                 // Firebase DB에 닉네임 저장
-                //await SaveNickname();
+                SaveNickname();
 
                 await currentUser.ReloadAsync();
 
@@ -271,7 +271,7 @@ static partial class Utility
                 }
 
                 // 초기화
-                currentUser.ReloadAsync();
+                //currentUser.ReloadAsync();
 
                 // Firebase DB에 닉네임 저장
                 SaveNickname();
