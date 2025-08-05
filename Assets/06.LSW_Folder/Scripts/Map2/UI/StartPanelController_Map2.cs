@@ -45,12 +45,12 @@ public class StartPanelController_Map2 : MonoBehaviourPun
         {
             if (count == 0)
             {
-                AudioManager_Map2.Instance.PlaySFX(AudioManager_Map2.Sfxs.SFX_Start);
+                SoundManager.Instance.PlaySFX(SoundManager.Sfxs.SFX_Start);
                 _countText.text = "시작!";
             }
             else
             {
-                AudioManager_Map2.Instance.PlaySFX(AudioManager_Map2.Sfxs.SFX_Count);
+                SoundManager.Instance.PlaySFX(SoundManager.Sfxs.SFX_Count);
                 _countText.text = count.ToString();                
             }
 
@@ -59,7 +59,7 @@ public class StartPanelController_Map2 : MonoBehaviourPun
 
             if(count < 0)
             {
-                AudioManager_Map2.Instance.PlayBGM(AudioManager_Map2.Bgms.BGM_InGame);
+                SoundManager.Instance.PlayBGM(SoundManager.Bgms.BGM_InGame2);
                 _startPanel.SetActive(false);
                 // _wall.SetActive(false);
                 GameManager_Map2.Instance.StartGame();
