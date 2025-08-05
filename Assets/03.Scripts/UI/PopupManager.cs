@@ -22,9 +22,7 @@ public class PopupManager : Singleton<PopupManager>
     [SerializeField] private PopupPanel _popupPanel;
     [SerializeField] private PlayerInfoUI _playerInfoUI;
     [SerializeField] private PopupPassword _popupPassword;
-    [SerializeField] private PopupPassword _accountPanel;
-    [SerializeField] private PopupPassword _changeNicknamePanel;
-    [SerializeField] private PopupPassword _changePasswordPanel;
+    [SerializeField] private AccountPanel _accountPanel;
 
     #endregion // serialized Fields
 
@@ -104,6 +102,17 @@ public class PopupManager : Singleton<PopupManager>
             return;
         }
         _popupPassword.SetShow(onPasswordEntered);
+    }
+
+    /// <summary>
+    /// 어카운트 패널을 보여줍니다.
+    /// </summary>
+    public void ShowAccountPanel()
+    {
+        if (_accountPanel == null) {
+            return;
+        }
+        _accountPanel.SetShow();
     }
 
     #endregion // public funcs

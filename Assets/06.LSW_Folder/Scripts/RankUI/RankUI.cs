@@ -11,6 +11,7 @@ public class RankUI : UIBase
     [SerializeField] private Toggle _map1RankToggle;
     [SerializeField] private Toggle _map2RankToggle;
     [SerializeField] private Toggle _map3RankToggle;
+    [SerializeField] private Toggle _map4RankToggle;
     [SerializeField] private Toggle _scoreRankToggle;
 
     [SerializeField] private Sprite _selectedSprite;
@@ -28,6 +29,7 @@ public class RankUI : UIBase
     private Func<Task> _onClickMap1Rank;
     private Func<Task> _onClickMap2Rank;
     private Func<Task> _onClickMap3Rank;
+    private Func<Task> _onClickMap4Rank;
     private Func<Task> _onClickScoreRank;
 
     // async와 void를 동시에 사용하는 것은 좋지 않지만 Unity 이벤트 함수의 한계
@@ -57,6 +59,14 @@ public class RankUI : UIBase
             if (isOn)
             {
                 _onClickMap3Rank?.Invoke();
+            }
+        });
+        _map4RankToggle.onValueChanged.AddListener((isOn) => 
+        {
+            _map4RankToggle.image.sprite = isOn ? _selectedSprite : _normalSprite;
+            if (isOn)
+            {
+                _onClickMap4Rank?.Invoke();
             }
         });
         _scoreRankToggle.onValueChanged.AddListener((isOn) => 
@@ -107,11 +117,13 @@ public class RankUI : UIBase
         Func<Task> onClickMap1Rank,
         Func<Task> onClickMap2Rank,
         Func<Task> onClickMap3Rank,
+        Func<Task> onClickMap4Rank,
         Func<Task> onClickScoreRank)
     {
         _onClickMap1Rank = onClickMap1Rank;
         _onClickMap2Rank = onClickMap2Rank;
         _onClickMap3Rank = onClickMap3Rank;
+        _onClickMap4Rank = onClickMap4Rank;
         _onClickScoreRank = onClickScoreRank;
     }
     
