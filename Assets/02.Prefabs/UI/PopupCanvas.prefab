@@ -34,12 +34,12 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 690041637608456145}
-  - {fileID: 8583279420394553494}
-  - {fileID: 7526056658856938609}
   - {fileID: 7332686391381468503}
   - {fileID: 1573894377121761301}
   - {fileID: 8864742013171969354}
+  - {fileID: 690041637608456145}
+  - {fileID: 8583279420394553494}
+  - {fileID: 7526056658856938609}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -126,9 +126,7 @@ MonoBehaviour:
   _popupPanel: {fileID: 1546549620539739856}
   _playerInfoUI: {fileID: 8267081272210714267}
   _popupPassword: {fileID: 6391352823053210662}
-  _accountPanel: {fileID: 0}
-  _changeNicknamePanel: {fileID: 0}
-  _changePasswordPanel: {fileID: 0}
+  _accountPanel: {fileID: 2283140170812252777}
 --- !u!114 &5402463793682453510
 MonoBehaviour:
   m_ObjectHideFlags: 0
