@@ -21,6 +21,7 @@ namespace Kst
         public int _totalPlayerCount;
         public Map3Data _data;
         [SerializeField] GameObject _gameOverPanel;
+        public EffectPoolManager _effectPoolManager;
 
         //이벤트
         public event Action<Map3Data> OnEndGame;

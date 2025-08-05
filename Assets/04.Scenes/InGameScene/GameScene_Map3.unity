@@ -3065,6 +3065,7 @@ MonoBehaviour:
   _totalPlayTime: 0
   _totalPlayerCount: 0
   _gameOverPanel: {fileID: 608530695}
+  _effectPoolManager: {fileID: 1652945965}
 --- !u!4 &691015402
 Transform:
   m_ObjectHideFlags: 0
@@ -4533,7 +4534,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 58df41ffbb72ba444b6d5db277951c2c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _dontDestroyOnLoad: 1
   _destoryEffectPrefab: {fileID: -4516435647264143152, guid: 028c4c70cfb4d5a46b4f14b185a3c0cd, type: 3}
 --- !u!4 &1652945966
 Transform:
