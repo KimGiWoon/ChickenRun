@@ -84,11 +84,7 @@ public class NetworkManager_Map4 : MonoBehaviourPunCallbacks
         }
 
         // 방에 입장한 플레이어
-        int currentPlayer = PhotonNetwork.CurrentRoom.PlayerCount;
-        // 방에 입장 가능한 Max 플레이어
-        int maxPlayer = PhotonNetwork.CurrentRoom.MaxPlayers;
-
-        UnityEngine.Debug.Log($"입장 플레이어 : {currentPlayer}/{maxPlayer}");
+        int currentPlayer = PhotonNetwork.CurrentRoom.PlayerCount; 
 
         // 현재 인원 전달
         if (PhotonNetwork.IsMasterClient)
@@ -96,7 +92,7 @@ public class NetworkManager_Map4 : MonoBehaviourPunCallbacks
             _gameManager._totalPlayerCount = currentPlayer;
         }
 
-        if (currentPlayer >= maxPlayer)
+        if (currentPlayer >= 1)
         {
             UnityEngine.Debug.Log("모든 플레이어 입장 완료");
             // 게임 시작

@@ -26,7 +26,6 @@ public class GameManager_Map4 : MonoBehaviourPunCallbacks
     public Stopwatch _stopwatch;
     public string _currentMapType;
     public float _totalPlayTime;
-    public int _alivePlayer;
     public int _totalPlayerCount;
     public int _goalPlayerCount = 0;
     public int _deathPlayerCount = 0;
@@ -116,7 +115,17 @@ public class GameManager_Map4 : MonoBehaviourPunCallbacks
             // 모든 플레이어가 죽음
             if (_exitPlayerCount + _goalPlayerCount + _deathPlayerCount >= _totalPlayerCount)
             {
-                photonView.RPC(nameof(GameDefeatLeaveRoom), RpcTarget.AllViaServer);
+                // 게임 클리어를 진행한 플레이어가 없으면
+                if (_goalPlayerCount <= 0)
+                {
+                    photonView.RPC(nameof(GameDefeatLeaveRoom), RpcTarget.AllViaServer);
+                }
+
+                // 게임 클리어를 진행한 플레이어가 있으면
+                if (_goalPlayerCount > 0)
+                {
+                    photonView.RPC(nameof(GameClearLeaveRoom), RpcTarget.AllViaServer);
+                }
             }
         }
     }
