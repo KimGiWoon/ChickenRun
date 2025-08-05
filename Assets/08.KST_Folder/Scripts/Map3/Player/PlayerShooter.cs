@@ -25,7 +25,7 @@ namespace Kst
             Vector2 shotDir = _arrow.GetDir();
             int actorNum = PhotonNetwork.LocalPlayer.ActorNumber;
             photonView.RPC(nameof(RPC_ShootBullet), RpcTarget.AllViaServer, _shootPos.position, shotDir, actorNum);
-            //TODO <김승태> : SFX 변경 필요
+            
             SoundManager.Instance.PlaySFX(SoundManager.Sfxs.SFX_Shot); //총알 발사 시 SFX 실행
             StartCoroutine(IE_Cooldown());
         }
@@ -62,6 +62,11 @@ namespace Kst
         {
             _canAttack = true;
             _cooldownImg.fillAmount = 0f;
+        }
+        public void SetUnableAttack()
+        {
+            _canAttack = false;
+            _cooldownImg.fillAmount = 1f;
         }
         public void SetImg(Image img) => _cooldownImg = img;
     }

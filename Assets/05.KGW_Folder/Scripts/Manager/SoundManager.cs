@@ -16,6 +16,7 @@ public class SoundManager : Singleton<SoundManager>
     // 인게임 SFX
     public enum Sfxs
     {
+        SFX_Bounce,    // Map2 점프
         SFX_Jump,       // 점프
         SFX_GetEgg,     // 달걀 획득
         SFX_Goal,       // 골
@@ -30,7 +31,7 @@ public class SoundManager : Singleton<SoundManager>
         SFX_Death,      // 죽었다
         SFX_Alarm,      // 알람
         SFX_Clear,      // 클리어
-        SFX_Defeat      // 실패
+        SFX_Defeat,      // 실패
     }
     public enum Sfx_Emotion
     {
@@ -42,10 +43,19 @@ public class SoundManager : Singleton<SoundManager>
         SFX_Crying      // 울음
     }
 
+    public enum Sfx_Plate_Sound
+    {
+        SFX_Egg,
+        SFX_Rock,
+        SFX_Coin,
+        SFX_Bomb,
+    }
+
     [Header("BGM, SFX Sound Files")]
     [SerializeField] AudioClip[] _bgmFiles;
     [SerializeField] AudioClip[] _sfxFiles;
     [SerializeField] AudioClip[] _sfxEmotionFiles;
+    [SerializeField] AudioClip[] _sfxSfxPlateFiles;
 
     [Header("Audio Source Reference")]
     [SerializeField] public AudioSource _bgmAudioSource;
@@ -106,6 +116,10 @@ public class SoundManager : Singleton<SoundManager>
     public void PlaySFX(Sfxs sfx)
     {
         _sfxAudioSource.PlayOneShot(_sfxFiles[(int)sfx]);
+    }
+    public void PlaySFX(Sfx_Plate_Sound sfx)
+    {
+        _sfxAudioSource.PlayOneShot(_sfxSfxPlateFiles[(int)sfx]);
     }
     // 이모티콘 SFX 플레이
     public void PlaySFX(int index)

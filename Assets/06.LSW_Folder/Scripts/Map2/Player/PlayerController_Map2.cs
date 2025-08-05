@@ -5,7 +5,7 @@ using UnityEngine;
 using Photon.Pun;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
-public class PlayerController_Map2 : MonoBehaviourPun, IPunObservable
+public class PlayerController_Map2 : MonoBehaviourPun, IPunObservable, IPunInstantiateMagicCallback
 {
     [SerializeField] private LayerMask _groundLayer;
 
@@ -19,7 +19,7 @@ public class PlayerController_Map2 : MonoBehaviourPun, IPunObservable
     private GameObject _partner;
     private Vector3 _networkPos;
     private Quaternion _networkRot;
-    private float _smooth = 15f;
+    private float _smooth = 50f;
     
     private bool _isGround;
     private bool _isOnTouch;
@@ -34,9 +34,9 @@ public class PlayerController_Map2 : MonoBehaviourPun, IPunObservable
     private int _currentAnimatorHash;
     private int _receiveAnimatorHash;
     
-    private readonly int Idle_Hash = Animator.StringToHash("ChickenIdle");
-    private readonly int Glide_Hash = Animator.StringToHash("ChickenGlide");
-    private readonly int Jump_Hash = Animator.StringToHash("ChickenJump");
+    private readonly int Idle_Hash = Animator.StringToHash("Idle");
+    private readonly int Glide_Hash = Animator.StringToHash("Glide");
+    private readonly int Jump_Hash = Animator.StringToHash("Jump");
     
     private void Awake()
     {
@@ -49,8 +49,8 @@ public class PlayerController_Map2 : MonoBehaviourPun, IPunObservable
         _joint.enabled = false;
         _lineRenderer.enabled = false;
         
-        PhotonNetwork.SendRate = 30;
-        PhotonNetwork.SerializationRate = 20;
+        PhotonNetwork.SendRate = 15;
+        PhotonNetwork.SerializationRate = 10;
     }
 
     private void Start()
@@ -87,7 +87,7 @@ public class PlayerController_Map2 : MonoBehaviourPun, IPunObservable
             if (_isBounce && _partner !=null)
             {
                 float dist = Vector2.Distance(transform.position, _partner.transform.position);
-                if (dist >= _joint.distance - 0.05f)
+                if (dist >= _joint.distance - 0.1f)
                 {
                     Vector2 dir = transform.position - _partner.transform.position;
                     _partner.GetComponent<Rigidbody2D>().velocity = dir * _rigid.velocity.magnitude;
@@ -116,27 +116,32 @@ public class PlayerController_Map2 : MonoBehaviourPun, IPunObservable
         }
         if (!photonView.IsMine) 
         {
-            transform.position = Vector3.Lerp(transform.position, _networkPos, Time.fixedDeltaTime * _smooth);
-            transform.rotation = Quaternion.Lerp(transform.rotation, _networkRot, Time.fixedDeltaTime * _smooth);
+            float distance = Vector2.Distance(_rigid.position, _networkPos);
+            if (distance > 0.6f)
+            {
+                _rigid.MovePosition(_networkPos); // 순간 보정
+            }
+            else
+            {
+                Vector2 newPos = Vector2.Lerp(_rigid.position, _networkPos, Time.fixedDeltaTime * _smooth);
+                _rigid.MovePosition(newPos);
+            }
+            _rigid.MovePosition(_networkPos);
+            //transform.rotation = Quaternion.Lerp(transform.rotation, _networkRot, Time.fixedDeltaTime * _smooth);
         }
     }
     
     // GroundLayer에 2개 이상의 layer가 포함될 수 있어 비트 연산으로 코드 수정
-    /*private void OnCollisionEnter2D(Collision2D collision)
+    private void OnCollisionEnter2D(Collision2D collision)
     {
-        Debug.Log("진입5");
-        Debug.Log($"[DEBUG] 이 오브젝트의 Owner: {photonView.Owner.NickName}, IsMine: {photonView.IsMine}");
-        
         if (photonView.IsMine)
         {
-            Debug.Log("진입6");
             if(((1 << collision.gameObject.layer) & _groundLayer) != 0)
             {
-                Debug.Log("진입7");
-                _isGround = true;
+                //_partner.GetComponent<Rigidbody2D>().mass = 1f;
             }
         }
-    }*/
+    }
 
     // 트리거 충돌
     private void OnTriggerEnter2D(Collider2D collision)
@@ -264,7 +269,7 @@ public class PlayerController_Map2 : MonoBehaviourPun, IPunObservable
             _rigid.gravityScale = 1f;
         }
 
-        if (!_isBounce && _isGround && _partner?.GetComponent<Rigidbody2D>().mass < 0.5f)
+        if (!_isBounce && _rigid.velocity.y < 0 && _partner?.GetComponent<Rigidbody2D>().mass < 0.5f)
         {
             _partner.GetComponent<Rigidbody2D>().mass = 1f;
         }
@@ -373,13 +378,40 @@ public class PlayerController_Map2 : MonoBehaviourPun, IPunObservable
             
             _currentAnimatorHash = Jump_Hash;
             _animator.Play(Jump_Hash);
-            AudioManager_Map2.Instance.PlaySFX(AudioManager_Map2.Sfxs.SFX_GooseJump);
+            SoundManager.Instance.PlaySFX(SoundManager.Sfxs.SFX_Jump);
+            
+            photonView.RPC(nameof(RPCJump), RpcTarget.Others, jumpPower, _moveDir, PhotonNetwork.Time);
 
             // 플래그 초기화
             _isGround = false;
             _isOnTouch = false;
             _isOffTouch = false;
         }
+    }
+
+    [PunRPC]
+    public void RPCJump(float jumpforce, Vector2 moveDir, double sentTime)
+    {
+        float lag = (float)(PhotonNetwork.Time - sentTime);
+
+        Vector2 vel = moveDir * jumpforce;
+        Vector2 pos = vel * lag + 0.5f * Physics2D.gravity * lag * lag;
+        
+        if (Vector2.Distance(_rigid.position, _rigid.position + pos) > 0.5f)
+        {
+            _rigid.position += pos;
+        }
+        else
+        {
+            Vector2 targetPos = Vector2.Lerp(_rigid.position, _rigid.position + pos, Time.fixedDeltaTime * 200);
+            _rigid.MovePosition(targetPos);
+            _rigid.velocity = vel + Physics2D.gravity * lag;
+        }
+
+        _networkPos = _rigid.position + pos;
+        
+        _currentAnimatorHash = Jump_Hash;
+        _animator.Play(Jump_Hash);
     }
     
     // Bounce Tile을 밟았을 때 호출되는 메서드
@@ -389,7 +421,9 @@ public class PlayerController_Map2 : MonoBehaviourPun, IPunObservable
         {
             _rigid.AddForce(Vector2.up * power, ForceMode2D.Impulse);
             _isBounce = true;
-            AudioManager_Map2.Instance.PlaySFX(AudioManager_Map2.Sfxs.SFX_Jump);
+            SoundManager.Instance.PlaySFX(SoundManager.Sfxs.SFX_Bounce);
+            
+            photonView.RPC(nameof(RPCJump), RpcTarget.Others, power, Vector2.up, PhotonNetwork.Time);
         }
     }
     
@@ -403,17 +437,23 @@ public class PlayerController_Map2 : MonoBehaviourPun, IPunObservable
             stream.SendNext(_playerRenderer.flipY); // 플레이어의 방향 데이터 전송
             
             stream.SendNext(transform.position);
-            stream.SendNext(transform.rotation);
+            stream.SendNext(_rigid.velocity); 
         }
         else    // 동기화 데이터 받기
         {
-            _receiveAnimatorHash = (int)stream.ReceiveNext();    // 애니메이션 정보 받기
-            _animator.Play(_receiveAnimatorHash);   // 받은 정보로 애니메이션 플레이
+            _receiveAnimatorHash = (int)stream.ReceiveNext(); 
             _playerRenderer.flipX = (bool)stream.ReceiveNext();
             _playerRenderer.flipY = (bool)stream.ReceiveNext();
             
             _networkPos = (Vector3) stream.ReceiveNext();
-            _networkRot = (Quaternion) stream.ReceiveNext();
+            
+            Vector2 receivedVelocity = (Vector2)stream.ReceiveNext();
+            float lag = Mathf.Abs((float)(PhotonNetwork.Time - info.SentServerTime));
+            _networkPos += (Vector3)((receivedVelocity * lag) +  Physics2D.gravity * (0.5f *  lag * lag));
+            if (_animator.GetCurrentAnimatorStateInfo(0).shortNameHash != _receiveAnimatorHash)
+            {
+                _animator.Play(_receiveAnimatorHash, 0, lag); // 받은 정보로 애니메이션 플레이
+            }   
         }
     }
 
@@ -432,6 +472,80 @@ public class PlayerController_Map2 : MonoBehaviourPun, IPunObservable
         {
             _isGround = true;
             _isBounce = false;
+        }
+    }
+    
+    public void OnPhotonInstantiate(PhotonMessageInfo info)
+    {
+        // 오브젝트 배열을 저장
+        var data = info.photonView.InstantiationData;
+
+        // 데이터가 Null이 아니고, 데이터가 최소 하나 이상 있는지 확인
+        if (data != null && data.Length > 0)
+        {
+            // 첫번째 데이터 스킨
+            string skinName = data[0].ToString();
+
+            Debug.Log($"적용 스킨 : {skinName}");
+            ApplySkin(skinName);
+        }
+    }
+
+    // 스킨 적용
+    private void ApplySkin(string skinName)
+    {
+        // 스킨의 스프라이트 불러오기
+        Sprite skinSprite = Resources.Load<Sprite>($"Sprites/Skins/{skinName}");
+        if (skinSprite != null)
+        {
+            Debug.Log($"적용 완료 : {skinSprite}");
+
+            // 스킨 적용
+            _playerRenderer.sprite = skinSprite;
+
+            // Common의 enum 스킨 타입 확인
+            if (Enum.TryParse<SkinType>(skinName, out SkinType skinType))
+            {
+                Debug.Log($"스킨 컨트롤러 타입은 {skinType}");
+
+                // 애니메이션 컨트롤러 변수 선언 및 Null로 초기화
+                RuntimeAnimatorController controller = null;
+
+                // 스킨의 애니메이션 컨트롤러 불러오기
+                switch (skinType)
+                {
+                    case SkinType.Default:
+                        Debug.Log("닭 스킨입니다.");
+                        controller = Resources.Load<RuntimeAnimatorController>("Sprites/Animations/ChickenAnimation/ChickenAnimation");
+                        break;
+                    case SkinType.OwletMonster:
+                        Debug.Log("올빼미 스킨 입니다.");
+                        controller = Resources.Load<RuntimeAnimatorController>("Sprites/Animations/OwletMonsterAnimation/OwletMonsterAnimatorController");
+                        break;
+                    case SkinType.Pig:
+                        Debug.Log("돼지 스킨 입니다.");
+                        controller = Resources.Load<RuntimeAnimatorController>("Sprites/Animations/PigAnimation/PigAnimatorController");
+                        break;
+                    case SkinType.PinkMonster:
+                        Debug.Log("핑크몬스터 스킨 입니다.");
+                        controller = Resources.Load<RuntimeAnimatorController>("Sprites/Animations/PinkMonsterAnimation/PinkMonsterAnimatorController");
+                        break;
+                    default:
+                        break;
+                }
+
+                // 컨트롤러가 Null이 아니라면 스킨에 맞는 컨트롤러 체인지
+                if (controller != null)
+                {
+                    _animator.runtimeAnimatorController = controller;
+                }
+            }
+
+            Debug.Log("적용이 되었습니다.");
+        }
+        else
+        {
+            Debug.LogWarning($"[PlayerController] 스킨 적용 실패: {skinName}");
         }
     }
 }

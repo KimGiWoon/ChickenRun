@@ -240,6 +240,7 @@ public class PlayerController_Map4 : MonoBehaviourPun, IPunObservable, IPunInsta
             _playerRigid.velocity = Vector2.zero;
         }
 
+        // 땅과의 접촉 확인
         if (collision.gameObject.layer == LayerMask.NameToLayer("Ground"))
         {
             _isGround = true;
@@ -256,6 +257,18 @@ public class PlayerController_Map4 : MonoBehaviourPun, IPunObservable, IPunInsta
             gameObject.SetActive(false);
             _gameManager.StopStopWatch();
             _gameManager.PlayerDeath(playerNickname);
+        }
+    }
+
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+        // 플레이어 넉백
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Wall"))
+        {
+            float knockbackDir = _jumpDir.x > 0 ? -1f : 1f;
+            Vector2 knockbackForce = new Vector2(knockbackDir, 0).normalized * 0.2f;
+
+            _playerRigid.AddForce(knockbackForce, ForceMode2D.Impulse);
         }
     }
 

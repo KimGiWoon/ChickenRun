@@ -62,6 +62,9 @@ public class CYH_FirebaseManager : Singleton<CYH_FirebaseManager>
     {
         // firebase 초기화
         StartCoroutine(InitFirebaseCoroutine());
+        QualitySettings.vSyncCount = 0;
+        Application.targetFrameRate = 60;
+        Time.fixedDeltaTime = 1f / 60f;
     }
 
     /// <summary>
