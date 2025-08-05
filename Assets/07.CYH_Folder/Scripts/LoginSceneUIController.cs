@@ -83,11 +83,6 @@ public class LoginSceneUIManager : MonoBehaviour
                 };
             }
 
-            else if (ui is AccountPanel accountPanel)
-            {
-                accountPanel.OnClickClosePopup = () => HideUI(LoginUIType.AccountPanel);
-            }
-
             else if (ui is GameStartPanel gameStartPanel)
             {
                 // 게임 시작 버튼
