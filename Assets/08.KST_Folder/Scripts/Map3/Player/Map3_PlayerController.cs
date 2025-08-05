@@ -215,7 +215,7 @@ namespace Kst
                             break;
                         case SkinType.DudeMonster:
                             Debug.Log("파란몬스터 스킨입니다.");
-                            controller = Resources.Load<RuntimeAnimatorController>("Sprites/Animations/PinkMonsterAnimation/DudeMonsterAnimatorController");
+                            controller = Resources.Load<RuntimeAnimatorController>("Sprites/Animations/DudeMonsterAnimation/DudeMonsterAnimatorController");
                             break;
                         default:
                             break;
