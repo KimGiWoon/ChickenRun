@@ -11,10 +11,6 @@ using UnityEngine.UI;
 
 public class LinkPanel : UIBase
 {
-    //[SerializeField] private TMP_InputField _nicknameField;   
-    //[SerializeField] private TMP_InputField _emailField;      
-    //[SerializeField] private TMP_InputField _passwordField;   
-
     [SerializeField] private Button _googleButton;
     [SerializeField] private Button _emailButton;
     [SerializeField] private Button _closeButton;
@@ -33,6 +29,7 @@ public class LinkPanel : UIBase
         _closeButton.onClick.AddListener(() => OnClickClosePopup?.Invoke());
     }
 
+    /// <summary>
     /// 익명 계정을 이메일 가입 계정으로 전환
     /// </summary>
     //private void OnClick_LinkWithEmail_Set()
@@ -140,73 +137,29 @@ public class LinkPanel : UIBase
                     Debug.Log("현재 유저 상태: CurrentUser");
                 }
 
-                // 구글 계정 닉네임으로 currentUser을 닉네임으로 변경
-                //SetNickname(user, googleDisplayName);
-                //Utility.SetNickname(user, googleDisplayName);
-
-                // 게스트 닉네임 변경 
+                // 구글 닉네임 변경 
                 await Utility.SetGoogleNickname(user, googleDisplayName);
                 await user.ReloadAsync();
+
+                //GameStartPanel 닉네임 text 변경 이벤트 호출
+                _gameStartPanel.OnSetNicknameField?.Invoke(googleDisplayName);
 
                 Debug.Log("------유저 정보------");
                 Debug.Log($"유저 이름 : {user.DisplayName}");
                 Debug.Log($"유저 ID: {user.UserId}");
                 Debug.Log($"이메일 : {user.Email}");
 
-                //StartCoroutine(WaitForReloadAndLog(user));
+                PopupManager.Instance.ShowOKPopup("구글 계정으로 전환 성공\r\n 다시 로그인 해주세요.", "OK", () =>
+                {
+                    PopupManager.Instance.HidePopup();
 
-                PopupManager.Instance.ShowOKPopup("구글 계정으로 전환 성공", "OK", () => PopupManager.Instance.HidePopup());
+                    // SignOut
+                    CYH_FirebaseManager.Auth.SignOut();
 
-                //PopupManager.Instance.ShowOKPopup("구글 계정으로 전환 성공\r\n 다시 로그인 해주세요.", "OK", () =>
-                //{
-                //    PopupManager.Instance.HidePopup();
-
-                //    // SignOut
-                //    CYH_FirebaseManager.Auth.SignOut();
-
-                //    // LoginPanel ShowUI, GameStartPanel HideUI
-                //    OnClickSignOut?.Invoke();
-                //});
+                    // LoginPanel ShowUI, GameStartPanel HideUI
+                    OnClickSignOut?.Invoke();
+                });
             });
         });
-    }
-
-
-    /// <summary>
-    /// 익명계정에서 구글계정으로 전환된 유저의 DisplayName을 구글계정 DisplayName으로 전환하는 메서드 
-    /// </summary>
-    /// <param name="currentUser">닉네임을 변경할 유저</param>
-    /// <param name="googleDisplayName">새로 설정할 닉네임(구글 계정 닉네임)</param>
-    private void SetNickname(FirebaseUser currentUser, string googleDisplayName)
-    {
-        UserProfile profile = new UserProfile();
-        profile.DisplayName = googleDisplayName;
-
-        currentUser.UpdateUserProfileAsync(profile)
-            .ContinueWithOnMainThread(task =>
-            {
-                if (task.IsCanceled)
-                {
-                    Debug.LogError("닉네임 설정 취소");
-                    return;
-                }
-
-                if (task.IsFaulted)
-                {
-                    Debug.LogError("닉네임 설정 실패");
-                    return;
-                }
-
-                Debug.Log("닉네임 설정 성공");
-                Debug.Log($"변경된 유저 닉네임 : {currentUser.DisplayName}");
-
-                //_gameStartPanel.OnSetNicknameField?.Invoke(googleDisplayName);
-            });
-    }
-
-    private IEnumerator WaitForReloadAndLog(FirebaseUser user)
-    {
-        var reloadTask = user.ReloadAsync();
-        yield return new WaitUntil(() => reloadTask.IsCompleted);
     }
 }
