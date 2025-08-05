@@ -11,18 +11,20 @@ namespace Kst
         private static GameManager_Map3 _instance;
         public static GameManager_Map3 Instance { get { return _instance; } set { _instance = value; } }
 
+        [SerializeField] private Map3_NetworkManager _networkManager;
         [SerializeField] public UIManager_Map3 _gameUIManager;
         [SerializeField] public float _GamePlayTime;
-        public PlateSpawner PlateSpawnerSys;
         public Stopwatch _stopwatch;
+        public PlateSpawner PlateSpawnerSys;
         public string _currentMapType;
         public float _totalPlayTime;
         public int _totalPlayerCount;
-        Map3Data _data;
-        [SerializeField] private Map3_NetworkManager _networkManager;
+        public Map3Data _data;
+        [SerializeField] GameObject _gameOverPanel;
 
         //이벤트
         public event Action<Map3Data> OnEndGame;
+        public event Action OnGameEnd;
 
         void Awake()
         {
@@ -79,17 +81,14 @@ namespace Kst
                 GamePlayTimeOver();
             }
         }
+        
 
         // 게임 시간 초과(게임 종료)
         public void GamePlayTimeOver()
         {
             _stopwatch.Stop();
             OnEndGame?.Invoke(_data);
-            UnityEngine.Debug.Log($"스코어 : {_data.Score}");
-            UnityEngine.Debug.Log($"계란 : {_data.EggCount}");
-            UnityEngine.Debug.Log("게임 플레이 시간이 지났습니다.");
-
-            //TODO <김승태> : 게임 종료 패널 만든 후 띄우기
+            OnGameEnd?.Invoke();
 
             PlateSpawnerSys.StopSpawn();
             photonView.RPC(nameof(GameClearLeaveRoom), RpcTarget.AllViaServer);
@@ -99,14 +98,17 @@ namespace Kst
         [PunRPC]
         public void GameClearLeaveRoom()
         {
-            UnityEngine.Debug.Log("모든 플레이어가 방을 나갑니다.");
-
+            //초기화
             _networkManager._isStart = false;
             SoundManager.Instance.StopBGM();
+            SoundManager.Instance.StopSFX();
+            _gameUIManager.ClearPlayerReference();
 
-            PhotonNetwork.LeaveRoom();
+            //TODO <김승태 종료패널로 가기
+            _gameOverPanel.SetActive(true);
 
-            PhotonNetwork.LoadLevel("MainScene");
+            // PhotonNetwork.LeaveRoom();
+            // PhotonNetwork.LoadLevel("MainScene");
         }
 
         // 스탑워치 시작
