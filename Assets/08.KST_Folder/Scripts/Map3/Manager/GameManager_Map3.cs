@@ -24,7 +24,7 @@ namespace Kst
         public EffectPoolManager _effectPoolManager;
 
         //이벤트
-        public event Action<Map3Data> OnEndGame;
+        // public event Action<Map3Data> OnEndGame;
         public event Action OnGameEnd;
 
         void Awake()
@@ -88,7 +88,11 @@ namespace Kst
         public void GamePlayTimeOver()
         {
             _stopwatch.Stop();
-            OnEndGame?.Invoke(_data);
+            // OnEndGame?.Invoke(_data);
+
+            //TODO <김승태> : 데이터베이스에 저장하는 코드
+            // Database_RecordManager.Instance.SaveUserMap3Record(_data);
+
             OnGameEnd?.Invoke();
 
             PlateSpawnerSys.StopSpawn();
@@ -102,7 +106,7 @@ namespace Kst
             //초기화
             _networkManager._isStart = false;
             SoundManager.Instance.StopBGM();
-            SoundManager.Instance.StopSFX();
+            // SoundManager.Instance.StopSFX();
             _gameUIManager.ClearPlayerReference();
 
             //TODO <김승태 종료패널로 가기

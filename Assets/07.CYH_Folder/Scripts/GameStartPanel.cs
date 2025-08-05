@@ -66,20 +66,27 @@ public class GameStartPanel : UIBase
 
         if (user != null)
         {
-            if (!string.IsNullOrEmpty(user.DisplayName))
-            {
-                _nicknameText.text = $"닭1 님";
-            }
+            _nicknameText.text = $"{user.DisplayName}";
 
-            else if (user.IsAnonymous)
+            if (user.IsAnonymous)
             {
                 _nicknameText.text = $"게스트 님";
                 Debug.Log("nicknamefield : 게스트");
             }
-            else
+            else if (user.ProviderId == "google.com")
+            {
+                SetNicknameField_google(user.DisplayName);
+                //_nicknameText.text = $"게스트 님";
+                Debug.Log("nicknamefield : 구글");
+            }
+            else if(user.ProviderId == "password")
             {
                 _nicknameText.text = $"{user.DisplayName} 님";
                 Debug.Log("nicknamefield : 이메일");
+            }
+            else if(string.IsNullOrEmpty(user.DisplayName))
+            {
+                _nicknameText.text = $"닭1 님";
             }
         }
         else
