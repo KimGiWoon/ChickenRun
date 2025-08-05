@@ -234,10 +234,17 @@ public class PlayerController_Map4 : MonoBehaviourPun, IPunObservable, IPunInsta
     // 물리적 충돌
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        // 벽이면 통과 못하게 속도 제로
+       
         if (collision.gameObject.layer == LayerMask.NameToLayer("Wall"))
         {
+            // 벽이면 통과 못하게 속도 제로
             _playerRigid.velocity = Vector2.zero;
+
+            // 이동 방향의 반대로 플레이어 넉백
+            float knockbackDir = _jumpDir.x > 0 ? -1f : 1f;
+            Vector2 knockbackForce = new Vector2(knockbackDir, 0).normalized * 1f;
+
+            _playerRigid.AddForce(knockbackForce, ForceMode2D.Impulse);
         }
 
         // 땅과의 접촉 확인
@@ -257,18 +264,6 @@ public class PlayerController_Map4 : MonoBehaviourPun, IPunObservable, IPunInsta
             gameObject.SetActive(false);
             _gameManager.StopStopWatch();
             _gameManager.PlayerDeath(playerNickname);
-        }
-    }
-
-    private void OnCollisionStay2D(Collision2D collision)
-    {
-        // 플레이어 넉백
-        if (collision.gameObject.layer == LayerMask.NameToLayer("Wall"))
-        {
-            float knockbackDir = _jumpDir.x > 0 ? -1f : 1f;
-            Vector2 knockbackForce = new Vector2(knockbackDir, 0).normalized * 0.2f;
-
-            _playerRigid.AddForce(knockbackForce, ForceMode2D.Impulse);
         }
     }
 
