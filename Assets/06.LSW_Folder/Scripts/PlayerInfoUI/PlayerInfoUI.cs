@@ -13,6 +13,7 @@ public class PlayerInfoUI : UIBase
     [SerializeField] private TextMeshProUGUI _map1Record;
     [SerializeField] private TextMeshProUGUI _map2Record;
     [SerializeField] private TextMeshProUGUI _map3Record;
+    [SerializeField] private TextMeshProUGUI _map4Record;
     [SerializeField] private TextMeshProUGUI _score;
 
     private Action _onClickExitBtn;
@@ -65,6 +66,14 @@ public class PlayerInfoUI : UIBase
         else
         {
             _map3Record.text = "Map3 : 기록 없음";
+        }
+        if (data.Map4Record != 0)
+        {
+            _map4Record.text = $"Map4 : {Database_RecordManager.Instance.FormatData((int)data.Map4Record)}";
+        }
+        else
+        {
+            _map4Record.text = "Map4 : 기록 없음";
         }
         _score.text = $"Score : {data.Score.ToString()}";
     }

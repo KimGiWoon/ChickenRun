@@ -208,6 +208,10 @@ public class UIManager_Map4 : MonoBehaviourPun
         {
             StopCoroutine(_emoticonRoutine);
         }
+
+        // 이모티콘 효과음
+        SoundManager.Instance.PlaySFX(index);
+
         // 이모티콘 표시 시간 코루틴 시작
         _emoticonRoutine = StartCoroutine(EmoticonPlayTimeCoroutine());
 
@@ -251,6 +255,11 @@ public class UIManager_Map4 : MonoBehaviourPun
     // 플레이어의 위치와 거리 업데이트
     private void PlayerPosUpdate()
     {
+        if (_playerPosition == null || _endPosition == null || _playerPosSlider == null)
+        {
+            return;
+        }
+
         _playerEndDistance = Vector2.Distance(_playerPosition.position, _endPosition.position);
         float progress = Mathf.Clamp01(1 - (_playerEndDistance / _playerDistance));
         _playerPosSlider.value = progress;

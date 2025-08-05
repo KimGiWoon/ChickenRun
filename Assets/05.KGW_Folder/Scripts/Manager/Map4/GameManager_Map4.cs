@@ -155,7 +155,6 @@ public class GameManager_Map4 : MonoBehaviourPunCallbacks
     public void GameClearLeaveRoom()
     {
         SoundManager.Instance.StopBGM();
-        SoundManager.Instance.StopSFX();
         _networkManager._isStart = false;
         _gameUIManager.ClearPlayerReference();
 
@@ -168,7 +167,6 @@ public class GameManager_Map4 : MonoBehaviourPunCallbacks
     public void GameDefeatLeaveRoom()
     {
         SoundManager.Instance.StopBGM();
-        SoundManager.Instance.StopSFX();
         _networkManager._isStart = false;
         _gameUIManager.ClearPlayerReference();
 
