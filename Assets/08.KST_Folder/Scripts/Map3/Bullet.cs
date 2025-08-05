@@ -1,3 +1,4 @@
+using System.Collections;
 using Photon.Pun;
 using UnityEngine;
 
@@ -14,15 +15,24 @@ namespace Kst
         {
             _pooledObj = GetComponent<PooledObject>();
         }
-        public void Init(Vector2 dir, int actorNum)
-        {
-            _moveDir = dir.normalized;
-            _actorNum = actorNum;
-        }
 
         void Update()
         {
             transform.Translate(_moveDir * _speed * Time.deltaTime);
+        }
+        public void Init(Vector2 dir, int actorNum)
+        {
+            _moveDir = dir.normalized;
+            _actorNum = actorNum;
+
+            StartCoroutine(AutoReturn());
+        }
+        IEnumerator AutoReturn()
+        {
+            yield return new WaitForSeconds(5f);
+
+            if (gameObject.activeSelf)
+                _pooledObj.ReturnPool();
         }
 
         //벽과 충돌 시
