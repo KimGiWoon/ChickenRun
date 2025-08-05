@@ -156,6 +156,7 @@ public class Database_RecordManager : Singleton<Database_RecordManager>
     {
         if(_reference == null) _reference = CYH_FirebaseManager.Database.RootReference;
         _reference.Child("RankData")
+            .StartAt(1) // 기록이 없는 사람 예외처리
             .OrderByChild(record)
             .LimitToFirst(20)
             .GetValueAsync()
@@ -163,32 +164,33 @@ public class Database_RecordManager : Singleton<Database_RecordManager>
                 if (task.IsCanceled || task.IsFaulted)
                     return;
                 DataSnapshot snapshots = task.Result;
-
+                Debug.Log($"[DEBUG] record: {record}");
+                
                 int rank = 1;
                 foreach (var snapshot in snapshots.Children) 
                 {
                     RankData rankData = JsonUtility.FromJson<RankData>(snapshot.GetRawJsonValue());
-                    UnityEngine.Debug.Log($"[DEBUG] Raw snapshot: {snapshot.GetRawJsonValue()}");
-                    int recordValue = 0;
+                    Debug.Log($"[DEBUG] rankData.Map2Record: {rankData.Map2Record}");
+                    long recordValue = 0;
                     switch (record) {
                         case "Map1Record":
-                            recordValue = (int)rankData.Map1Record;
+                            recordValue = rankData.Map1Record;
                             break;
                         case "Map2Record":
-                            recordValue = (int)rankData.Map2Record;
+                            recordValue = rankData.Map2Record;
                             break;
                         case "Map3Record":
-                            recordValue = (int)rankData.Map3Record;
+                            recordValue = rankData.Map3Record;
                             break;
                         case "Map4Record":
-                            recordValue = (int)rankData.Map4Record;
+                            recordValue = rankData.Map4Record;
                             break;
                     }
-
+                    Debug.Log($"[DEBUG] recordValue: {recordValue}");
                     if (recordValue != 0) {
                         GameObject board = boardPool.GetPool();
                         board.GetComponent<UserPersonalRecord>()
-                            .SetRecordText(rank, rankData.Nickname, FormatData(recordValue), snapshot.Key);
+                            .SetRecordText(rank, rankData.Nickname, FormatData((int)recordValue), snapshot.Key);
                         rank++;
                     }
                 }
