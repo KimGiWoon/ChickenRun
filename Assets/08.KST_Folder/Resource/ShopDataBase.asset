@@ -19,3 +19,5 @@ MonoBehaviour:
     SkinName: second
   - SkinImage: {fileID: 21300000, guid: d1705510b6da814418040a272b875d86, type: 3}
     SkinName: third
+  - SkinImage: {fileID: 21300000, guid: 6c5f4774ce093a346945fd964db65abf, type: 3}
+    SkinName: fourth
