@@ -5,42 +5,41 @@ public class SoundManager : Singleton<SoundManager>
     // 인게임 BGM
     public enum Bgms
     {
-        BGM_InGame1,
-        BGM_InGame2,
-        BGM_InGame3,
-        BGM_InGame4,
-        BGM_Login,
-        BGM_Lobby
+        BGM_InGame1,    // 인게임 1 BGM
+        BGM_InGame2,    // 인게임 2 BGM
+        BGM_InGame3,    // 인게임 3 BGM
+        BGM_InGame4,    // 인게임 4 BGM
+        BGM_Login,      // 로그인 BGM
+        BGM_Lobby       // 로비 BGM
     }
 
     // 인게임 SFX
     public enum Sfxs
     {
-        SFX_Jump,
-        SFX_GetEgg,
-        SFX_Goal,
-        SFX_Count,
-        SFX_Start,
-        SFX_DropWater,
-        SFX_Walk,
-        SFX_Shot,
-        SFX_Hit,
-        SFX_Win,
-        SFX_Lose,
-        SFX_Death,
-        SFX_Alarm,
-        SFX_Drill,
-        SFX_Clear,
-        SFX_Defeat
+        SFX_Jump,       // 점프
+        SFX_GetEgg,     // 달걀 획득
+        SFX_Goal,       // 골
+        SFX_Count,      // 카운트
+        SFX_Start,      // 스타트
+        SFX_DropWater,  // 입수
+        SFX_Walk,       // 걷기
+        SFX_Shot,       // 샷
+        SFX_Hit,        // 맞음
+        SFX_Win,        // 이겼다
+        SFX_Lose,       // 졌다
+        SFX_Death,      // 죽었다
+        SFX_Alarm,      // 알람
+        SFX_Clear,      // 클리어
+        SFX_Defeat      // 실패
     }
     public enum Sfx_Emotion
     {
-        SFX_Smile = 0, //웃음
-        SFX_Suprised, // 놀람
-        SFX_Quiz, //농락
-        SFX_Angry,//분노
-        SFX_Heart, //하트
-        SFX_Crying //울음
+        SFX_Smile = 0,  // 웃음
+        SFX_Suprised,   // 놀람
+        SFX_Quiz,       // 농락
+        SFX_Angry,      // 분노
+        SFX_Heart,      // 하트
+        SFX_Crying      // 울음
     }
 
     [Header("BGM, SFX Sound Files")]
@@ -65,12 +64,21 @@ public class SoundManager : Singleton<SoundManager>
     // 게임 종료 시 
     protected override void OnDestroy()
     {
-        base.OnDestroy();
         // 플레이 모드 확인하여 이벤트 구독 해제
         if (Application.isPlaying)
         {
-            SettingManager.Instance.BGM.OnChanged -= BgmVolume;
-            SettingManager.Instance.SFX.OnChanged -= SfxVolume;
+            if(SettingManager.Instance != null)
+            {
+                if(SettingManager.Instance.BGM != null)
+                {
+                    SettingManager.Instance.BGM.OnChanged -= BgmVolume;
+                }
+
+                if(SettingManager.Instance.SFX != null)
+                {
+                    SettingManager.Instance.SFX.OnChanged -= SfxVolume;
+                }
+            }
         }
     }
 
@@ -99,7 +107,7 @@ public class SoundManager : Singleton<SoundManager>
     {
         _sfxAudioSource.PlayOneShot(_sfxFiles[(int)sfx]);
     }
-    // SFX 플레이
+    // 이모티콘 SFX 플레이
     public void PlaySFX(int index)
     {
         _sfxAudioSource.PlayOneShot(_sfxEmotionFiles[index]);
