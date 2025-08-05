@@ -34,7 +34,7 @@ public class Map3_GameOverPanel : MonoBehaviour
             yield return null;
         }
 
-
+        SoundManager.Instance.StopSFX();
         // 씬 이동
         PhotonNetwork.LoadLevel("MainScene");
     }
