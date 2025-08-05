@@ -18,6 +18,8 @@ namespace Kst
         public bool _isStart = false;
         [SerializeField] private CinemachineVirtualCamera _virtualCam;
 
+        void Awake() => PhotonNetwork.AutomaticallySyncScene = false;
+
         void Start()
         {
             // 서버에 연결이 되어 있지 않으면 서버 접속
@@ -58,7 +60,16 @@ namespace Kst
         // 플레이어 생성
         private void PlayerSpawn()
         {
-            GameObject go = PhotonNetwork.Instantiate(playerPrefabName, spawnPoint.position, Quaternion.identity);
+            // if (_isStart) return;
+
+            // 커스텀 속성에서 스킨 이름 가져오기
+            string skinName = "Default";
+            if (PhotonNetwork.LocalPlayer.CustomProperties.TryGetValue("Skin", out object skinObj))
+            {
+                skinName = skinObj.ToString();
+            }
+
+            GameObject go = PhotonNetwork.Instantiate(playerPrefabName, spawnPoint.position, Quaternion.identity, 0, new object[] { skinName });
             if (go.TryGetComponent(out PhotonView pv) && pv.IsMine)
             {
                 Map3_PlayerController player = go.GetComponent<Map3_PlayerController>();
@@ -113,7 +124,11 @@ namespace Kst
         public override void OnMasterClientSwitched(Player newMasterClient)
         {
             if (PhotonNetwork.LocalPlayer == newMasterClient)
-                GameManager_Map3.Instance.PlateSpawner.StartSpawn();
+            {
+                Debug.Log("마스터 변경 및 권한 양도");
+                GameManager_Map3.Instance.PlateSpawnerSys.StopSpawn();
+                GameManager_Map3.Instance.PlateSpawnerSys.StartSpawn();
+            }
         }
     }
 }

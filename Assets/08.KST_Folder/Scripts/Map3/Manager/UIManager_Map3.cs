@@ -191,23 +191,21 @@ public class UIManager_Map3 : MonoBehaviourPun
     // 나가기 버튼 클릭
     private void OnExitPlayGame()
     {
-        string exitPlayer = PhotonNetwork.LocalPlayer.NickName;
+        // string exitPlayer = PhotonNetwork.LocalPlayer.NickName;
 
         GameManager_Map3.Instance.StopStopWatch();
         SoundManager.Instance.StopBGM();
         _networkManager._isStart = false;
 
         // 나감을 알림
-        photonView.RPC(nameof(ExitPlayer), RpcTarget.AllViaServer, exitPlayer);
+        photonView.RPC(nameof(ExitPlayer), RpcTarget.AllViaServer, PhotonNetwork.LocalPlayer.ActorNumber);
     }
 
     // 방 나가기
     [PunRPC]
-    private void ExitPlayer(string PlayerNickname)
+    private void ExitPlayer(int actorNum)
     {
-        Debug.Log($"{PlayerNickname}께서 나갔습니다.");
-
-        if (PhotonNetwork.LocalPlayer.NickName == PlayerNickname)
+        if (PhotonNetwork.LocalPlayer.ActorNumber == actorNum)
         {
             PhotonNetwork.LoadLevel("MainScene");
             PhotonNetwork.LeaveRoom();
