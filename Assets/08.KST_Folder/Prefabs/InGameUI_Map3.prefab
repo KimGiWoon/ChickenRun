@@ -321,6 +321,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _scoreText: {fileID: 9205123341373778918}
+  _eggText: {fileID: 3126503877595024355}
 --- !u!1 &1127906371952861732
 GameObject:
   m_ObjectHideFlags: 0
