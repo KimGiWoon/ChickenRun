@@ -52,30 +52,25 @@ namespace Kst
                         else
                             ScoreManager.Instance.photonView.RPC(nameof(ScoreManager.MinusScore), RpcTarget.All, _actorNum, plate.GetScore());
                     }
-                    
+
                     //TODO <김승태> : 플레이트 별 sfx 다르게 출력하도록 soundmanager에서 사운드 참조걸기.
                     // 총알과 플레이트 충돌 시 플레이트 별 사운드 출력
                     switch (plate._type)
                     {
                         case PlateType.NormalEgg:
-                            SoundManager.Instance.PlaySFX(SoundManager.Sfxs.SFX_Hit);
-                            // SoundManager.Instance.PlaySFX(SoundManager.Sfxs.SFX_Hit_Egg);
+                            SoundManager.Instance.PlaySFX(SoundManager.Sfx_Plate_Sound.SFX_Egg);
                             break;
                         case PlateType.Rock:
-                            SoundManager.Instance.PlaySFX(SoundManager.Sfxs.SFX_Hit);
-                            // SoundManager.Instance.PlaySFX(SoundManager.Sfxs.SFX_Hit_Rock);
+                            SoundManager.Instance.PlaySFX(SoundManager.Sfx_Plate_Sound.SFX_Rock);
                             break;
                         case PlateType.Coin:
-                            SoundManager.Instance.PlaySFX(SoundManager.Sfxs.SFX_Hit);
-                            // SoundManager.Instance.PlaySFX(SoundManager.Sfxs.SFX_Hit_Coin);
+                            SoundManager.Instance.PlaySFX(SoundManager.Sfx_Plate_Sound.SFX_Coin);
                             break;
                         case PlateType.Bomb:
-                            SoundManager.Instance.PlaySFX(SoundManager.Sfxs.SFX_Hit);
-                            // SoundManager.Instance.PlaySFX(SoundManager.Sfxs.SFX_Hit_Bomb);
+                            SoundManager.Instance.PlaySFX(SoundManager.Sfx_Plate_Sound.SFX_Bomb);
                             break;
                         default:
-                            // SoundManager.Instance.PlaySFX(SoundManager.Sfxs.SFX_Hit_Egg);
-                            SoundManager.Instance.PlaySFX(SoundManager.Sfxs.SFX_Hit);
+                            SoundManager.Instance.PlaySFX(SoundManager.Sfx_Plate_Sound.SFX_Egg);
                             break;
                     }
                 }

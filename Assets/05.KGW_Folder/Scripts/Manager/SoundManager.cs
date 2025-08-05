@@ -42,10 +42,19 @@ public class SoundManager : Singleton<SoundManager>
         SFX_Crying      // 울음
     }
 
+    public enum Sfx_Plate_Sound
+    {
+        SFX_Egg,
+        SFX_Rock,
+        SFX_Coin,
+        SFX_Bomb,
+    }
+
     [Header("BGM, SFX Sound Files")]
     [SerializeField] AudioClip[] _bgmFiles;
     [SerializeField] AudioClip[] _sfxFiles;
     [SerializeField] AudioClip[] _sfxEmotionFiles;
+    [SerializeField] AudioClip[] _sfxSfxPlateFiles;
 
     [Header("Audio Source Reference")]
     [SerializeField] public AudioSource _bgmAudioSource;
@@ -106,6 +115,10 @@ public class SoundManager : Singleton<SoundManager>
     public void PlaySFX(Sfxs sfx)
     {
         _sfxAudioSource.PlayOneShot(_sfxFiles[(int)sfx]);
+    }
+    public void PlaySFX(Sfx_Plate_Sound sfx)
+    {
+        _sfxAudioSource.PlayOneShot(_sfxSfxPlateFiles[(int)sfx]);
     }
     // 이모티콘 SFX 플레이
     public void PlaySFX(int index)
