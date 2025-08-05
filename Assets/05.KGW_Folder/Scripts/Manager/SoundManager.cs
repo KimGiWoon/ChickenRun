@@ -16,6 +16,7 @@ public class SoundManager : Singleton<SoundManager>
     // 인게임 SFX
     public enum Sfxs
     {
+        SFX_Bounce,    // Map2 점프
         SFX_Jump,       // 점프
         SFX_GetEgg,     // 달걀 획득
         SFX_Goal,       // 골
@@ -30,7 +31,7 @@ public class SoundManager : Singleton<SoundManager>
         SFX_Death,      // 죽었다
         SFX_Alarm,      // 알람
         SFX_Clear,      // 클리어
-        SFX_Defeat      // 실패
+        SFX_Defeat,      // 실패
     }
     public enum Sfx_Emotion
     {
