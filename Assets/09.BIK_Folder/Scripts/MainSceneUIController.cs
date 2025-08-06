@@ -77,6 +77,9 @@ public class MainSceneUIController : MonoBehaviour
         else {
             ShowUI(UIType.PlayBase);
         }
+
+        // 포톤 네트워크 설정
+        PhotonNetwork.AutomaticallySyncScene = true;
     }
 
     #endregion // mono funcs
