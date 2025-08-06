@@ -8,7 +8,7 @@ public class LoginSceneUIManager : MonoBehaviour
     {
         MainPanel,
         LoginPanel,
-        SocialPanel,
+        LoginOptionPanel,
         SignUpPanel,
         LinkPanel,
         AccountPanel,
@@ -72,17 +72,10 @@ public class LoginSceneUIManager : MonoBehaviour
 
             else if (ui is LoginPanel loginPanel)
             {
+                // 로그인 버튼
+                loginPanel.OnClickLogin = () => ShowUI(LoginUIType.LoginOptionPanel);
                 loginPanel.OnClickSignup = () => ShowUI(LoginUIType.SignUpPanel);
-                loginPanel.OnClickSocialLogin = () => ShowUI(LoginUIType.SocialPanel);
-
-                // 계정 전환 테스트용
-                //loginPanel.OnClickLinkAccount = () => ShowUI(LoginUIType.LinkPanel);
-
-                // 유저 정보 변경 테스트용
-                //loginPanel.OnClickChangeAccountInfo = () => ShowUI(LoginUIType.AccountPanel);
-
-                // 이메일 로그인 성공 시 GameStartPanel 활성화
-                loginPanel.LoginCompleted = () => ShowGameStartUI();
+                //loginPanel.OnClickSocialLogin = () => ShowUI(LoginUIType.LoginOptionPanel);
             }
 
             else if (ui is SignUpPanel signUpPanel)
@@ -92,7 +85,7 @@ public class LoginSceneUIManager : MonoBehaviour
 
             else if (ui is SocialLoginPanel socialPanel)
             {
-                socialPanel.OnClickClosePopup = () => HideUI(LoginUIType.SocialPanel);
+                socialPanel.OnClickClosePopup = () => HideUI(LoginUIType.LoginOptionPanel);
             }
 
             else if (ui is LinkPanel linkPanel)
@@ -134,7 +127,7 @@ public class LoginSceneUIManager : MonoBehaviour
         {
             ShowUI(LoginUIType.GameStartPanel);
             HideUI(LoginUIType.LoginPanel);
-            HideUI(LoginUIType.SocialPanel);
+            HideUI(LoginUIType.LoginOptionPanel);
         };
 
         // 게스트 로그인 성공
@@ -143,7 +136,7 @@ public class LoginSceneUIManager : MonoBehaviour
             Debug.Log("게스트 로그인 성공 후 ShowUI");
             ShowUI(LoginUIType.GameStartPanel);
             HideUI(LoginUIType.LoginPanel);
-            HideUI(LoginUIType.SocialPanel);
+            HideUI(LoginUIType.LoginOptionPanel);
         };
     }
 

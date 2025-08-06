@@ -2262,14 +2262,14 @@ GameObject:
   - component: {fileID: 207805430}
   - component: {fileID: 207805433}
   - component: {fileID: 207805432}
-  - component: {fileID: 207805431}
+  - component: {fileID: 207805434}
   m_Layer: 5
   m_Name: LoginPanel_new_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &207805430
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2292,21 +2292,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &207805431
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 207805429}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ccf112392c6cfe943aeeb9f259e5aae9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _startButton: {fileID: 0}
-  _startText: {fileID: 0}
-  _blinkSecond: 0.5
 --- !u!114 &207805432
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2345,6 +2330,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 207805429}
   m_CullTransparentMesh: 1
+--- !u!114 &207805434
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 207805429}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2bea457ffadcc4e42a58918bce360d68, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _loginButton: {fileID: 500477298}
+  _signupButton: {fileID: 1023785017}
 --- !u!1 &261251517
 GameObject:
   m_ObjectHideFlags: 0
@@ -3820,7 +3819,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 434.1}
-  m_SizeDelta: {x: 0, y: 1217.4728}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &481692758
 MonoBehaviour:
@@ -5456,7 +5455,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _uiList:
   - {fileID: 1631090144}
-  - {fileID: 1756392561}
+  - {fileID: 207805434}
   - {fileID: 2053846427}
   - {fileID: 1347786494}
   - {fileID: 1717271338}
@@ -6216,7 +6215,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5e318099c4260e4586800d44ac9ed21, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _guestLoginButton: {fileID: 491436107}
+  _guestLoginButton: {fileID: 71045859}
 --- !u!114 &638327397
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8520,7 +8519,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 296.8}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 1217.4728}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &988662097
 MonoBehaviour:
@@ -9508,10 +9507,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2bea457ffadcc4e42a58918bce360d68, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _emailField: {fileID: 0}
-  _passwordField: {fileID: 0}
   _loginButton: {fileID: 1173225713}
-  _socialLoginButton: {fileID: 1511161887}
   _signupButton: {fileID: 150491603}
 --- !u!114 &1087288934
 MonoBehaviour:
@@ -14126,7 +14122,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1631090140
 RectTransform:
   m_ObjectHideFlags: 0
@@ -15613,10 +15609,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2bea457ffadcc4e42a58918bce360d68, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _emailField: {fileID: 1023353641}
-  _passwordField: {fileID: 1380914916}
   _loginButton: {fileID: 1855336161}
-  _socialLoginButton: {fileID: 1717137116}
   _signupButton: {fileID: 1059307739}
 --- !u!114 &1756392562
 MonoBehaviour:
