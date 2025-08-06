@@ -77,6 +77,7 @@ namespace Kst
 
         private void PlayTimeOverCheck()
         {
+            
             if (_totalPlayTime > _GamePlayTime)
             {
                 GamePlayTimeOver();
@@ -88,7 +89,6 @@ namespace Kst
         public void GamePlayTimeOver()
         {
             _stopwatch.Stop();
-            // OnEndGame?.Invoke(_data);
 
             //TODO <김승태> : 데이터베이스에 저장하는 코드
             // Database_RecordManager.Instance.SaveUserMap3Record(_data);
@@ -106,14 +106,9 @@ namespace Kst
             //초기화
             _networkManager._isStart = false;
             SoundManager.Instance.StopBGM();
-            // SoundManager.Instance.StopSFX();
             _gameUIManager.ClearPlayerReference();
 
-            //TODO <김승태 종료패널로 가기
             _gameOverPanel.SetActive(true);
-
-            // PhotonNetwork.LeaveRoom();
-            // PhotonNetwork.LoadLevel("MainScene");
         }
 
         // 스탑워치 시작

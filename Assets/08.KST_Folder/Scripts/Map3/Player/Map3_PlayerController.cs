@@ -46,8 +46,7 @@ namespace Kst
         }
         void OnEnable()
         {
-            _gameUIManager.OnGameStart += GetComponent<PlayerShooter>().SetCanAttack;
-            _gameManager.OnGameEnd += GetComponent<PlayerShooter>().SetUnableAttack;
+            StartCoroutine(DelaySubscribe());
         }
         void OnDisable()
         {
@@ -71,6 +70,13 @@ namespace Kst
             if (!_pv.IsMine) return;
 
             _rb.velocity = new Vector2(_moveDir * _movespeed, _rb.velocity.y);
+        }
+
+         IEnumerator DelaySubscribe()
+        {
+            yield return new WaitUntil(() => GetComponent<PlayerShooter>().CooldownImg != null);
+            _gameUIManager.OnGameStart += GetComponent<PlayerShooter>().SetCanAttack;
+            _gameManager.OnGameEnd += GetComponent<PlayerShooter>().SetUnableAttack;
         }
         public void SetDir(int dir)
         {
