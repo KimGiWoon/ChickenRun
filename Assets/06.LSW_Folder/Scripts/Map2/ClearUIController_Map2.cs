@@ -13,11 +13,6 @@ public class ClearUIController_Map2 : MonoBehaviour
     private void OnEnable()
     {
         _time = new WaitForSeconds(_openTime);
-    }
-
-    private void Start()
-    {
-        // 클리어 코루틴 스타트
         _clearRoutine = StartCoroutine(ClearPanelOpen());
     }
 

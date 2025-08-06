@@ -11,7 +11,7 @@ public class GameManager_Map2 : MonoBehaviourPun
     [SerializeField] private Transform _startPos;
     [SerializeField] private Transform _goalPos;
     [SerializeField] private float _gamePlayTime = 600f;
-    [SerializeField] private float _gameExtraTime = 5f;
+    private readonly float _gameExtraTime = 60f;
     
     private static GameManager_Map2 _instance;
     public static GameManager_Map2 Instance
@@ -30,6 +30,7 @@ public class GameManager_Map2 : MonoBehaviourPun
     private bool _isGameOver;
     private bool _isWin;
     private bool _isLose;
+    private bool _isReach;
     public bool IsLose
     {
         get { return _isLose; }
@@ -127,15 +128,17 @@ public class GameManager_Map2 : MonoBehaviourPun
     public void ReachGoalPoint()
     {
         _data.Record = _stopwatch.ElapsedMilliseconds;
-        Debug.Log(_data.Record);
         _isEnd = true;
-        OnReachGoal?.Invoke();
-        if (!_isLose)
+
+        if (!_isReach)
         {
-            photonView.RPC(nameof(LoseGame), RpcTarget.AllViaServer);
+            OnReachGoal?.Invoke();
+            photonView.RPC(nameof(FirstReach), RpcTarget.All);
+            
+            if (_isLose) return;
+            photonView.RPC(nameof(LoseGame), RpcTarget.Others);
             _gamePlayTime = _totalPlayTime;
             _data.IsWin = true;
-            Debug.Log("1분 뒤에 게임이 종료됩니다.");
         }
     }
 
@@ -177,6 +180,12 @@ public class GameManager_Map2 : MonoBehaviourPun
     public void LoseGame()
     {
         _isLose = true;
+    }
+    
+    [PunRPC]
+    public void FirstReach()
+    {
+        _isReach = true;
     }
 
     private void GameWinLeaveRoom()

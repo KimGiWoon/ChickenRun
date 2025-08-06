@@ -42,7 +42,7 @@ public class BaseUI_Map2 : MonoBehaviourPun
         GameManager_Map2.Instance.OnDefeatGame += () => _defeatPanel.SetActive(true);
         GameManager_Map2.Instance.OnReachGoal += () =>
         {
-            _endTimerRoutine = StartCoroutine(EndTimerCoroutine());
+            photonView.RPC(nameof(EndTimer), RpcTarget.AllViaServer);
         };
         
         _optionButton.onClick.AddListener(OnOptionPanel);
@@ -112,6 +112,12 @@ public class BaseUI_Map2 : MonoBehaviourPun
     private void UpdateSlider(float value)
     {
         _playerPosSlider.value = value;
+    }
+
+    [PunRPC]
+    public void EndTimer()
+    {
+        _endTimerRoutine = StartCoroutine(EndTimerCoroutine());
     }
     
     private IEnumerator EndTimerCoroutine()

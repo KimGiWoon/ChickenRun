@@ -33131,8 +33131,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _startPos: {fileID: 1497423712}
   _goalPos: {fileID: 1222395489}
-  _gamePlayTime: 300
-  _gameExtraTime: 5
+  _gamePlayTime: 3600
+  _gameExtraTime: 0
 --- !u!4 &1339498091
 Transform:
   m_ObjectHideFlags: 0

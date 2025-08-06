@@ -59,6 +59,8 @@ MonoBehaviour:
   - StartGame
   - StartGameRoutine
   - RPCJump
+  - EndTimer
+  - FirstReach
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
