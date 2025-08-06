@@ -39,7 +39,7 @@ public class UIManager_Map1 : MonoBehaviourPun
     [SerializeField] Slider _musicSlider;
     [SerializeField] Slider _effectSlider;
     [SerializeField] Toggle _camModeCheckToggle;
-    [SerializeField] CameraController_Map4 _cameraController;
+    [SerializeField] CameraController_Map1 _cameraController;
 
     [Header("Emoticon Panel UI Reference")]
     [SerializeField] PlayerEmoticonController_Map1 _playerEmoticonController;
