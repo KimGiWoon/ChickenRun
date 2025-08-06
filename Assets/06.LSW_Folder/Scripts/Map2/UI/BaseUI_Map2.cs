@@ -19,6 +19,8 @@ public class BaseUI_Map2 : MonoBehaviourPun
     [Header("Panel UI Reference")]
     [SerializeField] GameObject _optionPanel;
     [SerializeField] GameObject _emoticonPanel;
+    [SerializeField] GameObject _defeatPanel;
+    [SerializeField] GameObject _winPanel;
     
     [Header("Goal Slider UI Reference")]
     [SerializeField] Slider _playerPosSlider;
@@ -31,6 +33,8 @@ public class BaseUI_Map2 : MonoBehaviourPun
         // 달걀 획득 UI 이벤트 구독
         GameManager_Map2.Instance.OnGetEgg += UpdateEggText;
         GameManager_Map2.Instance.GameProgress.OnChanged += UpdateSlider;
+        GameManager_Map2.Instance.OnWinGame += () => _winPanel.SetActive(true);
+        GameManager_Map2.Instance.OnDefeatGame += () => _defeatPanel.SetActive(true);
         
         _optionButton.onClick.AddListener(OnOptionPanel);
         _emoticonButton.onClick.AddListener(OnEmoticonPanel);

@@ -30,6 +30,10 @@ public class GameManager_Map2 : MonoBehaviourPun
     private bool _isGameOver;
     private bool _isWin;
     private bool _isLose;
+    public bool IsLose
+    {
+        get { return _isLose; }
+    }
     private float _totalDistance;
     private float _totalPlayTime;
     
@@ -38,6 +42,8 @@ public class GameManager_Map2 : MonoBehaviourPun
     // 달걀 획득에 대한 이벤트 (UI 적용)
     // TODO: UI에서 Start와 OnDestroy에 이벤트 구독과 취소 설정 필요
     public event Action OnReadyGame;
+    public event Action OnWinGame;
+    public event Action OnDefeatGame;
     public event Action OnReachGoal;
     public event Action<int> OnGetEgg;
     public event Action<bool> OnPanelOpened;
@@ -157,11 +163,14 @@ public class GameManager_Map2 : MonoBehaviourPun
             Debug.Log("기록이 저장되었습니다.");
         }
         Debug.Log("모든 플레이어가 방을 나갑니다.");
-        //PhotonNetwork.LeaveRoom();
-        // 로비 씬이 있으면 추가해서 씬 이동
-        PhotonNetwork.LoadLevel("MainScene");
-        SoundManager.Instance.StopBGM();
-        SoundManager.Instance.StopSFX();
+        if (_isLose)
+        {
+            GameDefeatLeaveRoom();
+        }
+        else
+        {
+            GameWinLeaveRoom();
+        }
     }
 
     [PunRPC]
@@ -169,14 +178,21 @@ public class GameManager_Map2 : MonoBehaviourPun
     {
         _isLose = true;
     }
+
+    private void GameWinLeaveRoom()
+    {
+        SoundManager.Instance.StopBGM();
+        SoundManager.Instance.StopSFX();
+        
+        OnWinGame?.Invoke();
+    }
     
     public void GameDefeatLeaveRoom()
     {
         SoundManager.Instance.StopBGM();
         SoundManager.Instance.StopSFX();
-
-        // 실패 UI 활성화
-        //_defeatUIController.gameObject.SetActive(true);
+        
+        OnDefeatGame?.Invoke();
     }
     
     // 달걀 획득

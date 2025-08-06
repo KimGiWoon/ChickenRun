@@ -76,8 +76,6 @@ public class SettingUI : MonoBehaviourPun
         if (PhotonNetwork.LocalPlayer.CustomProperties["Nickname"].ToString() == playerNickname)
         {
             GameManager_Map2.Instance.GameDefeatLeaveRoom();
-            PhotonNetwork.LoadLevel("MainScene");
-            PhotonNetwork.LeaveRoom();
         }
     }
 }
