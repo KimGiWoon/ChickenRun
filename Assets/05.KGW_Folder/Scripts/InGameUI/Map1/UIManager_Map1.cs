@@ -20,7 +20,9 @@ public class UIManager_Map1 : MonoBehaviourPun
 
     [Header("Start Panel Reference")]
     [SerializeField] GameObject _startPanel;
+    [SerializeField] GameObject _endTimePanel;
     [SerializeField] TMP_Text _countText;
+    [SerializeField] TMP_Text _endTimeText;
     [SerializeField] float _routineTime = 1f;
     [SerializeField] GameObject _wall;
 
@@ -58,7 +60,9 @@ public class UIManager_Map1 : MonoBehaviourPun
 
     Coroutine _panelRoutine;
     Coroutine _emoticonRoutine;
+    Coroutine _endTimerRoutine;
     float _totalDistance;
+    bool _isEndTimerStart = false;
     public bool _isExit = false;
     public bool _isOptionOpen = false;
     public bool _isEmoticonPanelOpen = false;
@@ -90,6 +94,9 @@ public class UIManager_Map1 : MonoBehaviourPun
 
         // 플레이어와 결승선의 거리 확인
         PlayerPosUpdate();
+
+        // 끝나는 시간 체크
+        EndTimeCheck();
     }
 
     private void OnDestroy()
@@ -267,6 +274,26 @@ public class UIManager_Map1 : MonoBehaviourPun
         _playerPosition = player;
     }
 
+    // 끝나는 시간 표시
+    private void EndTimeCheck()
+    {
+        float endTimer = _gameManager._GamePlayTime - 10f;
+
+        if (_gameManager._totalPlayTime >= endTimer && !_isEndTimerStart)
+        {
+            _isEndTimerStart = true;
+
+            if(_endTimerRoutine == null)
+            {
+                _endTimerRoutine = StartCoroutine(EndTimerCoroutine());
+            }
+            else
+            {
+                _endTimerRoutine = null;
+            }
+        }
+    }
+
     // 스타트 코루틴
     [PunRPC]
     public void StartGameRoutine()
@@ -323,5 +350,22 @@ public class UIManager_Map1 : MonoBehaviourPun
         yield return new WaitForSeconds(_emoticonTime);
 
         _playerEmoticonController._SpeechBubble.SetActive(false);
+    }
+
+    // 끝나는 시간 표시 코루틴
+    private IEnumerator EndTimerCoroutine()
+    {
+        WaitForSeconds time = new WaitForSeconds(_routineTime);
+        _endTimePanel.SetActive(true);
+
+        for(int i = 10; i >= 1; i--)
+        {
+            _endTimeText.text = i.ToString();
+            SoundManager.Instance.PlaySFX(SoundManager.Sfxs.SFX_Count);
+
+            yield return time;
+        }
+        _endTimePanel.SetActive(false);
+        _endTimerRoutine = null;
     }
 }
