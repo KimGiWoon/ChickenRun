@@ -2,6 +2,7 @@ using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -238,6 +239,43 @@ public class PlayLobbyPanel : UIBase, IInRoomCallbacks
                 Debug.LogWarning("[Photon] 모든 플레이어가 준비하지 않았습니다. 게임을 시작할 수 없습니다.");
                 PopupManager.Instance.ShowOKPopup("모든 플레이어가 준비 상태여야 게임을 시작할 수 있습니다.", "확인");
                 return;
+            }
+
+            // 맵 2일때만
+            if (_currentMap == MapType.Map2) {
+                var players = PhotonNetwork.PlayerList;
+                Dictionary<string, int> colorCounts = new();
+
+                foreach (var player in players) {
+                    if (player.CustomProperties.TryGetValue("Color", out var colorObj) && colorObj is string colorStr) {
+                        if (!colorCounts.ContainsKey(colorStr)) {
+                            colorCounts[colorStr] = 0;
+                        }
+                        colorCounts[colorStr]++;
+                    }
+                }
+
+                // 1. 같은 색상이 3명 이상인 경우 시작안됨.
+                if (colorCounts.Values.Any(count => count >= 3)) {
+                    PopupManager.Instance.ShowOKPopup("같은 색상을 3명 이상 선택할 수 없습니다.", "확인");
+                    return;
+                }
+
+                // 2. 모두 다른 색깔이거나
+                bool allUnique = colorCounts.Values.All(count => count == 1);
+                if (allUnique) {
+                    // Do nothing, 게임 시작 가능
+                }
+                else {
+                    // 3. 같은 색상을 선택한 인원이 정확히 2명씩 있어야 팀전이 가능
+                    bool allPairs = colorCounts.Values.All(count => count == 2);
+                    bool playerCountEven = players.Length % 2 == 0;
+
+                    if (!(allPairs && playerCountEven)) {
+                        PopupManager.Instance.ShowOKPopup("같은 색상을 선택한 인원이 정확히 2명씩 있어야 팀전이 가능합니다.", "확인");
+                        return;
+                    }
+                }
             }
 
             PhotonNetwork.CurrentRoom.IsOpen = false;
