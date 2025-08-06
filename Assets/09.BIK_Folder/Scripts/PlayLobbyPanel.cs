@@ -22,6 +22,7 @@ public class PlayLobbyPanel : UIBase, IInRoomCallbacks
     [SerializeField] private TMP_Text _mapNameText;
     [SerializeField] private Button _leftMapButton;
     [SerializeField] private Button _rightMapButton;
+    [SerializeField] private Button _mapInfoButton;
 
     [Header("Skin")]
     [SerializeField] private Button _skinSelectButton;
@@ -36,6 +37,9 @@ public class PlayLobbyPanel : UIBase, IInRoomCallbacks
     [SerializeField] private Button _startOrReadyButton;
     [SerializeField] private TMP_Text _startOrReadyText;
     [SerializeField] private Button _backButton;
+
+    [Header("MapInfo")]
+    [SerializeField] private GameInfoPanel _gameInfoPanel;
 
     #endregion // Serialized fields
 
@@ -68,6 +72,9 @@ public class PlayLobbyPanel : UIBase, IInRoomCallbacks
         _rightColorButton.onClick.AddListener(() => ChangeColor(1));
         _startOrReadyButton.onClick.AddListener(OnClickStartOrReady);
         _backButton.onClick.AddListener(() => _onBack?.Invoke());
+        _mapInfoButton.onClick.AddListener(() => {
+            _gameInfoPanel.SetShow(_currentMap);
+        });
     }
 
     /// <summary>
