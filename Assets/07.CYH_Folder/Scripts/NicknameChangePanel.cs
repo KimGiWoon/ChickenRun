@@ -1,6 +1,4 @@
 using Firebase.Auth;
-using Firebase.Database;
-using Firebase.Extensions;
 using System;
 using TMPro;
 using UnityEngine;
@@ -53,13 +51,15 @@ public class NicknameChangePanel : UIBase
     private void ChanegeNickname()
     {
         // 닉네임 글자 수 체크
-        if (_nicknameField.characterLimit > 6) {
+        if (_nicknameField.characterLimit > 6)
+        {
             ShowPopup("닉네임은 6글자 이내로 입력해 주세요.");
             return;
         }
 
         // 기존 닉네임 일치 여부 체크
-        if (_currentNickname == _nicknameField.text) {
+        if (_currentNickname == _nicknameField.text)
+        {
             Debug.LogError("동일 닉네임");
             ShowPopup("기존에 사용 중인 닉네임과 동일합니다.\r\n다른 닉네임을 입력해 주세요.");
             return;
@@ -69,7 +69,8 @@ public class NicknameChangePanel : UIBase
         //SetNickname();
         Utility.SetNickname(_nicknameField.text);
 
-        PopupManager.Instance.ShowOKPopup("닉네임 변경 성공.\r\n다시 로그인해 주세요.", "OK", () => {
+        PopupManager.Instance.ShowOKPopup("닉네임 변경 성공.\r\n다시 로그인해 주세요.", "OK", () =>
+        {
             PopupManager.Instance.HidePopup();
 
             // 닉네임 패널 비활성화

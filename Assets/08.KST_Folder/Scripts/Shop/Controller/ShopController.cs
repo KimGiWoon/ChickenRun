@@ -9,7 +9,6 @@ namespace Kst
         [SerializeField] private ShopView _shopView;
         [SerializeField] private ShopDataLoader _shopDataLoader;
         [SerializeField] private ShopDataBase _shopDatabase;
-        // [SerializeField] private GoldManager _goldManager;
         [SerializeField] private EggController _goldManager;
         #endregion
         private List<SkinItemController> _itemControllers = new();
@@ -25,6 +24,10 @@ namespace Kst
             _shopDataLoader.LoadSkinsData(uid);
         }
 
+        /// <summary>
+        /// 로딩된 데이터를 통해 상점 시스템 초기화 작업 진행
+        /// </summary>
+        /// <param name="list">Firebase에서 로드된 데이터 리스트</param>
         private void DataLoad(List<SkinData> list)
         {
             if (list == null)
@@ -36,7 +39,8 @@ namespace Kst
 
             int listCount = 0;
 
-            foreach (SkinData data in list) {
+            foreach (SkinData data in list)
+            {
                 var view = _shopView.ActiveItem(listCount);
                 var controller = view.GetComponent<SkinItemController>();
                 controller.Init(data, view, _goldManager, _shopDatabase);

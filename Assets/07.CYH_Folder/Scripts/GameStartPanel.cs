@@ -53,7 +53,7 @@ public class GameStartPanel : UIBase
 
     private void OnDisable()
     {
-        _nicknameText.text = "";
+        _nicknameText.text = ""; 
     }
 
     /// <summary>
