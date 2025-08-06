@@ -164,13 +164,11 @@ public class Database_RecordManager : Singleton<Database_RecordManager>
                 if (task.IsCanceled || task.IsFaulted)
                     return;
                 DataSnapshot snapshots = task.Result;
-                Debug.Log($"[DEBUG] record: {record}");
                 
                 int rank = 1;
                 foreach (var snapshot in snapshots.Children) 
                 {
                     RankData rankData = JsonUtility.FromJson<RankData>(snapshot.GetRawJsonValue());
-                    Debug.Log($"[DEBUG] rankData.Map2Record: {rankData.Map2Record}");
                     long recordValue = 0;
                     switch (record) {
                         case "Map1Record":
@@ -186,7 +184,6 @@ public class Database_RecordManager : Singleton<Database_RecordManager>
                             recordValue = rankData.Map4Record;
                             break;
                     }
-                    Debug.Log($"[DEBUG] recordValue: {recordValue}");
                     if (recordValue != 0) {
                         GameObject board = boardPool.GetPool();
                         board.GetComponent<UserPersonalRecord>()

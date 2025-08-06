@@ -4957,13 +4957,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _networkManager: {fileID: 741950609}
   _gameUIManager: {fileID: 1909447668}
-  _GamePlayTime: 30
   PlateSpawnerSys: {fileID: 1427744986}
-  _currentMapType: Map3
+  _effectPoolManager: {fileID: 1652945965}
+  _GamePlayTime: 120
   _totalPlayTime: 0
+  _currentMapType: Map3
   _totalPlayerCount: 0
   _gameOverPanel: {fileID: 608530695}
-  _effectPoolManager: {fileID: 1652945965}
 --- !u!4 &691015402
 Transform:
   m_ObjectHideFlags: 0
@@ -5009,13 +5009,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2fc0f1e1bcd60514e815d227993cfd4d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _plateSpawner: {fileID: 1427744986}
-  _UIManager: {fileID: 1909447668}
+  _isStart: 0
   _gameManager: {fileID: 691015401}
+  _UIManager: {fileID: 1909447668}
+  _plateSpawner: {fileID: 1427744986}
+  spawnPoint: {fileID: 741950610}
   playerPrefabName: Map3_Player
   _btnUI: {fileID: 679746079}
-  spawnPoint: {fileID: 741950610}
-  _isStart: 0
   _virtualCam: {fileID: 1186528911}
 --- !u!4 &741950610
 Transform:

@@ -11,7 +11,7 @@ public class GameManager_Map2 : MonoBehaviourPun
     [SerializeField] private Transform _startPos;
     [SerializeField] private Transform _goalPos;
     [SerializeField] private float _gamePlayTime = 600f;
-    [SerializeField] private float _gameExtraTime = 5f;
+    private readonly float _gameExtraTime = 60f;
     
     private static GameManager_Map2 _instance;
     public static GameManager_Map2 Instance
@@ -30,6 +30,11 @@ public class GameManager_Map2 : MonoBehaviourPun
     private bool _isGameOver;
     private bool _isWin;
     private bool _isLose;
+    private bool _isReach;
+    public bool IsLose
+    {
+        get { return _isLose; }
+    }
     private float _totalDistance;
     private float _totalPlayTime;
     
@@ -38,6 +43,8 @@ public class GameManager_Map2 : MonoBehaviourPun
     // 달걀 획득에 대한 이벤트 (UI 적용)
     // TODO: UI에서 Start와 OnDestroy에 이벤트 구독과 취소 설정 필요
     public event Action OnReadyGame;
+    public event Action OnWinGame;
+    public event Action OnDefeatGame;
     public event Action OnReachGoal;
     public event Action<int> OnGetEgg;
     public event Action<bool> OnPanelOpened;
@@ -121,15 +128,17 @@ public class GameManager_Map2 : MonoBehaviourPun
     public void ReachGoalPoint()
     {
         _data.Record = _stopwatch.ElapsedMilliseconds;
-        Debug.Log(_data.Record);
         _isEnd = true;
-        OnReachGoal?.Invoke();
-        if (!_isLose)
+
+        if (!_isReach)
         {
-            photonView.RPC(nameof(LoseGame), RpcTarget.AllViaServer);
+            OnReachGoal?.Invoke();
+            photonView.RPC(nameof(FirstReach), RpcTarget.All);
+            
+            if (_isLose) return;
+            photonView.RPC(nameof(LoseGame), RpcTarget.Others);
             _gamePlayTime = _totalPlayTime;
             _data.IsWin = true;
-            Debug.Log("1분 뒤에 게임이 종료됩니다.");
         }
     }
 
@@ -157,15 +166,42 @@ public class GameManager_Map2 : MonoBehaviourPun
             Debug.Log("기록이 저장되었습니다.");
         }
         Debug.Log("모든 플레이어가 방을 나갑니다.");
-        //PhotonNetwork.LeaveRoom();
-        // 로비 씬이 있으면 추가해서 씬 이동
-        PhotonNetwork.LoadLevel("MainScene");
+        if (_isLose)
+        {
+            GameDefeatLeaveRoom();
+        }
+        else
+        {
+            GameWinLeaveRoom();
+        }
     }
 
     [PunRPC]
     public void LoseGame()
     {
         _isLose = true;
+    }
+    
+    [PunRPC]
+    public void FirstReach()
+    {
+        _isReach = true;
+    }
+
+    private void GameWinLeaveRoom()
+    {
+        SoundManager.Instance.StopBGM();
+        SoundManager.Instance.StopSFX();
+        
+        OnWinGame?.Invoke();
+    }
+    
+    public void GameDefeatLeaveRoom()
+    {
+        SoundManager.Instance.StopBGM();
+        SoundManager.Instance.StopSFX();
+        
+        OnDefeatGame?.Invoke();
     }
     
     // 달걀 획득
