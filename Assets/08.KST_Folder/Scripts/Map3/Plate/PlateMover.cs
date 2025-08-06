@@ -1,15 +1,11 @@
 using Kst;
-using Photon.Pun;
 using UnityEngine;
 
-public class PlateMover : MonoBehaviourPun
+public class PlateMover : MonoBehaviour
 {
     private float _speed;
     private PooledObject _pooled;
-    void Awake()
-    {
-        _pooled = GetComponent<PooledObject>();
-    }
+    void Awake() => _pooled = GetComponent<PooledObject>();
     void Update()
     {
         transform.Translate(Vector2.down * _speed * Time.deltaTime);
@@ -18,15 +14,6 @@ public class PlateMover : MonoBehaviourPun
             _pooled.ReturnPool();
     }
 
-    public void SetSpeed(float speed)
-    {
-        _speed = speed;
-    }
+    public void SetSpeed(float speed) => _speed = speed;
     public void ReturnPool() => _pooled.ReturnPool();
-
-    [PunRPC]
-    public void RequestReturn()
-    {
-        _pooled.ReturnPool();
-    }
 }

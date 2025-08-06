@@ -42,5 +42,6 @@ public class Map3_GameOverPanel : MonoBehaviour
     private void OnDestroy()
     {
         StopCoroutine(_clearRoitine);
+        _clearRoitine = null;
     }
 }
