@@ -117,7 +117,7 @@ public class PlayerController_Map2 : MonoBehaviourPun, IPunObservable, IPunInsta
         if (!photonView.IsMine) 
         {
             float distance = Vector2.Distance(_rigid.position, _networkPos);
-            if (distance > 0.6f)
+            if (distance > 0.8f)
             {
                 _rigid.MovePosition(_networkPos); // 순간 보정
             }
@@ -407,7 +407,7 @@ public class PlayerController_Map2 : MonoBehaviourPun, IPunObservable, IPunInsta
     // Bounce Tile을 밟았을 때 호출되는 메서드
     public void Bounce(float power)
     {
-        if (_rigid.velocity.y <= 0)
+        if (_rigid.velocity.y <= 1)
         {
             _rigid.AddForce(Vector2.up * power, ForceMode2D.Impulse);
             _isBounce = true;
@@ -438,7 +438,7 @@ public class PlayerController_Map2 : MonoBehaviourPun, IPunObservable, IPunInsta
             _networkPos = (Vector3) stream.ReceiveNext();
             
             Vector2 receivedVelocity = (Vector2)stream.ReceiveNext();
-            float lag = Mathf.Abs((float)(PhotonNetwork.Time - info.SentServerTime));
+            float lag = (float)(PhotonNetwork.Time - info.SentServerTime);
             _networkPos += (Vector3)((receivedVelocity * lag) +  Physics2D.gravity * (0.5f *  lag * lag));
             if (_animator.GetCurrentAnimatorStateInfo(0).shortNameHash != _receiveAnimatorHash)
             {
@@ -519,6 +519,10 @@ public class PlayerController_Map2 : MonoBehaviourPun, IPunObservable, IPunInsta
                     case SkinType.PinkMonster:
                         Debug.Log("핑크몬스터 스킨 입니다.");
                         controller = Resources.Load<RuntimeAnimatorController>("Sprites/Animations/PinkMonsterAnimation/PinkMonsterAnimatorController");
+                        break;
+                    case SkinType.DudeMonster:
+                        Debug.Log("파란몬스터 스킨입니다.");
+                        controller = Resources.Load<RuntimeAnimatorController>("Sprites/Animations/DudeMonsterAnimation/DudeMonsterAnimatorController");
                         break;
                     default:
                         break;
