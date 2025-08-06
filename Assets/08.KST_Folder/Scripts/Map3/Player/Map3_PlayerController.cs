@@ -44,10 +44,7 @@ namespace Kst
                 TranslucentSetting();
             }
         }
-        void OnEnable()
-        {
-            StartCoroutine(DelaySubscribe());
-        }
+        void OnEnable() => StartCoroutine(DelaySubscribe());
         void OnDisable()
         {
             _gameUIManager.OnGameStart -= GetComponent<PlayerShooter>().SetCanAttack;
@@ -62,6 +59,7 @@ namespace Kst
         void Update()
         {
             if (!_pv.IsMine) return;
+
             PlayerStateUpdate();
         }
 
@@ -72,16 +70,27 @@ namespace Kst
             _rb.velocity = new Vector2(_moveDir * _movespeed, _rb.velocity.y);
         }
 
-         IEnumerator DelaySubscribe()
+        /// <summary>
+        /// 일정 조건동안 대기 후 게임 매니저에 구독
+        /// </summary>
+        /// <returns></returns>
+        IEnumerator DelaySubscribe()
         {
             yield return new WaitUntil(() => GetComponent<PlayerShooter>().CooldownImg != null);
             _gameUIManager.OnGameStart += GetComponent<PlayerShooter>().SetCanAttack;
             _gameManager.OnGameEnd += GetComponent<PlayerShooter>().SetUnableAttack;
         }
+
+        /// <summary>
+        /// 플레이어 방향 설정 및 이미지 설정
+        /// </summary>
+        /// <param name="dir">방향</param>
         public void SetDir(int dir)
         {
             if (!_pv.IsMine) return;
+
             _moveDir = dir;
+
             if (dir == 1)
                 _playerRenderer.flipX = false;
             else if (dir == -1)
@@ -91,15 +100,12 @@ namespace Kst
         private void ManagerInit()
         {
             if (_gameUIManager == null)
-            {
                 _gameUIManager = FindObjectOfType<UIManager_Map3>();
-            }
 
             if (_gameManager == null)
-            {
                 _gameManager = FindObjectOfType<GameManager_Map3>();
-            }
         }
+
         // 자기 자신을 제외한 플레이어 반 투명화 세팅
         private void TranslucentSetting()
         {
@@ -110,13 +116,15 @@ namespace Kst
 
         private void PlayerStateUpdate()
         {
+            //플레이어 정지 시
             if (_rb.velocity == Vector2.zero)
             {
                 _currentAnimatorHash = Idle_Hash;
-                _animator.Play(Idle_Hash);
+                _animator.Play(Idle_Hash); //애니메이션 실행
 
                 _isWalking = false;
 
+                //걷기 사운드 코루틴 해제
                 if (_stepCoroutine != null)
                 {
                     StopCoroutine(_stepCoroutine);
@@ -124,19 +132,28 @@ namespace Kst
                 }
 
             }
+            //플레이어 이동 시
             else if (_rb.velocity.x > 0.1f || _rb.velocity.x < -0.1f)
             {
                 _currentAnimatorHash = Move_Hash;
-                _animator.Play(Move_Hash);
+                _animator.Play(Move_Hash); //애니메이션 실행
+
                 if (!_isWalking)
                 {
                     _isWalking = true;
+
+                    //걷기 사운드 코루틴 해제
                     if (_stepCoroutine == null)
                         _stepCoroutine = StartCoroutine(IE_PlayerStep());
                 }
-
             }
         }
+
+        /// <summary>
+        /// 걷는 동안(_isWalking == true라면) 걷기 sfx 실행
+        /// 0.5초 딜레이를 줘서 짧은 시간동안 SFX가 매우 많이 실행되는 것을 방지
+        /// </summary>
+        /// <returns></returns>
         IEnumerator IE_PlayerStep()
         {
             while (_isWalking)
@@ -166,7 +183,6 @@ namespace Kst
         // 포톤 네트워크로 플레이어 생성 시 호출
         public void OnPhotonInstantiate(PhotonMessageInfo info)
         {
-
             // 오브젝트 배열을 저장
             var data = info.photonView.InstantiationData;
 
@@ -179,6 +195,11 @@ namespace Kst
                 Debug.Log($"적용 스킨 : {skinName}");
                 ApplySkin(skinName);
             }
+        }
+        RuntimeAnimatorController RuntimeAc(string path)
+        {
+            string folderPath = "Sprites/Animations/";
+            return Resources.Load<RuntimeAnimatorController>(folderPath + path);
         }
 
         // 스킨 적용
@@ -194,7 +215,7 @@ namespace Kst
                 _playerRenderer.sprite = skinSprite;
 
                 // Common의 enum 스킨 타입 확인
-                if (Enum.TryParse<SkinType>(skinName, out SkinType skinType))
+                if (Enum.TryParse(skinName, out SkinType skinType))
                 {
                     Debug.Log($"스킨 컨트롤러 타입은 {skinType}");
 
@@ -206,23 +227,23 @@ namespace Kst
                     {
                         case SkinType.Default:
                             Debug.Log("닭 스킨입니다.");
-                            controller = Resources.Load<RuntimeAnimatorController>("Sprites/Animations/ChickenAnimation/ChickenAnimation");
+                            controller = RuntimeAc("ChickenAnimation/ChickenAnimation");
                             break;
                         case SkinType.OwletMonster:
                             Debug.Log("올빼미 스킨입니다.");
-                            controller = Resources.Load<RuntimeAnimatorController>("Sprites/Animations/OwletMonsterAnimation/OwletMonsterAnimatorController");
+                            controller = RuntimeAc("OwletMonsterAnimation/OwletMonsterAnimatorController");
                             break;
                         case SkinType.Pig:
                             Debug.Log("돼지 스킨입니다.");
-                            controller = Resources.Load<RuntimeAnimatorController>("Sprites/Animations/PigAnimation/PigAnimatorController");
+                            controller = RuntimeAc("PigAnimation/PigAnimatorController");
                             break;
                         case SkinType.PinkMonster:
                             Debug.Log("핑크몬스터 스킨입니다.");
-                            controller = Resources.Load<RuntimeAnimatorController>("Sprites/Animations/PinkMonsterAnimation/PinkMonsterAnimatorController");
+                            controller = RuntimeAc("PinkMonsterAnimation/PinkMonsterAnimatorController");
                             break;
                         case SkinType.DudeMonster:
                             Debug.Log("파란몬스터 스킨입니다.");
-                            controller = Resources.Load<RuntimeAnimatorController>("Sprites/Animations/DudeMonsterAnimation/DudeMonsterAnimatorController");
+                            controller = RuntimeAc("DudeMonsterAnimation/DudeMonsterAnimatorController");
                             break;
                         default:
                             break;
@@ -230,9 +251,7 @@ namespace Kst
 
                     // 컨트롤러가 Null이 아니라면 스킨에 맞는 컨트롤러 체인지
                     if (controller != null)
-                    {
                         _animator.runtimeAnimatorController = controller;
-                    }
                 }
 
                 Debug.Log("적용이 되었습니다.");

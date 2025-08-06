@@ -14,28 +14,33 @@ namespace Kst
         public DatabaseReference NormalEggRef { get { return _normalEggRef; } set { _normalEggRef = value; } }
         public event Action<int> OnEggChanged;
 
-        void OnEnable()
-        {
-            StartCoroutine(DelaySubscribe());
-        }
+        void OnEnable() => StartCoroutine(DelaySubscribe());
         void OnDisable()
         {
-            if (_normalEggRef != null) _normalEggRef.ValueChanged -= OnGoldValueChanged;
+            if (_normalEggRef != null)
+                _normalEggRef.ValueChanged -= OnGoldValueChanged;
         }
 
+        /// <summary>
+        /// FirebaseManager의 유저가 없을 경우 대기 후 구독 처리
+        /// </summary>
         private IEnumerator DelaySubscribe()
         {
             while (CYH_FirebaseManager.User == null)
                 yield return null;
 
-
             InitEgg();
         }
+
+        /// <summary>
+        /// Model과 Firebase와 재화 연동
+        /// </summary>
         void InitEgg()
         {
             string uid = CYH_FirebaseManager.User.UserId;
             _normalEggRef = CYH_FirebaseManager.DataReference.Child("UserData").Child(uid).Child("gold");
 
+            //해당 유저의 재화 불러오기
             _normalEggRef.GetValueAsync().ContinueWithOnMainThread(task =>
             {
                 if (task.IsFaulted || task.IsCanceled)
@@ -56,10 +61,18 @@ namespace Kst
                     Debug.Log("에그 없음");
                     _normalEggRef.SetValueAsync(0);
                 }
+
+                //데이터베이스 연동 후 알림.
                 OnEggChanged?.Invoke(_normalEgg);
             });
+
+            //데이터베이스에서의 재화량 변경 시 이벤트 구독
             _normalEggRef.ValueChanged += OnGoldValueChanged;
         }
+
+        /// <summary>
+        /// 재화량 변경 시 재화량 갱신
+        /// </summary>
         void OnGoldValueChanged(object send, ValueChangedEventArgs e)
         {
             if (e.Snapshot.Exists && int.TryParse(e.Snapshot.Value.ToString(), out int re))
@@ -69,7 +82,11 @@ namespace Kst
                 Debug.Log("에그 갱신");
             }
         }
-        //골드 증가 로직
+
+        /// <summary>
+        /// 골드 증가 로직
+        /// </summary>
+        /// <param name="amount"></param>
         public void IncreaseEgg(int amount)
         {
             if (!IsUserLogin() || !IsEggRefInit()) return;
@@ -82,11 +99,14 @@ namespace Kst
                 return TransactionResult.Success(mutableData);
             });
         }
-        //골드 감소 로직
+
+        /// <summary>
+        /// 골드 감소 로직
+        /// </summary>
+        /// <param name="amount"></param>
         public void DecreaseEgg(int amount)
         {
             if (!IsUserLogin() || !IsEggRefInit()) return;
-
 
             _normalEggRef.RunTransaction(mutableData =>
             {
@@ -100,7 +120,10 @@ namespace Kst
             });
         }
 
-        //골드 데이터참조 초기화 확인
+        /// <summary>
+        /// 골드 데이터참조 초기화 확인
+        /// </summary>
+        /// <returns></returns>
         private bool IsEggRefInit()
         {
             if (_normalEggRef == null)
@@ -111,7 +134,10 @@ namespace Kst
             return true;
         }
 
-        //로그인 여부 확인 로직
+        /// <summary>
+        /// 로그인 여부 확인 로직
+        /// </summary>
+        /// <returns></returns>
         private bool IsUserLogin()
         {
             if (CYH_FirebaseManager.User == null)

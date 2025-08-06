@@ -3,7 +3,6 @@ using Firebase.Extensions;
 using UnityEngine;
 using UnityEngine.UI;
 using System;
-using Photon.Pun;
 
 
 public class GuestLogin : MonoBehaviour

@@ -1,23 +1,30 @@
 using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
-using ExitGames.Client.Photon;
 using Cinemachine;
 
 namespace Kst
 {
     public class Map3_NetworkManager : MonoBehaviourPunCallbacks
     {
-        [SerializeField] PlateSpawner _plateSpawner;
-        [SerializeField] UIManager_Map3 _UIManager;
+        public bool _isStart = false;
+        [Header("Managers")]
         [SerializeField] GameManager_Map3 _gameManager;
-        //스폰
+        [SerializeField] UIManager_Map3 _UIManager;
+        [SerializeField] PlateSpawner _plateSpawner;
+        
+        [Header("Player")]
+        [SerializeField] private Transform spawnPoint; // 플레이어 생성 위치
         [SerializeField] private string playerPrefabName = "Map3_Player";
         [SerializeField] private Map3BtnUI _btnUI;
-        [SerializeField] private Transform spawnPoint; // 플레이어 생성 위치
-        public bool _isStart = false;
+
+        //Camera
         [SerializeField] private CinemachineVirtualCamera _virtualCam;
 
+        /// <summary>
+        /// 씬 이동 동기화 해제
+        /// 방장이 방을 떠나도 게임은 진행할 수 있도록.
+        /// </summary>
         void Awake() => PhotonNetwork.AutomaticallySyncScene = false;
 
         void Start()
@@ -60,21 +67,19 @@ namespace Kst
         // 플레이어 생성
         private void PlayerSpawn()
         {
-            // if (_isStart) return;
-
             // 커스텀 속성에서 스킨 이름 가져오기
             string skinName = "Default";
             if (PhotonNetwork.LocalPlayer.CustomProperties.TryGetValue("Skin", out object skinObj))
-            {
                 skinName = skinObj.ToString();
-            }
 
             GameObject go = PhotonNetwork.Instantiate(playerPrefabName, spawnPoint.position, Quaternion.identity, 0, new object[] { skinName });
             if (go.TryGetComponent(out PhotonView pv) && pv.IsMine)
             {
                 Map3_PlayerController player = go.GetComponent<Map3_PlayerController>();
+                //버튼 설정
                 _btnUI.Init(player);
 
+                //카메라 설정
                 _virtualCam.Follow = go.transform;
                 _virtualCam.LookAt = go.transform;
             }
