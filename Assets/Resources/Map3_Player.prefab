@@ -690,8 +690,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c9ed648d772834a46a18ba54985c8271, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _angleRange: 45
-  _rotateSpeed: 40
   arrowStart: {fileID: 3734870906641237169}
   arrowEnd: {fileID: 8568222856949683508}
   _arrowPivot: {fileID: 3103681241771309822}
