@@ -18,6 +18,5 @@ public class Map3BtnUI : MonoBehaviour
         rightBtn.Init(player);
         shootBtn.Init(shooter);
         shooter.SetImg(_cooldownImg);
-
     }
 }

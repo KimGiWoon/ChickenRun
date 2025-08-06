@@ -12,6 +12,12 @@ namespace Kst
 
         public event Action<List<SkinData>> OnSkinDataLoaded;
 
+        /// <summary>
+        /// 상점 패널의 스킨 데이터 로딩 로직
+        /// Firebase의 데이터베이스에서 상점 스킨 리스트와 유저 스킨 보유 리스트 불러오기
+        /// ShopDataBase에서 이미지 리소스 연동
+        /// </summary>
+        /// <param name="uid">현재 로그인한 유저의 UID</param>
         public void LoadSkinsData(string uid)
         {
             var skinListRef = FirebaseDatabase.DefaultInstance.GetReference("ShopData/SkinData");
@@ -27,7 +33,7 @@ namespace Kst
                     return;
                 }
                 DataSnapshot snapshot = shopTask.Result;
-                
+
                 //유저 스킨 정보 불러오기
                 userskinRef.GetValueAsync().ContinueWithOnMainThread(userTask =>
                 {

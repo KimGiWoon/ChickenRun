@@ -2,7 +2,6 @@ using UnityEngine;
 
 namespace Kst
 {
-
     public class Plate : MonoBehaviour
     {
         [SerializeField] public PlateType _type;

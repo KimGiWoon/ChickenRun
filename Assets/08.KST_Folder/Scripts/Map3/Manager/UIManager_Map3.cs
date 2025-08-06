@@ -54,12 +54,6 @@ public class UIManager_Map3 : MonoBehaviourPun
 
     private void Start()
     {
-        // // 달걀 획득 UI 이벤트 구독
-        // GameManager_Map3.Instance.OnEggCountChange += UpdateGetEggUI;
-        // GameManager_Map3.Instance.OnEggCountChange += UpdateGetEggUI;
-        // 시작할 시 획득한 달걀은 0이므로 UI설정
-        // UpdateGetEggUI(0);
-
         InGameUIInit();
         SoundVolumeInit();
     }
@@ -73,22 +67,12 @@ public class UIManager_Map3 : MonoBehaviourPun
 
     private void OnDestroy()
     {
-        // // 달걀 획득 UI 이벤트 해제
-        // GameManager_Map3.Instance.OnEggCountChange -= UpdateGetEggUI;
-        // GameManager_Map3.Instance.OnEggCountChange -= UpdateGetEggUI;
-
         // 메모리 누수 방지로 리셋
         _optionButton.onClick.RemoveListener(OnOptionWindow);
         _backButton.onClick.RemoveListener(OffOptionWindow);
         _exitButton.onClick.RemoveListener(OnExitPlayGame);
         _emoticonButton.onClick.RemoveListener(OnEmoticonPanel);
     }
-
-    // 달걀 획득 UI
-    // private void UpdateGetEggUI(int totalEgg)
-    // {
-    //     _eggCountText.text = $"x {totalEgg}";
-    // }
 
     // 버튼, 토글 UI 초기화
     private void InGameUIInit()
@@ -191,8 +175,6 @@ public class UIManager_Map3 : MonoBehaviourPun
     // 나가기 버튼 클릭
     private void OnExitPlayGame()
     {
-        // string exitPlayer = PhotonNetwork.LocalPlayer.NickName;
-
         GameManager_Map3.Instance.StopStopWatch();
         SoundManager.Instance.StopBGM();
         _networkManager._isStart = false;
@@ -210,12 +192,6 @@ public class UIManager_Map3 : MonoBehaviourPun
             PhotonNetwork.LoadLevel("MainScene");
             PhotonNetwork.LeaveRoom();
         }
-
-        // 현재의 방을 나가기
-        //PhotonNetwork.LeaveRoom();
-
-        // 로비 씬이 있으면 추가해서 씬 이동
-        // PhotonNetwork.LoadLevel("MainScene");
     }
 
     // 플레이어 위치 세팅
