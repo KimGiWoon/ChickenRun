@@ -145,7 +145,13 @@ public class SignUpPanel : UIBase
                     SendEmailVerification(user);
 
                     // 팝업 (이메일 전송)
-                    ShowPopup("인증 메일이 발송되었습니다.");
+                    PopupManager.Instance.ShowOKPopup("인증 메일이 발송되었습니다.", "OK", () =>
+                    {
+                        PopupManager.Instance.HidePopup();
+                        
+                        // SignUp 팝업 닫는 이벤트
+                        OnClickEmailCheck?.Invoke();
+                    });
 
                     // 새로고침
                     user.ReloadAsync();

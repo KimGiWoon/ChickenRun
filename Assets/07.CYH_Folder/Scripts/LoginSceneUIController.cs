@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class LoginSceneUIManager : MonoBehaviour
 {
     private enum LoginUIType
@@ -9,6 +10,7 @@ public class LoginSceneUIManager : MonoBehaviour
         MainPanel,
         LoginPanel,
         LoginOptionPanel,
+        EmailLoginPanel,
         SignUpPanel,
         LinkPanel,
         AccountPanel,
@@ -59,7 +61,7 @@ public class LoginSceneUIManager : MonoBehaviour
                         HideUI(LoginUIType.MainPanel);
                         Debug.Log("CurrentUser 있음 -> GameStartPanel");
                     }
-   
+
                     else
                     {
                         Debug.Log($"IsLoggedIn : {CYH_FirebaseManager.Instance.IsLoggedIn()}");
@@ -78,19 +80,56 @@ public class LoginSceneUIManager : MonoBehaviour
                 //loginPanel.OnClickSocialLogin = () => ShowUI(LoginUIType.LoginOptionPanel);
             }
 
+            else if (ui is LoginOptionPanel loginOptionPanel)
+            {
+                // 팝업 닫기 버튼
+                loginOptionPanel.OnClickClosePopup = () => HideUI(LoginUIType.LoginOptionPanel);
+
+                // 이메일 로그인 버튼
+                loginOptionPanel.OnClickEmailLogin = () =>
+                {
+                    ShowUI(LoginUIType.EmailLoginPanel);
+                    HideUI(LoginUIType.LoginOptionPanel);
+                };
+            }
+
+            else if (ui is EmailLoginPanel emailLoginPanel)
+            {
+                // 닫기 버튼
+                emailLoginPanel.OnClickClosePopup = () => HideUI(LoginUIType.EmailLoginPanel);
+
+                // 이메일 인증 팝업 확인 버튼
+                emailLoginPanel.OnClickEmailConfirm = () => HideUI(LoginUIType.EmailLoginPanel);
+
+                // 이메일 로그인 성공
+                emailLoginPanel.LoginCompleted = () =>
+                {
+                    ShowUI(LoginUIType.GameStartPanel);
+                    HideUI(LoginUIType.EmailLoginPanel);
+                    HideUI(LoginUIType.LoginPanel);
+                };
+            }
+
             else if (ui is SignUpPanel signUpPanel)
             {
+                // 닫기 버튼
                 signUpPanel.OnClickClosePopup = () => HideUI(LoginUIType.SignUpPanel);
+
+                // 이메일 발송 팝업 확인 버튼
+                signUpPanel.OnClickEmailCheck = () => HideUI(LoginUIType.SignUpPanel);
             }
 
             else if (ui is SocialLoginPanel socialPanel)
             {
+                // 닫기 버튼
                 socialPanel.OnClickClosePopup = () => HideUI(LoginUIType.LoginOptionPanel);
             }
 
             else if (ui is LinkPanel linkPanel)
             {
+                // 닫기 버튼
                 linkPanel.OnClickClosePopup = () => HideUI(LoginUIType.LinkPanel);
+                
                 // 회원탈퇴 버튼
                 linkPanel.OnClickSignOut = () =>
                 {
@@ -133,7 +172,6 @@ public class LoginSceneUIManager : MonoBehaviour
         // 게스트 로그인 성공
         _guestLogin.LoginCompleted = () =>
         {
-            Debug.Log("게스트 로그인 성공 후 ShowUI");
             ShowUI(LoginUIType.GameStartPanel);
             HideUI(LoginUIType.LoginPanel);
             HideUI(LoginUIType.LoginOptionPanel);

@@ -2,9 +2,7 @@ using Firebase.Auth;
 using Firebase.Extensions;
 using Photon.Pun.Demo.Cockpit;
 using System;
-using TMPro;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 /// <summary>
