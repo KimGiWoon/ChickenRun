@@ -640,6 +640,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 540031459453988002}
     m_Modifications:
+    - target: {fileID: 456808065525435627, guid: d6e95f583300550469a24eb791f0948f, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 583455667604096275, guid: d6e95f583300550469a24eb791f0948f, type: 3}
       propertyPath: m_SortingOrder
       value: 0
@@ -652,13 +656,25 @@ PrefabInstance:
       propertyPath: m_AdditionalShaderChannelsFlag
       value: 25
       objectReference: {fileID: 0}
+    - target: {fileID: 619578634817202071, guid: d6e95f583300550469a24eb791f0948f, type: 3}
+      propertyPath: m_Color.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2076271078734290197, guid: d6e95f583300550469a24eb791f0948f, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 2076271078734290197, guid: d6e95f583300550469a24eb791f0948f, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 2076271078734290197, guid: d6e95f583300550469a24eb791f0948f, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 1.78
       objectReference: {fileID: 0}
     - target: {fileID: 2076271078734290197, guid: d6e95f583300550469a24eb791f0948f, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 3
+      value: 1.74
       objectReference: {fileID: 0}
     - target: {fileID: 2875492642332051281, guid: d6e95f583300550469a24eb791f0948f, type: 3}
       propertyPath: m_Name
@@ -670,15 +686,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2877371983235294655, guid: d6e95f583300550469a24eb791f0948f, type: 3}
       propertyPath: m_LocalScale.x
-      value: 2
+      value: 0.8
       objectReference: {fileID: 0}
     - target: {fileID: 2877371983235294655, guid: d6e95f583300550469a24eb791f0948f, type: 3}
       propertyPath: m_LocalScale.y
-      value: 2
+      value: 0.8
       objectReference: {fileID: 0}
     - target: {fileID: 2877371983235294655, guid: d6e95f583300550469a24eb791f0948f, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: 0.015
       objectReference: {fileID: 0}
     - target: {fileID: 3859214661618437248, guid: d6e95f583300550469a24eb791f0948f, type: 3}
       propertyPath: m_Pivot.x
@@ -768,10 +784,10 @@ PrefabInstance:
     m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 3859214661618437248, guid: d6e95f583300550469a24eb791f0948f, type: 3}
-      insertIndex: -1
+      insertIndex: 0
       addedObject: {fileID: 4962328972872319484}
     - targetCorrespondingSourceObject: {fileID: 3859214661618437248, guid: d6e95f583300550469a24eb791f0948f, type: 3}
-      insertIndex: -1
+      insertIndex: 1
       addedObject: {fileID: 6429394993045715842}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d6e95f583300550469a24eb791f0948f, type: 3}
