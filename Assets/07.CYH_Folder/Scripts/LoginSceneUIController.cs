@@ -6,6 +6,7 @@ public class LoginSceneUIManager : MonoBehaviour
 {
     private enum LoginUIType
     {
+        MainPanel,
         LoginPanel,
         SocialPanel,
         SignUpPanel,
@@ -27,27 +28,49 @@ public class LoginSceneUIManager : MonoBehaviour
             yield return null;
         }
 
-        // CurrentUser 존재 o ->  GameStartPanel
-        if (CYH_FirebaseManager.Instance.IsLoggedIn())
-        {
-            Debug.Log($"IsLoggedIn : {CYH_FirebaseManager.Instance.IsLoggedIn()}");
-            ShowUI(LoginUIType.GameStartPanel);
-            HideUI(LoginUIType.LoginPanel);
-            Debug.Log("CurrentUser 있음 -> GameStartPanel");
-        }
-        // CurrentUser 존재 x -> Login
-        else
-        {
-            Debug.Log($"IsLoggedIn : {CYH_FirebaseManager.Instance.IsLoggedIn()}");
-            ShowUI(LoginUIType.LoginPanel);
-            Debug.Log("CurrentUser 없음 -> LoginPanel");
-        }
+        //// CurrentUser 존재 o ->  GameStartPanel
+        //if (CYH_FirebaseManager.Instance.IsLoggedIn())
+        //{
+        //    Debug.Log($"IsLoggedIn : {CYH_FirebaseManager.Instance.IsLoggedIn()}");
+        //    ShowUI(LoginUIType.GameStartPanel);
+        //    HideUI(LoginUIType.LoginPanel);
+        //    Debug.Log("CurrentUser 있음 -> GameStartPanel");
+        //}
+        //// CurrentUser 존재 x -> MainPanel
+        //else
+        //{
+        //    Debug.Log($"IsLoggedIn : {CYH_FirebaseManager.Instance.IsLoggedIn()}");
+        //    ShowUI(LoginUIType.MainPanel);
+        //    Debug.Log("CurrentUser 없음 -> MainPanel");
+        //}
 
-        //ShowUI(LoginUIType.Login);
+        ShowUI(LoginUIType.MainPanel);
 
         foreach (var ui in _uiList)
         {
-            if (ui is LoginPanel loginPanel)
+            if (ui is MainPanel_LoginScene mainPanel)
+            {
+                mainPanel.OnClickTouch = () =>
+                {
+                    if (CYH_FirebaseManager.Instance.IsLoggedIn())
+                    {
+                        Debug.Log($"IsLoggedIn : {CYH_FirebaseManager.Instance.IsLoggedIn()}");
+                        ShowUI(LoginUIType.GameStartPanel);
+                        HideUI(LoginUIType.MainPanel);
+                        Debug.Log("CurrentUser 있음 -> GameStartPanel");
+                    }
+   
+                    else
+                    {
+                        Debug.Log($"IsLoggedIn : {CYH_FirebaseManager.Instance.IsLoggedIn()}");
+                        ShowUI(LoginUIType.LoginPanel);
+                        HideUI(LoginUIType.MainPanel);
+                        Debug.Log("CurrentUser 없음 -> LoginPanel");
+                    }
+                };
+            }
+
+            else if (ui is LoginPanel loginPanel)
             {
                 loginPanel.OnClickSignup = () => ShowUI(LoginUIType.SignUpPanel);
                 loginPanel.OnClickSocialLogin = () => ShowUI(LoginUIType.SocialPanel);
