@@ -33363,7 +33363,7 @@ MonoBehaviour:
   _musicSlider: {fileID: 179935297}
   _effectSlider: {fileID: 179935296}
   _camModeCheckToggle: {fileID: 179935295}
-  _cameraController: {fileID: 0}
+  _cameraController: {fileID: 1338863300}
   _playerEmoticonController: {fileID: 0}
   _emoticonPanel: {fileID: 976280087}
   _emoticonSprite:
