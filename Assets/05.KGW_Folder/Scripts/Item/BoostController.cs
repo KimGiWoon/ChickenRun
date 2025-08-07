@@ -9,13 +9,13 @@ public class BoostController : MonoBehaviourPunCallbacks, IPunObservable
     [SerializeField] float _boostPower = 3f;
     [SerializeField] float _boostTime = 15f;
     [SerializeField] PlayerController_Map1 _playerController;
-    [SerializeField] Animator _dashAni;
+    [SerializeField] public Animator _dashAni;
 
     public bool _hasBoostItem = false;
-    bool _isBoost = false;
-    int _currentAnimatorHash;
+    public bool _isBoost = false;
+    public int _currentAnimatorHash;
     int _reciveAnimatorHash;
-    Coroutine _boostCoroutine;
+    public Coroutine _boostCoroutine;
 
     public readonly int DashIdle_Hash = Animator.StringToHash("DashIdle");
     public readonly int DashCharge_Hash = Animator.StringToHash("DashCharge");
@@ -85,15 +85,15 @@ public class BoostController : MonoBehaviourPunCallbacks, IPunObservable
 
         yield return new WaitForSeconds(1.5f);
 
+        // 대쉬 런 애니메이션
+        _currentAnimatorHash = DashRun_Hash;
+        _dashAni.Play(DashRun_Hash);
+
+        // 대쉬 사운드 재생
+        SoundManager.Instance.PlaySFX(SoundManager.Sfxs.SFX_Dash);
+
         while (timer < _boostTime)
         {
-            // 대쉬 런 애니메이션
-            _currentAnimatorHash = DashRun_Hash;
-            _dashAni.Play(DashRun_Hash);
-
-            // 대쉬 사운드 재생
-            SoundManager.Instance.PlaySFX(SoundManager.Sfxs.SFX_Dash);
-
             // 앞으로 전진하고 점프 가능
             _playerController._playerRigid.velocity = new Vector2(direction.x * _boostPower, _playerController._playerRigid.velocity.y);
 

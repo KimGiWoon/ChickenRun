@@ -1,7 +1,9 @@
+using JetBrains.Annotations;
 using Photon.Pun;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -25,6 +27,7 @@ public class PlayerController_Map1 : MonoBehaviourPun, IPunObservable, IPunInsta
     Vector2 _jumpDir;
     Vector3 _currentPosition;
     Quaternion _currentRotation;
+    GameObject _ItemObj;
     float _touchStartTime;
     float _touchEndtTime;
     float _touchDuration;
@@ -253,7 +256,11 @@ public class PlayerController_Map1 : MonoBehaviourPun, IPunObservable, IPunInsta
                 SoundManager.Instance.PlaySFX(SoundManager.Sfxs.SFX_Item);
 
                 _boostController.GetBoostItem();
-                //Destroy(collision.gameObject);
+                _ItemObj = collision.gameObject;
+                collision.gameObject.SetActive(false);
+
+                Invoke(nameof(ItemRespawn), 3f);
+
             }
         }
 
@@ -263,6 +270,22 @@ public class PlayerController_Map1 : MonoBehaviourPun, IPunObservable, IPunInsta
             Debug.Log("물에 접촉");
             // 게임의 처음 위치로 이동
             _playerRigid.velocity = Vector2.zero;
+
+            if (_boostController._isBoost)
+            {
+                _boostController._isBoost = false;
+
+                if (_boostController._boostCoroutine != null)
+                {
+                    StopCoroutine(_boostController._boostCoroutine);
+                    _boostController._boostCoroutine = null;
+                }
+
+                // 대쉬 중 입수하면 대쉬 초기화
+                _boostController._currentAnimatorHash = _boostController.DashIdle_Hash;
+                _boostController._dashAni.Play(_boostController.DashIdle_Hash);
+            }
+
             gameObject.transform.position = _gameManager._startPos;
         }
 
@@ -296,6 +319,12 @@ public class PlayerController_Map1 : MonoBehaviourPun, IPunObservable, IPunInsta
             }
         }
 
+    }
+
+    // 아이템 재생성
+    private void ItemRespawn()
+    {
+        _ItemObj.SetActive(true);
     }
 
     // 도착한 플레이어
