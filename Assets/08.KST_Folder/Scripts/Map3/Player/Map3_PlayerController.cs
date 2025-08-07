@@ -14,6 +14,8 @@ namespace Kst
         private float _moveDir = 0f;
 
         [SerializeField] SpriteRenderer _playerRenderer;
+        [SerializeField] SpriteRenderer _playerArrowRenderer;
+
         // 애니메이션
         public readonly int Idle_Hash = Animator.StringToHash("Idle");
         public readonly int Move_Hash = Animator.StringToHash("Move");
@@ -112,6 +114,10 @@ namespace Kst
             Color color = _playerRenderer.color;
             color.a = 0.5f;
             _playerRenderer.color = color;
+
+            Color colorArrow = _playerArrowRenderer.color;
+            colorArrow.a = 0.5f;
+            _playerArrowRenderer.color = color;
         }
 
         private void PlayerStateUpdate()

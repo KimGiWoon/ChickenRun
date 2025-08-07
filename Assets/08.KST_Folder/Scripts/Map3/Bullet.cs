@@ -10,6 +10,7 @@ namespace Kst
         private Vector2 _moveDir;
         private PooledObject _pooledObj;
         private int _actorNum;
+        [SerializeField] SpriteRenderer _bulletSr;
 
         void Awake() => _pooledObj = GetComponent<PooledObject>();
 
@@ -25,7 +26,22 @@ namespace Kst
             _moveDir = dir.normalized;
             _actorNum = actorNum;
 
+            if (_actorNum == PhotonNetwork.LocalPlayer.ActorNumber)
+                SetAlpha(1f);
+            else
+                SetAlpha(0.5f);
+
             StartCoroutine(AutoReturn());
+        }
+
+        private void SetAlpha(float amount)
+        {
+            if (_bulletSr != null)
+            {
+                Color color = _bulletSr.color;
+                color.a = amount;
+                _bulletSr.color = color;
+            }
         }
 
         /// <summary>
