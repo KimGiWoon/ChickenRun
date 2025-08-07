@@ -13,7 +13,11 @@ public class ClearUIController_Map2 : MonoBehaviour
     private void OnEnable()
     {
         _time = new WaitForSeconds(_openTime);
-        _clearRoutine = StartCoroutine(ClearPanelOpen());
+        PhotonNetwork.AutomaticallySyncScene = true;
+        if (PhotonNetwork.IsMasterClient)
+        {
+            _clearRoutine = StartCoroutine(ClearPanelOpen());
+        }
     }
 
     // 게임 클리어 패널 표시 코루틴

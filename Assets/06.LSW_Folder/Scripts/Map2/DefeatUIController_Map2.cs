@@ -14,12 +14,17 @@ public class DefeatUIController_Map2 : MonoBehaviour
     {
         _time = new WaitForSeconds(_openTime);
 
+        PhotonNetwork.AutomaticallySyncScene = true;
+        
         if (_defeatRoutine == null)
         {
             if (GameManager_Map2.Instance.IsLose)
             {
-                // 실패 코루틴 스타트
-                _defeatRoutine = StartCoroutine(DefeatPanelOpen());
+                PhotonNetwork.AutomaticallySyncScene = true;
+                if (PhotonNetwork.IsMasterClient)
+                {
+                    _defeatRoutine = StartCoroutine(DefeatPanelOpen());
+                }
             }
             else
             {
@@ -36,12 +41,12 @@ public class DefeatUIController_Map2 : MonoBehaviour
     // 게임 실패 패널 표시 코루틴
     private IEnumerator DefeatPanelOpen()
     {
+        
         gameObject.SetActive(true);
         SoundManager.Instance.PlaySFX(SoundManager.Sfxs.SFX_Defeat);
 
         yield return _time;
-
-        // 씬 이동
+        
         PhotonNetwork.LoadLevel("MainScene");
     }
 
@@ -53,7 +58,6 @@ public class DefeatUIController_Map2 : MonoBehaviour
 
         yield return _time;
 
-        // 씬 이동
         PhotonNetwork.LoadLevel("MainScene");
         PhotonNetwork.LeaveRoom();
     }

@@ -9,6 +9,7 @@ public class NetworkManager_Map2 : MonoBehaviourPunCallbacks
 {
     private int _currentPlayer;
     private bool _isStarted;
+    private Coroutine _startRoutine;
 
     private void Awake()
     {
@@ -28,9 +29,9 @@ public class NetworkManager_Map2 : MonoBehaviourPunCallbacks
         PhotonNetwork.AutomaticallySyncScene = false;
         PlayerSpawn();
         photonView.RPC(nameof(NotifyPlayer), RpcTarget.MasterClient);
-        if (!_isStarted)
+        if (!_isStarted && _startRoutine == null)
         {
-            StartCoroutine(DelayStart());
+            _startRoutine = StartCoroutine(DelayStart());
         }
     }
 
@@ -41,6 +42,8 @@ public class NetworkManager_Map2 : MonoBehaviourPunCallbacks
         {
             photonView.RPC(nameof(ReadyGame), RpcTarget.AllViaServer);
         }
+
+        _startRoutine = null;
     }
     
     // 마스터 서버 접속
@@ -48,23 +51,11 @@ public class NetworkManager_Map2 : MonoBehaviourPunCallbacks
     {
         PhotonNetwork.JoinRandomOrCreateRoom();
     }
-
-    // 인게임 진입 시 호출되는 이벤트 
-    public override void OnJoinedRoom()
-    {
-        PhotonNetwork.LocalPlayer.NickName = $"Player{PhotonNetwork.LocalPlayer.ActorNumber}";
-        string nickname = PhotonNetwork.LocalPlayer.NickName;
-
-        Hashtable table = new Hashtable { { "Nickname", nickname } };
-        PhotonNetwork.LocalPlayer.SetCustomProperties(table);
-
-        PlayerSpawn();
-        photonView.RPC(nameof(NotifyPlayer), RpcTarget.MasterClient);
-    }
+   
 
     public override void OnLeftRoom()
     {
-        //SceneManager.LoadScene("Room")
+        PhotonNetwork.LoadLevel("MainScene");
         Debug.Log("게임을 나갑니다");
     }
     
@@ -103,10 +94,6 @@ public class NetworkManager_Map2 : MonoBehaviourPunCallbacks
     private void NotifyPlayer()
     {
         _currentPlayer++;
-        if (PhotonNetwork.IsMasterClient && _currentPlayer >= PhotonNetwork.CurrentRoom.MaxPlayers)
-        {
-            photonView.RPC(nameof(ReadyGame), RpcTarget.AllViaServer);
-        }
     }
     
     [PunRPC]
