@@ -144,17 +144,19 @@ static partial class Utility
     /// IsOnline = true
     /// </summary>
     /// <returns></returns>
-    public static async Task<bool> isOnline()
+    public static async Task<bool> IsOnline()
     {
         string uid = CYH_FirebaseManager.Auth.CurrentUser.UserId;
         DatabaseReference userRef = CYH_FirebaseManager.DataReference.Child("UserData").Child(uid).Child("IsOnline");
+
+        Debug.Log("IsOnline() 호출 완료");
 
         // 현재 접속 상태 확인
         DataSnapshot snapshot = await userRef.GetValueAsync();
         bool isOnline = snapshot.Exists && snapshot.Value.ToString() == "true";
         if (isOnline)
         {
-            Debug.LogError("isOnline: 이미 로그인된 계정");
+            Debug.LogError("IsOnline: 이미 로그인된 계정");
             return false;
         }
 
@@ -173,7 +175,7 @@ static partial class Utility
     /// IsOnline = false
     /// </summary>
     /// <returns></returns>
-    public static async Task isSetOffline()
+    public static async Task IsSetOffline()
     {
         string uid = CYH_FirebaseManager.Auth.CurrentUser.UserId;
         DatabaseReference userRef = CYH_FirebaseManager.DataReference.Child("UserData").Child(uid).Child("IsOnline");

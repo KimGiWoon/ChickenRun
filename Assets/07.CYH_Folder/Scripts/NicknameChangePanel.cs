@@ -50,6 +50,12 @@ public class NicknameChangePanel : UIBase
 
     private void ChanegeNickname()
     {
+        if (string.IsNullOrEmpty(_nicknameField.text))
+        {
+            ShowPopup("닉네임을 입력해주세요.");
+            return;
+        }
+
         // 닉네임 글자 수 체크
         if (_nicknameField.characterLimit > 6)
         {
