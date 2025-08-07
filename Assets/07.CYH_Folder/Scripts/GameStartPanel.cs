@@ -182,10 +182,9 @@ public class GameStartPanel : UIBase
     }
 
     /// <summary>
-    /// 유저 온라인 체크 및 동시 접속 제한
-    /// IsOnline = true
+    /// 계정 동시 접속을 제한하는 메서드
+    /// 현재 유저의 온라인 상태를 확인하고 이미 접속 중이라면 로그인 제한
     /// </summary>
-    /// <returns></returns>
     public async Task<bool> IsOnline()
     {
         FirebaseAuth auth = CYH_FirebaseManager.Auth;
@@ -221,7 +220,7 @@ public class GameStartPanel : UIBase
         }
 
         // 로그인 -> IsOnline = true로 설정
-        // disconnect -> 자동 false
+        // disconnect -> 자동 IsOnline = false
         await userRef.SetValueAsync(true);
         Debug.Log($"로그인 / 유저 UID : {uid} IsOnline: {snapshot.Value}");
 
@@ -231,10 +230,9 @@ public class GameStartPanel : UIBase
     }
 
     /// <summary>
-    /// 유저 로그아웃 시 호출
+    /// 현재 유저의 온라인 상태를 false로 설정하고 로그아웃 처리하는 메서드
     /// IsOnline = false
     /// </summary>
-    /// <returns></returns>
     public static async Task IsSetOffline()
     {
         Debug.Log("IsSetOffline 호출 완료");
@@ -244,5 +242,4 @@ public class GameStartPanel : UIBase
         await userRef.SetValueAsync(false);
         Debug.Log($"로그아웃  / 유저 UID : {uid} IsOnline: false");
     }
-
 }

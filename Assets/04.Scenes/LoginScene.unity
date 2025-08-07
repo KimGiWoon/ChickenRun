@@ -6417,6 +6417,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2bea457ffadcc4e42a58918bce360d68, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _maxOnlineUser: 0
   _loginButton: {fileID: 1121620500}
   _signupButton: {fileID: 1907427290}
 --- !u!114 &713239657
@@ -14230,6 +14231,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2bea457ffadcc4e42a58918bce360d68, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _maxOnlineUser: 5
   _loginButton: {fileID: 2128643558}
   _signupButton: {fileID: 896720086}
 --- !u!114 &1628973895

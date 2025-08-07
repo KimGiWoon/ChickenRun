@@ -78,6 +78,13 @@ public class LoginSceneUIManager : MonoBehaviour
                 loginPanel.OnClickLogin = () => ShowUI(LoginUIType.LoginOptionPanel);
                 loginPanel.OnClickSignup = () => ShowUI(LoginUIType.SignUpPanel);
                 //loginPanel.OnClickSocialLogin = () => ShowUI(LoginUIType.LoginOptionPanel);
+                
+                // 접속 정원 초과
+                loginPanel.MaxUser = () =>
+                {
+                    HideUI(LoginUIType.LoginPanel);
+                    ShowUI(LoginUIType.MainPanel);
+                };
             }
 
             else if (ui is LoginOptionPanel loginOptionPanel)
