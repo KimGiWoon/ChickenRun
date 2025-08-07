@@ -28,6 +28,9 @@ public class GameStartPanel : UIBase
 
             // 포톤 초기화
             CYH_FirebaseManager.Instance.OnFirebaseLoginSuccess();
+
+            // BGM 멈춤
+            SoundManager.Instance.StopBGM();
         });
 
         _signOutButton.onClick.AddListener(() =>

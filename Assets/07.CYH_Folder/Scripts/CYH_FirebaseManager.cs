@@ -124,7 +124,6 @@ public class CYH_FirebaseManager : Singleton<CYH_FirebaseManager>
     /// true: 로그인된 유저가 있음 (자동 로그인 상태) -> GameStartPanel
     /// false: 로그인된 유저가 없음 (로그인 필요) -> LoginPanel
     /// </summary>
-    /// <returns></returns>
     //public bool IsLoggedIn()
     //{
     //    Debug.Log($"IsLoggedIn 실행");
@@ -136,7 +135,6 @@ public class CYH_FirebaseManager : Singleton<CYH_FirebaseManager>
     /// true: 로그인된 유저가 있음 (자동 로그인 상태) -> GameStartPanel
     /// false: 로그인된 유저가 없음 (로그인 필요) -> LoginPanel
     /// </summary>
-    /// <returns></returns>
     public bool IsLoggedIn()
     {
         Debug.Log($"IsLoggedIn 실행");
