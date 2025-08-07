@@ -275,16 +275,16 @@ public class Database_RecordManager : Singleton<Database_RecordManager>
                 int recordValue = 0;
                 switch (record)
                 {
-                    case "Map1Data":
+                    case "Map1Record":
                         recordValue = (int)rankData.Map1Record;
                         break;
-                    case "Map2Data":
+                    case "Map2Record":
                         recordValue = (int)rankData.Map2Record;
                         break;
-                    case "Map3Data":
+                    case "Map3Record":
                         recordValue = (int)rankData.Map3Record;
                         break;
-                    case "Map4Data":
+                    case "Map4Record":
                         recordValue = (int)rankData.Map4Record;
                         break;
                 }
