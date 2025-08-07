@@ -11,16 +11,17 @@ public class PlayerController_Map1 : MonoBehaviourPun, IPunObservable, IPunInsta
     [Header("Player Setting Reference")]
     [SerializeField] PlayerState_Map1 _playerstate;
     [SerializeField] SpriteRenderer _playerRenderer;
-    [SerializeField] Animator _playerAni;
     [SerializeField] PlayerEmoticonController_Map1 _playerEmoticonController;
     [SerializeField] Slider _jumpGuageSlider;
+    [SerializeField] Animator _playerAni;
 
     [Header("Correction Setting")]
     [SerializeField] float _correctionValue = 15f;
 
-    UIManager_Map1 _gameUIManager;
-    GameManager_Map1 _gameManager;
+    public UIManager_Map1 _gameUIManager;
+    public GameManager_Map1 _gameManager;
     public Rigidbody2D _playerRigid;
+    BoostController _boostController;
     Vector2 _jumpDir;
     Vector3 _currentPosition;
     Quaternion _currentRotation;
@@ -28,7 +29,7 @@ public class PlayerController_Map1 : MonoBehaviourPun, IPunObservable, IPunInsta
     float _touchEndtTime;
     float _touchDuration;
     float _guageValue;
-    bool _isGround;
+    public bool _isGround;
     bool _isTouch;
     public bool _isGoal = false;
     int _currentAnimatorHash;
@@ -42,6 +43,7 @@ public class PlayerController_Map1 : MonoBehaviourPun, IPunObservable, IPunInsta
     private void Awake()
     {
         _playerRigid = GetComponent<Rigidbody2D>();
+        _boostController = GetComponent<BoostController>();
 
         // 조종 가능 유/무에 따른 레이어 설정 (충돌 관련 세팅)
         if (photonView.IsMine) 
@@ -77,6 +79,9 @@ public class PlayerController_Map1 : MonoBehaviourPun, IPunObservable, IPunInsta
 
             // 점프게이지 활성화
             _jumpGuageSlider.gameObject.SetActive(true);
+
+            // 부스터 컨트롤러 전달
+            _gameUIManager.SetBoostController(_boostController);
         }
     }
 
@@ -234,6 +239,21 @@ public class PlayerController_Map1 : MonoBehaviourPun, IPunObservable, IPunInsta
                 // 게임매니저의 알 개수 증가
                 _gameManager.GetEgg(1);
                 Destroy(collision.gameObject);
+            }
+        }
+
+        // 아이템 획득
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Item"))
+        {
+            // 아이템 획득 시 중복 획득 불가
+            if (_boostController._hasBoostItem) return;
+
+            if (photonView.IsMine)
+            {
+                SoundManager.Instance.PlaySFX(SoundManager.Sfxs.SFX_GetEgg);
+
+                _boostController.GetBoostItem();
+                //Destroy(collision.gameObject);
             }
         }
 
