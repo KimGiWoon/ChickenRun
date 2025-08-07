@@ -369,7 +369,30 @@ public class Database_RecordManager : Singleton<Database_RecordManager>
         return rankData;
     }
 
-    //#region TestCode
+    public void LoadOnlinePlayer(GameObjectPool boardList)
+    {
+        DatabaseReference reference = _reference.Child("UserData");
+        reference.GetValueAsync().ContinueWithOnMainThread(task =>
+        {
+            if (task.IsCanceled || task.IsFaulted)
+                return;
+            DataSnapshot snapshots = task.Result;
+
+            foreach (var player in snapshots.Children)
+            {
+                var isOnliveValue = player.Child("IsOnline").Value?.ToString();
+                if (bool.TryParse(isOnliveValue, out bool boolValue) && boolValue)
+                {
+                    GameObject go = boardList.GetPool();
+                    string nickname = player.Child("Nickname").Value?.ToString() ?? "알 수 없음";
+                    Debug.Log(nickname);
+                    go.GetComponent<OnlinePlayer>().SetText(nickname);
+                }
+            }
+        });
+    }
+
+    #region TestCode
 
     //// DB에 데이터 쓰기 테스트 코드
     //private void Test()
@@ -408,18 +431,7 @@ public class Database_RecordManager : Singleton<Database_RecordManager>
 
     //    long mapRecord = stopwatch.ElapsedMilliseconds;
     //}
-
-    //// MainScene 연동 이전 임시 로그인으로 작성한 코드 -> 연동 이후 삭제
-    private void Rank()
-    {
-        
-    }
-
-    // RoomScene 연동 이전 임시 버튼 연동 코드 -> 연동 이후 삭제
-    private void Info()
-    {
-        
-    }
+    
 
     //// 초기 개인 랭킹 표시 메서드
     //// 코드가 더 복잡한 것 같아서 위 메서드로 재구현
@@ -452,5 +464,5 @@ public class Database_RecordManager : Singleton<Database_RecordManager>
     //        });
     //}
 
-    //#endregion
+    #endregion
 }
