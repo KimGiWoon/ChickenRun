@@ -50,12 +50,13 @@ MonoBehaviour:
   _dontDestroyOnLoad: 1
   _bgmFiles:
   - {fileID: 8300000, guid: 76baad64b7ba48247bc45e185233d07b, type: 3}
-  - {fileID: 8300000, guid: be4baf8957450124ebb964928a704331, type: 3}
+  - {fileID: 8300000, guid: bbe7f771898f052488ecee7c1464537e, type: 3}
   - {fileID: 8300000, guid: 1aee7250b69b49b43be63edfabe293e4, type: 3}
   - {fileID: 8300000, guid: a3d6739d4740a5d47b622db8794cb79a, type: 3}
   - {fileID: 8300000, guid: 2c41c63412a8cd040b45854337285773, type: 3}
   - {fileID: 8300000, guid: 91e6b48bd2f02ec4d92daa08ddb3a7bf, type: 3}
   _sfxFiles:
+  - {fileID: 8300000, guid: c7d225245813e82468b4ff38b4f19759, type: 3}
   - {fileID: 8300000, guid: c558d2541fdbb844299eee5bafd19d98, type: 3}
   - {fileID: 8300000, guid: fbc41b79eab8ba849a8f9ff7cbee7604, type: 3}
   - {fileID: 8300000, guid: a42202c746eeeec42ac1d85d78eb29c1, type: 3}
@@ -71,6 +72,9 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 031aa2fdb9d4e0b4196f7d6487b4df08, type: 3}
   - {fileID: 8300000, guid: 8f7fa3309d5d14f38b83c688709220af, type: 3}
   - {fileID: 8300000, guid: 546388867ac4448b39368332ae61bd92, type: 3}
+  - {fileID: 8300000, guid: 385d329889285234e8115f5d4004aab7, type: 3}
+  - {fileID: 8300000, guid: 31bbee89b1b45684f937758eb6b3d35a, type: 3}
+  - {fileID: 8300000, guid: 315ed121204fb7644bd14702737d8487, type: 3}
   _sfxEmotionFiles:
   - {fileID: 8300000, guid: d08e452e37d624a9a9e0b28e5bbe4d07, type: 3}
   - {fileID: 8300000, guid: 47befb3b028714f1598adb93be0a0e3b, type: 3}
