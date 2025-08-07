@@ -20,6 +20,7 @@ public class Map3_GameOverPanel : MonoBehaviour
         _clearRoitine = StartCoroutine(ClearPanelOpen());
         _scoreText.text = $"점수 : {GameManager_Map3.Instance._data.Record}";
         _eggText.text = $"획득 재화 : {GameManager_Map3.Instance._data.EggCount}";
+        PhotonNetwork.AutomaticallySyncScene = true;
     }
 
     // 게임 클리어 패널 표시 코루틴
@@ -35,8 +36,10 @@ public class Map3_GameOverPanel : MonoBehaviour
         }
 
         SoundManager.Instance.StopSFX();
+        
+        if (PhotonNetwork.IsMasterClient)
+            PhotonNetwork.LoadLevel("MainScene");
         // 씬 이동
-        PhotonNetwork.LoadLevel("MainScene");
     }
 
     private void OnDestroy()
