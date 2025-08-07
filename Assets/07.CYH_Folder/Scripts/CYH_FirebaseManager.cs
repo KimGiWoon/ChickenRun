@@ -90,6 +90,8 @@ public class CYH_FirebaseManager : Singleton<CYH_FirebaseManager>
             //    auth.SignOut();
             //    Debug.Log("auth.CurrentUser != null : 로그아웃");
             //}
+
+            //Utility.IsOnline();
         }
 
         else

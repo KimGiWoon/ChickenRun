@@ -252,6 +252,12 @@ public class SignUpPanel : UIBase
     /// </summary>
     private void NicknameCheck()
     {
+        if (string.IsNullOrEmpty(_nicknameField.text))
+        {
+            ShowPopup("닉네임을 입력해주세요.");
+            return;
+        }
+
         _checkedNickname = _nicknameField.text;
 
         //DatabaseReference userData = CYH_FirebaseManager.Database.GetReference("UserData");
