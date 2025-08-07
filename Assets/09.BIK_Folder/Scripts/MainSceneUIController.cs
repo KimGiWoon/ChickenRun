@@ -80,6 +80,9 @@ public class MainSceneUIController : MonoBehaviour
 
         // 포톤 네트워크 설정
         PhotonNetwork.AutomaticallySyncScene = true;
+
+        // 사운드 설정
+        SoundManager.Instance.PlayBGM(SoundManager.Bgms.BGM_Lobby);
     }
 
     #endregion // mono funcs
