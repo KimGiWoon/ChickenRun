@@ -172,7 +172,6 @@ public class GameManager_Map4 : MonoBehaviourPunCallbacks
         _networkManager._isStart = false;
         _gameUIManager.ClearPlayerReference();
 
-        // TODO : Map4 랭킹 저장
         // 점수, 달걀, 시간 저장
         //Database_RecordManager.Instance.SaveUserMap4Record(_data);
 
