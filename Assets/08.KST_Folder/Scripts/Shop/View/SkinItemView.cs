@@ -28,6 +28,10 @@ public class SkinItemView : UIBase
         _price = price;
         _isPurchsed = IsPurchased;
     }
+    /// <summary>
+    /// 구매 시 버튼 활성화 여부
+    /// </summary>
+    /// <param name="isPurchased">구매 여부</param>
     public void RefreshPurchase(bool isPurchased)
     {
         _isPurchsed = isPurchased;

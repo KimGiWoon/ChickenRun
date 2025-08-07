@@ -32,17 +32,27 @@ public class RankUI : UIBase
     private Func<Task> _onClickMap4Rank;
     private Func<Task> _onClickScoreRank;
 
+    private List<Toggle> _toggleGroup;
+
     // async와 void를 동시에 사용하는 것은 좋지 않지만 Unity 이벤트 함수의 한계
     // 버튼을 선택하고 나서 UI 다른 곳을 터치했을 때 sprite가 normal 상태로 돌아가는 문제
     // 버튼을 토글로 바꾸고 isOn을 매개변수로 받아 이를 토대로 sprite를 코드로 관리하여 해결 
     private async void Start()
     {
+        _toggleGroup = new List<Toggle>();
+        _toggleGroup.Add(_map1RankToggle);
+        _toggleGroup.Add(_map2RankToggle);
+        _toggleGroup.Add(_map3RankToggle);
+        _toggleGroup.Add(_map4RankToggle);
+        _toggleGroup.Add(_scoreRankToggle);
+        
         _map1RankToggle.onValueChanged.AddListener((isOn) =>
         {
             _map1RankToggle.image.sprite = isOn ? _selectedSprite : _normalSprite;
             if (isOn)
             {
                 _onClickMap1Rank?.Invoke();
+                LockToggle();
             }
         });
         _map2RankToggle.onValueChanged.AddListener((isOn) => 
@@ -51,6 +61,7 @@ public class RankUI : UIBase
             if (isOn)
             {
                 _onClickMap2Rank?.Invoke();
+                LockToggle();
             }
         });
         _map3RankToggle.onValueChanged.AddListener((isOn) => 
@@ -59,6 +70,7 @@ public class RankUI : UIBase
             if (isOn)
             {
                 _onClickMap3Rank?.Invoke();
+                LockToggle();
             }
         });
         _map4RankToggle.onValueChanged.AddListener((isOn) => 
@@ -67,6 +79,7 @@ public class RankUI : UIBase
             if (isOn)
             {
                 _onClickMap4Rank?.Invoke();
+                LockToggle();
             }
         });
         _scoreRankToggle.onValueChanged.AddListener((isOn) => 
@@ -75,6 +88,7 @@ public class RankUI : UIBase
             if (isOn)
             {
                 _onClickScoreRank?.Invoke();
+                LockToggle();
             }
         });
         // Button일 때 시각적 처리 코드
@@ -84,8 +98,17 @@ public class RankUI : UIBase
         _map1RankToggle.image.sprite = _selectedSprite;
         // 랭킹보드 UI가 켜질 때 Map1 관련 데이터가 업데이트되기 위한 기능적 처리
         await _onClickMap1Rank.Invoke();
+        LockToggle();
     }
 
+    private void LockToggle()
+    {
+        foreach (var toggle in _toggleGroup)
+        {
+            toggle.interactable = !toggle.isOn;
+        }
+    }
+    
     // MVC 패턴 구현을 위한 public 메서드
     public void SetRankText(string rank, string nickname, string recordOrScore)
     {

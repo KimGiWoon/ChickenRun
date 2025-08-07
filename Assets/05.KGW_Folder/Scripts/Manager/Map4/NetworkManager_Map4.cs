@@ -25,7 +25,10 @@ public class NetworkManager_Map4 : MonoBehaviourPunCallbacks
         else
         {
             UnityEngine.Debug.Log("입장 완료");
-         
+
+            // 씬이동 관련 동기화 해제
+            PhotonNetwork.AutomaticallySyncScene = false;
+
             // 방에 들어온 플레이어 체크
             if (PhotonNetwork.IsMasterClient)
             {

@@ -18,6 +18,9 @@ public class UIManager_Map1 : MonoBehaviourPun
     [SerializeField] Button _optionButton;
     [SerializeField] Button _emoticonButton;
 
+    [Header("Item Use Reference")]
+    [SerializeField] public Button _boostButton;
+
     [Header("Start Panel Reference")]
     [SerializeField] GameObject _startPanel;
     [SerializeField] GameObject _endTimePanel;
@@ -39,7 +42,7 @@ public class UIManager_Map1 : MonoBehaviourPun
     [SerializeField] Slider _musicSlider;
     [SerializeField] Slider _effectSlider;
     [SerializeField] Toggle _camModeCheckToggle;
-    [SerializeField] CameraController_Map4 _cameraController;
+    [SerializeField] CameraController_Map1 _cameraController;
 
     [Header("Emoticon Panel UI Reference")]
     [SerializeField] PlayerEmoticonController_Map1 _playerEmoticonController;
@@ -58,6 +61,7 @@ public class UIManager_Map1 : MonoBehaviourPun
     [SerializeField] PlayerController_Map1 _playerController;
     [SerializeField] DefeatUIController_Map1 _defeatUIcontroller;
 
+    BoostController _boostController;
     Coroutine _panelRoutine;
     Coroutine _emoticonRoutine;
     Coroutine _endTimerRoutine;
@@ -73,7 +77,7 @@ public class UIManager_Map1 : MonoBehaviourPun
     {
         _gameManager._currentMapType = "Map1";
     }
-
+  
     private void Start()
     {
         // 달걀 획득 UI 이벤트 구독
@@ -292,6 +296,16 @@ public class UIManager_Map1 : MonoBehaviourPun
                 _endTimerRoutine = null;
             }
         }
+    }
+
+    // 부스터 컨트롤러 가져오기
+    public void SetBoostController(BoostController boostController)
+    {
+        // 부스터 컨트롤러 등록
+        _boostController = boostController;
+
+        // 부스터 사용 버튼 연결
+        _boostButton.onClick.AddListener(() => _boostController.UseBoost());
     }
 
     // 스타트 코루틴
