@@ -75,6 +75,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 385d329889285234e8115f5d4004aab7, type: 3}
   - {fileID: 8300000, guid: 31bbee89b1b45684f937758eb6b3d35a, type: 3}
   - {fileID: 8300000, guid: 315ed121204fb7644bd14702737d8487, type: 3}
+  - {fileID: 8300000, guid: 28d979f804c45e34197d9bf678f5fd91, type: 3}
   _sfxEmotionFiles:
   - {fileID: 8300000, guid: d08e452e37d624a9a9e0b28e5bbe4d07, type: 3}
   - {fileID: 8300000, guid: 47befb3b028714f1598adb93be0a0e3b, type: 3}

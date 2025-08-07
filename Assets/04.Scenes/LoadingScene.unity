@@ -176,6 +176,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _loadingText: {fileID: 1020694999}
   _dotSecond: 0.4
+  _soundSecond: 0.3
 --- !u!114 &370822996
 MonoBehaviour:
   m_ObjectHideFlags: 0
