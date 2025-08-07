@@ -19,7 +19,7 @@ public class GameManager_Map1 : MonoBehaviourPunCallbacks
     [SerializeField] public CameraController_Map1 _cameraController;
 
     int _totalEggCount = 0;
-    Map1Data _data;
+    MapData _data;
     public bool _isFirstPlayer = false;
     public bool _isGameOver = false;
     public Vector3 _startPos;
@@ -35,7 +35,7 @@ public class GameManager_Map1 : MonoBehaviourPunCallbacks
     public event Action OnPlayerGoal;
 
     // 데이터 베이스에 전달할 맵1 데이터 저장
-    public class Map1Data
+    /*public class Map1Data
     {
         public string MapType;
         public long Record;
@@ -45,12 +45,12 @@ public class GameManager_Map1 : MonoBehaviourPunCallbacks
         {
             MapType = type;
         }
-    }
+    }*/
 
     private void Awake()
     {
         _stopwatch = new Stopwatch();
-        _data = new Map1Data("Map1Record");
+        _data = new MapData("Map1Record");
         PhotonNetwork.RunRpcCoroutines = true;
     }
 
@@ -168,7 +168,7 @@ public class GameManager_Map1 : MonoBehaviourPunCallbacks
         _gameUIManager.ClearPlayerReference();
 
         // 점수, 달걀, 시간 저장
-        Database_RecordManager.Instance.SaveUserMap1Record(_data);
+        Database_RecordManager.Instance.SaveUserMapRecord(_data);
 
         // 클리어 UI 활성화
         _clearUIController.gameObject.SetActive(true);

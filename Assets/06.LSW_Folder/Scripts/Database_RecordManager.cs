@@ -62,14 +62,12 @@ public class Database_RecordManager : Singleton<Database_RecordManager>
             _auth = FirebaseAuth.DefaultInstance;
         }
         _reference = CYH_FirebaseManager.Database.RootReference;
-        
-        // todo : GameManager 이벤트 메서드 연동
-        //GameManager.Instance.OnEndGame += (data) => SaveUserRecord(data);
-        //GameManager_Map2.Instance.OnEndGame += (data) => SaveUserMap2Record(data);
     }
 
-    public void SaveUserMap2Record(GameManager_Map2.Map2Data data)
+    public void SaveUserMapRecord(MapData data)
     {
+        if (_auth.CurrentUser.IsAnonymous) return;
+        
         string uid = _auth.CurrentUser.UserId;
         string key = data.MapType;
         DatabaseReference recordRef = _reference.Child("RankData").Child(uid).Child(key);
@@ -95,12 +93,22 @@ public class Database_RecordManager : Singleton<Database_RecordManager>
                 return TransactionResult.Success(mutableData);
             });
         }
+
+        if (key == "Map3Record") return;
         
+        DatabaseReference eggRef = _reference.Child("UserData").Child(uid).Child("gold");
+        
+        eggRef.RunTransaction(mutableData =>
+        {
+            long currentEgg = mutableData.Value == null ? 0 : (long)mutableData.Value;
+            mutableData.Value = currentEgg + data.EggCount;
+            return TransactionResult.Success(mutableData);
+        });
     }
 
     // GameManager 게임 종료 이벤트에 등록할 메서드
     // 플레이한 맵의 기록을 저장/갱신하고, 1등인 경우 승수를 +1한다.
-    public void SaveUserMap1Record(GameManager_Map1.Map1Data data)
+    /*public void SaveUserMap1Record(MapData data)
     {
         string uid = _auth.CurrentUser.UserId;
         string key = data.MapType;
@@ -135,8 +143,8 @@ public class Database_RecordManager : Singleton<Database_RecordManager>
                 mutableData.Value = currentRecord + 1;
                 return TransactionResult.Success(mutableData);
             });
-        }*/
-    }
+        }#1#
+    }*/
 
     // 기록을 어떤 방식으로 저장하는 것이 비용이 가장 적게 들어가는가?
     // MM:SS:SS 를 그대로 캐싱하는 것은 아무리 생각해도 비용이 높을 것 같음
@@ -281,7 +289,14 @@ public class Database_RecordManager : Singleton<Database_RecordManager>
 
         info.Rank = myRank;
         info.Nickname = userRankData.Nickname;
-        info.RecordOrScore = FormatData(myRecord);
+        if(record == "Map3Data")
+        {
+            info.RecordOrScore = myRecord.ToString();
+        }
+        else
+        {
+            info.RecordOrScore = FormatData(myRecord);
+        }
         return info;
     }
 
