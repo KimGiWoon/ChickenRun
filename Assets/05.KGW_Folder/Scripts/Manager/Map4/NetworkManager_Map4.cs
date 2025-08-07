@@ -26,6 +26,9 @@ public class NetworkManager_Map4 : MonoBehaviourPunCallbacks
         {
             UnityEngine.Debug.Log("입장 완료");
 
+            // 로비 BGM 정지
+            SoundManager.Instance.StopBGM();
+
             // 씬이동 관련 동기화 해제
             PhotonNetwork.AutomaticallySyncScene = false;
 
