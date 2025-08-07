@@ -18,7 +18,7 @@ public class Map3_GameOverPanel : MonoBehaviour
     {
         // 클리어 코루틴 스타트
         _clearRoitine = StartCoroutine(ClearPanelOpen());
-        _scoreText.text = $"점수 : {GameManager_Map3.Instance._data.Score}";
+        _scoreText.text = $"점수 : {GameManager_Map3.Instance._data.Record}";
         _eggText.text = $"획득 재화 : {GameManager_Map3.Instance._data.EggCount}";
     }
 

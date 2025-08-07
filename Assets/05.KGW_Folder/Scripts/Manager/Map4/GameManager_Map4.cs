@@ -21,7 +21,7 @@ public class GameManager_Map4 : MonoBehaviourPunCallbacks
     [SerializeField] public CameraController_Map4 _cameraController;
 
     int _totalEggCount = 0;
-    Map4Data _data;
+    MapData _data;
     public bool _isFirstPlayer = false;
     public Stopwatch _stopwatch;
     public string _currentMapType;
@@ -52,7 +52,7 @@ public class GameManager_Map4 : MonoBehaviourPunCallbacks
     private void Awake()
     {
         _stopwatch = new Stopwatch();
-        _data = new Map4Data("Map4Record");
+        _data = new MapData("Map4Record");
     }
 
     // 스탑워치 시작
@@ -172,7 +172,6 @@ public class GameManager_Map4 : MonoBehaviourPunCallbacks
         _networkManager._isStart = false;
         _gameUIManager.ClearPlayerReference();
 
-        // TODO : Map4 랭킹 저장
         // 점수, 달걀, 시간 저장
         //Database_RecordManager.Instance.SaveUserMap4Record(_data);
 
