@@ -24,7 +24,7 @@ namespace Kst
         [Header("Datas")]
         public string _currentMapType;
         public int _totalPlayerCount;
-        public Map3Data _data;
+        public MapData _data;
 
         [Header("UI")]
         [SerializeField] GameObject _gameOverPanel;
@@ -76,9 +76,9 @@ namespace Kst
         /// <param name="score">획득 점수</param>
         void GetScore(int score)
         {
-            _data.Score = score;
+            _data.Record = score;
             UnityEngine.Debug.Log($"획득 점수 : {score}");
-            UnityEngine.Debug.Log($"데이터에 저장된 점수 : {_data.Score}");
+            UnityEngine.Debug.Log($"데이터에 저장된 점수 : {_data.Record}");
         }
 
         /// <summary>

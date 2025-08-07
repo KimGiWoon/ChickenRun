@@ -2032,6 +2032,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -125
       objectReference: {fileID: 0}
+    - target: {fileID: 6263716227379850720, guid: fd30e0fe42efb9e4299f72990e926521, type: 3}
+      propertyPath: _bugReportButton
+      value: 
+      objectReference: {fileID: 686368903}
     - target: {fileID: 6287836921257477704, guid: fd30e0fe42efb9e4299f72990e926521, type: 3}
       propertyPath: m_AnchorMax.y
       value: 1
