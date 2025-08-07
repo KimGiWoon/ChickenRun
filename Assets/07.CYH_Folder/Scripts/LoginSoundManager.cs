@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class LoginSoundManager : MonoBehaviour
 {
-    private void Start()
+    void Start()
     {
         SoundManager.Instance.PlayBGM(SoundManager.Bgms.BGM_Login);
     }

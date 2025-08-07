@@ -17883,7 +17883,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2825829469202006260, guid: 959700c1f5b2c90438d26364077d17a3, type: 3}
       propertyPath: _sfxFiles.Array.size
-      value: 19
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 2825829469202006260, guid: 959700c1f5b2c90438d26364077d17a3, type: 3}
       propertyPath: _bgmFiles.Array.data[0]
@@ -17981,6 +17981,10 @@ PrefabInstance:
       propertyPath: _sfxFiles.Array.data[18]
       value: 
       objectReference: {fileID: 8300000, guid: 315ed121204fb7644bd14702737d8487, type: 3}
+    - target: {fileID: 2825829469202006260, guid: 959700c1f5b2c90438d26364077d17a3, type: 3}
+      propertyPath: _sfxFiles.Array.data[19]
+      value: 
+      objectReference: {fileID: 8300000, guid: 28d979f804c45e34197d9bf678f5fd91, type: 3}
     - target: {fileID: 7454621831225474847, guid: 959700c1f5b2c90438d26364077d17a3, type: 3}
       propertyPath: m_LocalPosition.x
       value: 2.0481257

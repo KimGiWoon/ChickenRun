@@ -16,25 +16,26 @@ public class SoundManager : Singleton<SoundManager>
     // 인게임 SFX
     public enum Sfxs
     {
-        SFX_Bounce,    // Map2 점프
-        SFX_Jump,       // 점프
-        SFX_GetEgg,     // 달걀 획득
-        SFX_Goal,       // 골
-        SFX_Count,      // 카운트
-        SFX_Start,      // 스타트
-        SFX_DropWater,  // 입수
-        SFX_Walk,       // 걷기
-        SFX_Shot,       // 샷
-        SFX_Hit,        // 맞음
-        SFX_Win,        // 이겼다
-        SFX_Lose,       // 졌다
-        SFX_Death,      // 죽었다
-        SFX_Alarm,      // 알람
-        SFX_Clear,      // 클리어
-        SFX_Defeat,      // 실패
-        SFX_CheckPoint,  // 체크 포인트
-        SFX_Item,        // 아이템 획득
-        SFX_Dash        // 대쉬
+        SFX_Bounce,       // Map2 점프
+        SFX_Jump,         // 점프
+        SFX_GetEgg,       // 달걀 획득
+        SFX_Goal,         // 골
+        SFX_Count,        // 카운트
+        SFX_Start,        // 스타트
+        SFX_DropWater,    // 입수
+        SFX_Walk,         // 걷기
+        SFX_Shot,         // 샷
+        SFX_Hit,          // 맞음
+        SFX_Win,          // 이겼다
+        SFX_Lose,         // 졌다
+        SFX_Death,        // 죽었다
+        SFX_Alarm,        // 알람
+        SFX_Clear,        // 클리어
+        SFX_Defeat,       // 실패
+        SFX_CheckPoint,   // 체크 포인트
+        SFX_Item,         // 아이템 획득
+        SFX_Dash,         // 대쉬
+        SFX_Loading       // 로딩
     }
     public enum Sfx_Emotion
     {
