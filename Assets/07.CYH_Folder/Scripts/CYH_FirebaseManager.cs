@@ -91,7 +91,7 @@ public class CYH_FirebaseManager : Singleton<CYH_FirebaseManager>
             //    Debug.Log("auth.CurrentUser != null : 로그아웃");
             //}
 
-            //Utility.IsOnline();
+            CheckIsOnline();
         }
 
         else
@@ -104,6 +104,11 @@ public class CYH_FirebaseManager : Singleton<CYH_FirebaseManager>
 
         IsFirebaseReady = true;
         Debug.Log($"IsFirebaseReady : {IsFirebaseReady}");
+    }
+
+    public async void CheckIsOnline()
+    {
+        await Utility.IsOnline();
     }
 
     public void OnFirebaseLoginSuccess()

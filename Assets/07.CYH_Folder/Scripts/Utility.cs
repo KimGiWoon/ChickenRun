@@ -149,6 +149,8 @@ static partial class Utility
         string uid = CYH_FirebaseManager.Auth.CurrentUser.UserId;
         DatabaseReference userRef = CYH_FirebaseManager.DataReference.Child("UserData").Child(uid).Child("IsOnline");
 
+        Debug.Log("IsOnline() 호출 완료");
+
         // 현재 접속 상태 확인
         DataSnapshot snapshot = await userRef.GetValueAsync();
         bool isOnline = snapshot.Exists && snapshot.Value.ToString() == "true";
