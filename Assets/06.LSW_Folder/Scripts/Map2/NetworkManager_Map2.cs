@@ -22,6 +22,8 @@ public class NetworkManager_Map2 : MonoBehaviourPunCallbacks
         {
             PhotonNetwork.ConnectUsingSettings();
         }
+     
+        SoundManager.Instance.StopBGM();
         
         PhotonNetwork.AutomaticallySyncScene = false;
         PlayerSpawn();
