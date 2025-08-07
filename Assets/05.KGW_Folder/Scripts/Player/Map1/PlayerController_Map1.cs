@@ -250,7 +250,7 @@ public class PlayerController_Map1 : MonoBehaviourPun, IPunObservable, IPunInsta
 
             if (photonView.IsMine)
             {
-                SoundManager.Instance.PlaySFX(SoundManager.Sfxs.SFX_GetEgg);
+                SoundManager.Instance.PlaySFX(SoundManager.Sfxs.SFX_Item);
 
                 _boostController.GetBoostItem();
                 //Destroy(collision.gameObject);

@@ -38,6 +38,7 @@ namespace Kst
             else
             {
                 Debug.Log("입장 완료");
+                SoundManager.Instance.StopBGM();
 
                 // 플레이어 생성
                 PlayerSpawn();
