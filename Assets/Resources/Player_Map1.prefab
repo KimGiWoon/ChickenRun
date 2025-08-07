@@ -550,6 +550,8 @@ MonoBehaviour:
   _playerController: {fileID: 8135776633713154748}
   _dashAni: {fileID: 881363893218262655}
   _hasBoostItem: 0
+  _isBoost: 0
+  _currentAnimatorHash: 0
 --- !u!1 &3902965431706400322
 GameObject:
   m_ObjectHideFlags: 0
