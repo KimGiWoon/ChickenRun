@@ -194,9 +194,18 @@ public class Database_RecordManager : Singleton<Database_RecordManager>
                     }
                     if (recordValue != 0) {
                         GameObject board = boardPool.GetPool();
-                        board.GetComponent<UserPersonalRecord>()
-                            .SetRecordText(rank, rankData.Nickname, FormatData((int)recordValue), snapshot.Key);
-                        rank++;
+                        if (record == "Map3Record")
+                        {
+                            board.GetComponent<UserPersonalRecord>()
+                                .SetRecordText(rank, rankData.Nickname, recordValue.ToString(), snapshot.Key);
+                            rank++;  
+                        }
+                        else
+                        {
+                            board.GetComponent<UserPersonalRecord>()
+                                .SetRecordText(rank, rankData.Nickname, FormatData((int)recordValue), snapshot.Key);
+                            rank++;  
+                        }
                     }
                 }
             });
