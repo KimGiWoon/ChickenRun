@@ -16,12 +16,24 @@ static partial class Utility
     /// </summary>
     public static void SaveNickname()
     {
-        string uid = CYH_FirebaseManager.Auth.CurrentUser.UserId;
+        FirebaseUser currentUser = CYH_FirebaseManager.Auth.CurrentUser;
+        string uid = currentUser.UserId;
         string userNickname = CYH_FirebaseManager.Auth.CurrentUser.DisplayName;
 
         Dictionary<string, object> dictionary = new Dictionary<string, object>();
-        dictionary[$"UserData/{uid}/Nickname"] = userNickname;
-        dictionary[$"RankData/{uid}/Nickname"] = userNickname;
+
+        // 익명계정 RankData 저장 x
+        if (currentUser.IsAnonymous)
+        {
+            //dictionary[$"RankData/{uid}"] = new Dictionary<string, object>();
+            dictionary[$"UserData/{uid}/Nickname"] = userNickname;
+        }
+
+        else
+        {
+            dictionary[$"UserData/{uid}/Nickname"] = userNickname;
+            dictionary[$"RankData/{uid}/Nickname"] = userNickname;
+        }
 
         CYH_FirebaseManager.DataReference.UpdateChildrenAsync(dictionary).ContinueWithOnMainThread(task =>
         {
@@ -38,13 +50,24 @@ static partial class Utility
 
     public static async Task<bool> SaveNicknameAsync()
     {
-        string uid = CYH_FirebaseManager.Auth.CurrentUser.UserId;
+        FirebaseUser currentUser = CYH_FirebaseManager.Auth.CurrentUser;
+        string uid = currentUser.UserId;
         string userNickname = CYH_FirebaseManager.Auth.CurrentUser.DisplayName;
 
         Dictionary<string, object> dictionary = new Dictionary<string, object>();
-        dictionary[$"UserData/{uid}/Nickname"] = userNickname;
-        dictionary[$"RankData/{uid}/Nickname"] = userNickname;
 
+        // 익명계정 RankData 저장 x
+        if (currentUser.IsAnonymous)
+        {
+            //dictionary[$"RankData/{uid}"] = new Dictionary<string, object>();
+            dictionary[$"UserData/{uid}/Nickname"] = userNickname;
+        }
+        else
+        {
+            dictionary[$"UserData/{uid}/Nickname"] = userNickname;
+            dictionary[$"RankData/{uid}/Nickname"] = userNickname;
+        }
+       
         var task = CYH_FirebaseManager.DataReference.UpdateChildrenAsync(dictionary);
         await task; 
 
@@ -302,7 +325,7 @@ static partial class Utility
                 currentUser.ReloadAsync();
 
                 // Firebase DB에 닉네임 저장
-                //await SaveNicknameAsync();
+                await SaveNicknameAsync();
 
                 await currentUser.ReloadAsync();
 
