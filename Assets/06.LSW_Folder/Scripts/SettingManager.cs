@@ -7,6 +7,7 @@ public class SettingManager : Singleton<SettingManager>
     public Property<float> BGM;
     public Property<float> SFX;
     public Property<bool> CamMode;
+   
 
     protected override void Awake()
     {

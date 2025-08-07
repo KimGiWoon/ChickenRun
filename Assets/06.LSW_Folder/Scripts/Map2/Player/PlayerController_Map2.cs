@@ -27,6 +27,8 @@ public class PlayerController_Map2 : MonoBehaviourPun, IPunObservable, IPunInsta
     private bool _isLinked;
     private bool _isInputBlocked;
     private bool _isBounce;
+    private bool _isGoalIn;
+    public bool IsGoalIn => _isGoalIn;
 
     private float _touchStartTime;
     private float _touchEndTime;
@@ -58,7 +60,7 @@ public class PlayerController_Map2 : MonoBehaviourPun, IPunObservable, IPunInsta
         // 자신인 경우
         if (photonView.IsMine)
         {
-            Camera.main.GetComponent<CameraController_Map2>().SetTarget(transform);
+            Camera.main.GetComponent<CameraController_Map2>().SetTarget(this);
             GameManager_Map2.Instance.OnReadyGame += () => SetJoint();
             GameManager_Map2.Instance.SetPlayer(transform);
             GameManager_Map2.Instance.OnPanelOpened += SetInputBlocked;
@@ -154,12 +156,14 @@ public class PlayerController_Map2 : MonoBehaviourPun, IPunObservable, IPunInsta
             Destroy(collision.gameObject);
         }
 
-        if (photonView.IsMine)
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Goal"))
         {
-            if(collision.gameObject.layer == LayerMask.NameToLayer("Goal"))
+            if(photonView.IsMine)
             {
+                _isGoalIn = true;
                 GameManager_Map2.Instance.ReachGoalPoint();
             }
+            GameManager_Map2.Instance.GoalInPlayer(this);
         }
     }
     
@@ -179,8 +183,12 @@ public class PlayerController_Map2 : MonoBehaviourPun, IPunObservable, IPunInsta
     
     private void ChangeCamera()
     {
+        Debug.Log(_isGoalIn);
         // 다른 플레이어의 카메라로 관찰
-        Camera.main.GetComponent<CameraController_Map2>().OnViewingMode();
+        if (_isGoalIn)
+        {
+            Camera.main.GetComponent<CameraController_Map2>().OnViewingMode();
+        }
     }
     
     // player의 투명도를 다시 1로 리셋하는 메서드
@@ -270,7 +278,8 @@ public class PlayerController_Map2 : MonoBehaviourPun, IPunObservable, IPunInsta
     {
         if (Application.isMobilePlatform)
         {
-            if (!_isGround || _rigid.velocity.y > 3) return;
+            if (!_isGround || _rigid.velocity.y > 3 || _isGoalIn) return;
+            
             
             // 화면 터치 여부는 터치하고 있는 손가락 수로 판단
             if (Input.touchCount > 0)
@@ -318,7 +327,7 @@ public class PlayerController_Map2 : MonoBehaviourPun, IPunObservable, IPunInsta
 #if UNITY_EDITOR
     private void TouchInput_Test()
     {
-        if (!_isGround || _rigid.velocity.y > 3) return;
+        if (!_isGround || _rigid.velocity.y > 3 || _isGoalIn) return;
         // 화면 터치 시 터치 타임 측정
         if (Input.GetMouseButtonDown(0))
         {

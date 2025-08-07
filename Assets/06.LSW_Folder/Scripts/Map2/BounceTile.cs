@@ -6,7 +6,6 @@ using UnityEngine;
 
 public class BounceTile : MonoBehaviour
 {
-    [SerializeField] private bool _isTest = true;
     [SerializeField] private float _power;
     private void Start()
     {
@@ -32,21 +31,10 @@ public class BounceTile : MonoBehaviour
     }
     private void OnCollisionEnter2D(Collision2D other)
     {
-        if (_isTest)
+        PlayerController_Map2 player = other.gameObject.GetComponent<PlayerController_Map2>();
+        if (player != null)
         {
-            TestPlayerController player = other.gameObject.GetComponent<TestPlayerController>();
-            if (player != null)
-            {
-                player.Bounce(_power);
-            }
-        }
-        else
-        {
-            PlayerController_Map2 player = other.gameObject.GetComponent<PlayerController_Map2>();
-            if (player != null)
-            {
-                player.Bounce(_power);
-            }
+            player.Bounce(_power);
         }
     }
 }

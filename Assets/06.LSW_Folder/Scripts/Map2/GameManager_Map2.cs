@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using Photon.Pun;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
@@ -21,6 +22,9 @@ public class GameManager_Map2 : MonoBehaviourPun
             return _instance;
         }
     }
+
+    private List<PlayerController_Map2> _players;
+    public List<PlayerController_Map2> Players => _players;
     
     private Transform _player;
     private Stopwatch _stopwatch;
@@ -43,6 +47,7 @@ public class GameManager_Map2 : MonoBehaviourPun
     // 달걀 획득에 대한 이벤트 (UI 적용)
     // TODO: UI에서 Start와 OnDestroy에 이벤트 구독과 취소 설정 필요
     public event Action OnReadyGame;
+    public event Action OnGoalIn;
     public event Action OnWinGame;
     public event Action OnDefeatGame;
     public event Action OnReachGoal;
@@ -53,6 +58,7 @@ public class GameManager_Map2 : MonoBehaviourPun
     public void Awake()
     {
         Init();
+        _players = new List<PlayerController_Map2>();
         _stopwatch = new Stopwatch();
         _data = new MapData("Map2Record");
         GameProgress = new Property<float>(0f);
@@ -104,6 +110,17 @@ public class GameManager_Map2 : MonoBehaviourPun
     public void ReadyGame()
     {
         OnReadyGame?.Invoke();
+        if (PhotonNetwork.LocalPlayer.IsLocal)
+        {
+            foreach(var player in FindObjectsOfType<PlayerController_Map2>())
+            {
+                // 결승점에 들어가지 않은 플레이거가 있으면 관찰리스트에 추가
+                if (!_players.Contains(player))
+                {
+                    _players.Add(player);
+                }
+            }
+        }
     }
     
     // 게임 시작
@@ -130,6 +147,13 @@ public class GameManager_Map2 : MonoBehaviourPun
         }
     }
 
+    
+    public void GoalInPlayer(PlayerController_Map2 player)
+    {
+        _players.Remove(player);
+        OnGoalIn?.Invoke();
+    }
+    
     private void GamePlayTimeOver()
     {
         /*_stopwatch.Stop();
