@@ -146,6 +146,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _speed: 10
+  _bulletSr: {fileID: 3372191033769451644}
 --- !u!61 &18898675544117170
 BoxCollider2D:
   m_ObjectHideFlags: 0

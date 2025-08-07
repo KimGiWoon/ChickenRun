@@ -59,6 +59,7 @@ MonoBehaviour:
   _animator: {fileID: 6653701168371599173}
   _movespeed: 5
   _playerRenderer: {fileID: 4984307272550859867}
+  _playerArrowRenderer: {fileID: 303233773357609266}
 --- !u!114 &5711611255452255393
 MonoBehaviour:
   m_ObjectHideFlags: 0
