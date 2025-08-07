@@ -158,6 +158,13 @@ public class LoginSceneUIManager : MonoBehaviour
                     ShowUI(LoginUIType.LoginPanel);
                     PopupManager.Instance.ShowOKPopup("회원 탈퇴 성공", "OK", () => PopupManager.Instance.HidePopup());
                 };
+
+                // 중복 로그인
+                gameStartPanel.IsUserOnline = () =>
+                {
+                    HideUI(LoginUIType.GameStartPanel);
+                    ShowUI(LoginUIType.LoginPanel);
+                };
             }
         }
 

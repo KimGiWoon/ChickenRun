@@ -1,6 +1,8 @@
 using Firebase.Auth;
+using Firebase.Database;
 using Firebase.Extensions;
 using System;
+using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -15,7 +17,9 @@ public class GameStartPanel : UIBase
     public Action OnClickGameStart { get; set; }
     public Action OnClickSignOut { get; set; }
     public Action OnClickDeleteAccount { get; set; }
+    public Action IsUserOnline { get; set; }                // 중복 접속 시 호출되는 이벤트
     public Action<string> OnSetNicknameField { get; set; }
+
 
     private void Start()
     {
@@ -35,6 +39,8 @@ public class GameStartPanel : UIBase
 
         _signOutButton.onClick.AddListener(() =>
         {
+            // Online -> Offline
+            SetOffline();
             CYH_FirebaseManager.Auth.SignOut();
             OnClickSignOut?.Invoke();
         });
@@ -52,11 +58,31 @@ public class GameStartPanel : UIBase
     private void OnEnable()
     {
         SetNicknameField();
+
+        // 유저 온라인 체크
+        CheckIsOnline();
     }
 
     private void OnDisable()
     {
-        _nicknameText.text = ""; 
+        _nicknameText.text = "";
+    }
+
+
+    /// <summary>
+    /// 로그인한 유저의 로그인 상태 IsOnline = true 로 
+    /// </summary>
+    public async void CheckIsOnline()
+    {
+        await IsOnline();
+    }
+
+    /// <summary>
+    /// 로그인한 유저의 로그인 상태 IsOnline = false 로 
+    /// </summary>
+    public async void SetOffline()
+    {
+        await IsSetOffline();
     }
 
     /// <summary>
@@ -82,12 +108,12 @@ public class GameStartPanel : UIBase
                 //_nicknameText.text = $"게스트 님";
                 Debug.Log("nicknamefield : 구글");
             }
-            else if(user.ProviderId == "password")
+            else if (user.ProviderId == "password")
             {
                 _nicknameText.text = $"{user.DisplayName} 님";
                 Debug.Log("nicknamefield : 이메일");
             }
-            else if(string.IsNullOrEmpty(user.DisplayName))
+            else if (string.IsNullOrEmpty(user.DisplayName))
             {
                 _nicknameText.text = $"닭1 님";
             }
@@ -154,4 +180,69 @@ public class GameStartPanel : UIBase
                 OnClickDeleteAccount?.Invoke();
             });
     }
+
+    /// <summary>
+    /// 유저 온라인 체크 및 동시 접속 제한
+    /// IsOnline = true
+    /// </summary>
+    /// <returns></returns>
+    public async Task<bool> IsOnline()
+    {
+        FirebaseAuth auth = CYH_FirebaseManager.Auth;
+        string uid = CYH_FirebaseManager.Auth.CurrentUser.UserId;
+        DatabaseReference userRef = CYH_FirebaseManager.DataReference.Child("UserData").Child(uid).Child("IsOnline");
+
+        Debug.Log("IsOnline 호출 완료");
+
+        // 현재 접속 상태 확인
+        bool isOnline = false;
+        DataSnapshot snapshot = await userRef.GetValueAsync();
+        if (snapshot.Exists && snapshot.Value is bool boolVal)
+        {
+            isOnline = boolVal;
+        }
+
+        Debug.Log(isOnline);
+
+        // 동시 접속 제한
+        if (isOnline)
+        {
+            Debug.LogError("IsOnline: 이미 로그인된 계정");
+            PopupManager.Instance.ShowOKPopup("이미 로그인된 계정입니다.", "OK", () =>
+            {
+                PopupManager.Instance.HidePopup();
+
+                //로그아웃 처리 및 mainPanel로 이동 이벤트
+                auth.SignOut();
+                IsUserOnline?.Invoke();
+            });
+
+            return false;
+        }
+
+        // 로그인 -> IsOnline = true로 설정
+        // disconnect -> 자동 false
+        await userRef.SetValueAsync(true);
+        Debug.Log($"로그인 / 유저 UID : {uid} IsOnline: {snapshot.Value}");
+
+        await userRef.OnDisconnect().SetValue(false);
+
+        return true;
+    }
+
+    /// <summary>
+    /// 유저 로그아웃 시 호출
+    /// IsOnline = false
+    /// </summary>
+    /// <returns></returns>
+    public static async Task IsSetOffline()
+    {
+        Debug.Log("IsSetOffline 호출 완료");
+        string uid = CYH_FirebaseManager.Auth.CurrentUser.UserId;
+        DatabaseReference userRef = CYH_FirebaseManager.DataReference.Child("UserData").Child(uid).Child("IsOnline");
+
+        await userRef.SetValueAsync(false);
+        Debug.Log($"로그아웃  / 유저 UID : {uid} IsOnline: false");
+    }
+
 }

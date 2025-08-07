@@ -139,51 +139,6 @@ static partial class Utility
 
     #endregion
 
-    /// <summary>
-    /// 유저 온라인 체크 및 상태 저장
-    /// IsOnline = true
-    /// </summary>
-    /// <returns></returns>
-    public static async Task<bool> IsOnline()
-    {
-        string uid = CYH_FirebaseManager.Auth.CurrentUser.UserId;
-        DatabaseReference userRef = CYH_FirebaseManager.DataReference.Child("UserData").Child(uid).Child("IsOnline");
-
-        Debug.Log("IsOnline() 호출 완료");
-
-        // 현재 접속 상태 확인
-        DataSnapshot snapshot = await userRef.GetValueAsync();
-        bool isOnline = snapshot.Exists && snapshot.Value.ToString() == "true";
-        if (isOnline)
-        {
-            Debug.LogError("IsOnline: 이미 로그인된 계정");
-            return false;
-        }
-
-        // 로그인 -> IsOnline = true로 설정
-        // disconnect -> 자동 false
-        await userRef.SetValueAsync(true);
-        Debug.Log($"로그인 / 유저 UID : {uid} IsOnline: {userRef}");
-        
-        await userRef.OnDisconnect().SetValue(false);
-
-        return true;
-    }
-
-    /// <summary>
-    /// 유저 로그아웃 시 호출
-    /// IsOnline = false
-    /// </summary>
-    /// <returns></returns>
-    public static async Task IsSetOffline()
-    {
-        string uid = CYH_FirebaseManager.Auth.CurrentUser.UserId;
-        DatabaseReference userRef = CYH_FirebaseManager.DataReference.Child("UserData").Child(uid).Child("IsOnline");
-
-        await userRef.SetValueAsync(false);
-        Debug.Log($"로그아웃  / 유저 UID : {uid} IsOnline: {userRef}");
-    }
-
 
     #region SetNickname
 
