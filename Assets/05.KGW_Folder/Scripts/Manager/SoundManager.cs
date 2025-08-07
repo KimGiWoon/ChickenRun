@@ -32,7 +32,9 @@ public class SoundManager : Singleton<SoundManager>
         SFX_Alarm,      // 알람
         SFX_Clear,      // 클리어
         SFX_Defeat,      // 실패
-        SFX_CheckPoint  // 체크 포인트
+        SFX_CheckPoint,  // 체크 포인트
+        SFX_Item,        // 아이템 획득
+        SFX_Dash        // 대쉬
     }
     public enum Sfx_Emotion
     {

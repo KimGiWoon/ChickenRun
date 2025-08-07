@@ -24,7 +24,7 @@ public class GameManager_Map2 : MonoBehaviourPun
     
     private Transform _player;
     private Stopwatch _stopwatch;
-    private Map2Data _data;
+    private MapData _data;
     private int _totalEggCount;
     private bool _isEnd;
     private bool _isGameOver;
@@ -49,24 +49,12 @@ public class GameManager_Map2 : MonoBehaviourPun
     public event Action<int> OnGetEgg;
     public event Action<bool> OnPanelOpened;
     
-    public class Map2Data
-    {
-        public string MapType;
-        public long Record;
-        public int EggCount;
-        public bool IsWin;
-
-        public Map2Data(string type)
-        {
-            MapType = type;
-        }
-    }
 
     public void Awake()
     {
         Init();
         _stopwatch = new Stopwatch();
-        _data = new Map2Data("Map2Record");
+        _data = new MapData("Map2Record");
         GameProgress = new Property<float>(0f);
         SetTotalDistance();
     }
@@ -162,7 +150,7 @@ public class GameManager_Map2 : MonoBehaviourPun
         Debug.Log("게임 플레이 시간이 지났습니다.");
         if (_isEnd)
         {
-            Database_RecordManager.Instance.SaveUserMap2Record(_data);
+            Database_RecordManager.Instance.SaveUserMapRecord(_data);
             Debug.Log("기록이 저장되었습니다.");
         }
         Debug.Log("모든 플레이어가 방을 나갑니다.");

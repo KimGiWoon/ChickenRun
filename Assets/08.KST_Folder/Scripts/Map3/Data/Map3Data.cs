@@ -1,4 +1,4 @@
-public class Map3Data
+/*public class Map3Data
 {
     public string MapType;
     // public long Record;
@@ -9,4 +9,4 @@ public class Map3Data
     {
         MapType = type;
     }
-}
+}*/
