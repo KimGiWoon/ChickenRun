@@ -62,10 +62,18 @@ public class SkinItemController : MonoBehaviour
             string uid = CYH_FirebaseManager.Auth.CurrentUser?.UserId;
             if (!string.IsNullOrEmpty(uid))
             {
+                //이미 구매한 상품일 경우
+                if (_data.IsPurchased)
+                {
+                    _view.RefreshUI();
+                    PopupManager.Instance.ShowOKPopup("이미 구매한 상품입니다.", "확인", () => PopupManager.Instance.HidePopup());
+                    return;
+                }
+
                 //해당 상품만큼 재화 차감
                 _goldManager.UseEgg(_data.Price);
                 _data.IsPurchased = true;
-            
+
                 var skinRef = FirebaseDatabase.DefaultInstance
                 .GetReference("UserData").Child(uid).Child("SkinData").Child(_data.SkinName);
 
