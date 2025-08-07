@@ -302,7 +302,7 @@ static partial class Utility
                 currentUser.ReloadAsync();
 
                 // Firebase DB에 닉네임 저장
-                await SaveNicknameAsync();
+                //await SaveNicknameAsync();
 
                 await currentUser.ReloadAsync();
 
