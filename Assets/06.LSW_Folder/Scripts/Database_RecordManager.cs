@@ -169,7 +169,10 @@ public class Database_RecordManager : Singleton<Database_RecordManager>
     public void LoadRecordRank(string record, GameObjectPool boardPool)
     {
         if(_reference == null) _reference = CYH_FirebaseManager.Database.RootReference;
-        _reference.Child("RankData")
+
+        if (record != "Map3Record")
+        {
+            _reference.Child("RankData")
             .StartAt(1) // 기록이 없는 사람 예외처리
             .OrderByChild(record)
             .LimitToFirst(20)
@@ -191,30 +194,45 @@ public class Database_RecordManager : Singleton<Database_RecordManager>
                         case "Map2Record":
                             recordValue = rankData.Map2Record;
                             break;
-                        case "Map3Record":
-                            recordValue = rankData.Map3Record;
-                            break;
                         case "Map4Record":
                             recordValue = rankData.Map4Record;
                             break;
                     }
                     if (recordValue != 0) {
                         GameObject board = boardPool.GetPool();
-                        if (record == "Map3Record")
-                        {
-                            board.GetComponent<UserPersonalRecord>()
-                                .SetRecordText(rank, rankData.Nickname, recordValue.ToString(), snapshot.Key);
-                            rank++;  
-                        }
-                        else
-                        {
-                            board.GetComponent<UserPersonalRecord>()
-                                .SetRecordText(rank, rankData.Nickname, FormatData((int)recordValue), snapshot.Key);
-                            rank++;  
-                        }
+                        board.GetComponent<UserPersonalRecord>().SetRecordText(rank, rankData.Nickname, FormatData((int)recordValue), snapshot.Key);
+                        rank++;  
                     }
                 }
             });
+        }
+        else
+        {
+            _reference.Child("RankData")
+            .StartAt(1) // 기록이 없는 사람 예외처리
+            .OrderByChild(record)
+            .LimitToLast(20)
+            .GetValueAsync()
+            .ContinueWithOnMainThread(task => {
+                if (task.IsCanceled || task.IsFaulted)
+                    return;
+                DataSnapshot snapshots = task.Result;
+                
+                int rank = 1;
+                foreach (var snapshot in snapshots.Children.Reverse()) 
+                {
+                    RankData rankData = JsonUtility.FromJson<RankData>(snapshot.GetRawJsonValue());
+                    long recordValue = 0;
+                    recordValue = rankData.Map3Record;
+                    if (recordValue != 0) {
+                        GameObject board = boardPool.GetPool();
+                        board.GetComponent<UserPersonalRecord>()
+                            .SetRecordText(rank, rankData.Nickname, recordValue.ToString(), snapshot.Key);
+                        rank++;  
+                    }
+                }
+            });
+        }
     }
 
     // Score에 따라 표시될 Score 랭킹보드에 사용되는 메서드
