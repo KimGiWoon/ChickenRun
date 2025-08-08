@@ -193,11 +193,11 @@ public class AccountPanel : UIBase
                         GoogleSignIn.DefaultInstance.Disconnect();
                     }
 
-                    CYH_FirebaseManager.Auth.SignOut();
-
                     // 구글 계정 로그아웃 처리 및 계정과 앱 연결 해제
                     GoogleSignIn.DefaultInstance.SignOut();
                     GoogleSignIn.DefaultInstance.Disconnect();
+
+                    CYH_FirebaseManager.Auth.SignOut();
 
                     // 팝업 비활성화
                     OnClickClosePopup?.Invoke();
@@ -275,6 +275,9 @@ public class AccountPanel : UIBase
 
                     CYH_FirebaseManager.Auth.SignOut();
                 }
+
+                GoogleSignIn.DefaultInstance.SignOut();
+                GoogleSignIn.DefaultInstance.Disconnect();
 
                 // LoginScene으로 씬 전환
                 OnClickDeleteAccount?.Invoke();
