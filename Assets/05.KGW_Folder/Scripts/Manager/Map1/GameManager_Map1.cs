@@ -36,19 +36,6 @@ public class GameManager_Map1 : MonoBehaviourPunCallbacks
     public event Action<int> OnEggCountChange;
     public event Action OnPlayerGoal;
 
-    // 데이터 베이스에 전달할 맵1 데이터 저장
-    /*public class Map1Data
-    {
-        public string MapType;
-        public long Record;
-        public int EggCount;
-
-        public Map1Data(string type)
-        {
-            MapType = type;
-        }
-    }*/
-
     private void Awake()
     {
         _stopwatch = new Stopwatch();
