@@ -52,7 +52,7 @@ public class AccountPanel : UIBase
 
         // 패스워드 변경 버튼
         _passwordChangeButton.onClick.AddListener(() => {
-            if(user.ProviderId == "google.com" || user.IsAnonymous)
+            if(!(user.ProviderId == "password"))
             {
                 PopupManager.Instance.ShowOKPopup("패스워드를 설정할 수 없는 계정입니다.", "OK", () => PopupManager.Instance.HidePopup());
                 return;
