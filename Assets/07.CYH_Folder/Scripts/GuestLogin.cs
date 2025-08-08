@@ -9,21 +9,30 @@ public class GuestLogin : MonoBehaviour
 {
     [SerializeField] private Button _guestLoginButton;
 
+    private bool _isClicked;
     public Action LoginCompleted { get; set; }
 
     private void Start()
     {
-        _guestLoginButton.onClick.AddListener(OnClick_GuestLogin);
+        _guestLoginButton.onClick.AddListener(() =>
+        {
+            if (!_isClicked)
+            {
+                OnClick_GuestLogin();
+            }
+        });
     }
 
     private void OnClick_GuestLogin()
     {
+        _isClicked = true;
         // 게스트 로그인 가능 여부 체크
         if(CYH_FirebaseManager.Auth.CurrentUser != null)
         {
             PopupManager.Instance.ShowOKPopup("게스트 로그인 불가", "OK", () => PopupManager.Instance.HidePopup());
             Debug.LogError($"유저 UID : {CYH_FirebaseManager.Auth.CurrentUser.UserId}  " +
                 $"/ 유저 닉네임 : {CYH_FirebaseManager.Auth.CurrentUser.DisplayName}");
+            _isClicked = false;
             return;
         }
 
@@ -32,11 +41,13 @@ public class GuestLogin : MonoBehaviour
             if (task.IsCanceled)
             {
                 Debug.LogError("게스트 로그인 취소");
+                _isClicked = false;
                 return;
             }
             if (task.IsFaulted)
             {
                 Debug.LogError($"게스트 로그인 실패 / 원인: {task.Exception}");
+                _isClicked = false;
                 return;
             }
 
@@ -62,6 +73,7 @@ public class GuestLogin : MonoBehaviour
             {
                 Debug.Log("게스트 정보 업데이트 완료. GameStart패널 활성화");
                 LoginCompleted?.Invoke();
+                _isClicked = false;
             }
         });
     }
