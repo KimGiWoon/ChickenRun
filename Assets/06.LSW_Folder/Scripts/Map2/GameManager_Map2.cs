@@ -144,6 +144,7 @@ public class GameManager_Map2 : MonoBehaviourPun
             photonView.RPC(nameof(LoseGame), RpcTarget.Others, team);
             _gamePlayTime = _totalPlayTime;
             _data.IsWin = true;
+            _data.EggCount = 50;
         }
     }
 
@@ -196,6 +197,7 @@ public class GameManager_Map2 : MonoBehaviourPun
         if (PhotonNetwork.LocalPlayer.CustomProperties.TryGetValue("Color", out var myTeam) && myTeam.ToString() == team)
         {
             _data.IsWin = true;
+            _data.EggCount = 50;
         }
     }
     
