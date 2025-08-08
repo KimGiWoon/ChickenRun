@@ -71,6 +71,7 @@ public class MainSceneUIController : MonoBehaviour
         _settingButton.onClick.AddListener(OpenSettingPopup);
         _onlinePlayerButton.onClick.AddListener(OpenOnlinePlayerPanel);
 
+        Utility.OnChangedNickname += UpdateNickname;
         _nicknameText.text = CYH_FirebaseManager.CurrentUserNickname;
 
         // 방에 들어와있는 경우(플레이씬에서 로비로 나왔을 때) 다시 로비로 자동 이동
@@ -223,7 +224,14 @@ public class MainSceneUIController : MonoBehaviour
 
     private void OpenSettingPopup()
     {
-        _optionPanel.SetShow();
+        if (_optionPanel.gameObject.activeSelf)
+        {
+            _optionPanel.SetHide();
+        }
+        else
+        {
+            _optionPanel.SetShow();
+        }
     }
 
     private void OpenOnlinePlayerPanel()
@@ -238,5 +246,10 @@ public class MainSceneUIController : MonoBehaviour
         }
     }
 
+    private void UpdateNickname()
+    {
+        _nicknameText.text = CYH_FirebaseManager.Auth.CurrentUser.DisplayName;
+    }
+    
     #endregion // private funcs
 }

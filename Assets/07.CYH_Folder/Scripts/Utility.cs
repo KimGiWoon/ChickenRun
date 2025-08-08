@@ -1,9 +1,11 @@
+using System;
 using Firebase.Auth;
 using Firebase.Database;
 using Firebase.Extensions;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 
 static partial class Utility
@@ -11,6 +13,8 @@ static partial class Utility
 
     #region Save/Delete/Load Nickname
 
+    public static event Action OnChangedNickname;
+    
     /// <summary>
     ///  RankData/UserData 경로에 CurrentUser.DisplayName을 저장하는 메서드
     /// </summary>
@@ -209,7 +213,7 @@ static partial class Utility
 
                 // Firebase DB에 닉네임 저장
                 SaveNickname();
-
+                OnChangedNickname?.Invoke();
                 Debug.Log("닉네임 설정 성공");
                 Debug.Log($"변경된 유저 닉네임 : {currentUser.DisplayName}");
             });
