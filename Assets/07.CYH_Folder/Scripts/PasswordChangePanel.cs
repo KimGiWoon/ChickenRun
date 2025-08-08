@@ -122,6 +122,7 @@ public class PasswordChangePanel : UIBase
                     Debug.Log("비밀번호 변경 패널 비활성화");
 
                     // 강제 로그아웃
+                    Utility.SetOffline();
                     CYH_FirebaseManager.Auth.SignOut();
                     Debug.Log("로그아웃");
 

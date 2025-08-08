@@ -63,7 +63,7 @@ public class AccountPanel : UIBase
         // 회원탈퇴 버튼
         _deleteAccountButton.onClick.AddListener(() =>
         {
-            SetOffline();
+            Utility.SetOffline();
             OnClick_DelteButton();
         });
 
@@ -73,8 +73,8 @@ public class AccountPanel : UIBase
             PopupManager.Instance.ShowOKCancelPopup("로그아웃하시겠습니까?",
                 "네", () =>
                 {
-                   
-                    SetOffline();
+
+                    Utility.SetOffline();
                     
                     // 익명 계정 -> 로그아웃 시 계정 삭제
                     if (user.IsAnonymous)

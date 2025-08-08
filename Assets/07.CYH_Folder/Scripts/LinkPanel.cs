@@ -154,6 +154,7 @@ public class LinkPanel : UIBase
                     PopupManager.Instance.HidePopup();
 
                     // SignOut
+                    Utility.SetOffline();
                     CYH_FirebaseManager.Auth.SignOut();
 
                     // LoginPanel ShowUI, GameStartPanel HideUI

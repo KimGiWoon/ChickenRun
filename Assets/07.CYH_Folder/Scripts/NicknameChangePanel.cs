@@ -83,6 +83,7 @@ public class NicknameChangePanel : UIBase
             OnClickNicknameChange?.Invoke();
 
             // 강제 로그아웃
+            Utility.SetOffline();
             CYH_FirebaseManager.Auth.SignOut();
 
             // 로그인 씬 전환
