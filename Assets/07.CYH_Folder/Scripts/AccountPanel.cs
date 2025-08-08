@@ -17,6 +17,7 @@ public class AccountPanel : UIBase
     [SerializeField] private Button _passwordChangeButton;
     [SerializeField] private Button _deleteAccountButton;
     [SerializeField] private Button _signoutButton;
+    [SerializeField] private Button _googleLinkButton;
 
     [SerializeField] private TMP_Text _nicknameText;
 
@@ -102,6 +103,110 @@ public class AccountPanel : UIBase
                     SceneManager.LoadScene("LoginScene");
                 },
                 "아니요", null);
+        });
+
+        // 구글 계정 연동 버튼 클릭
+        _googleLinkButton.onClick.AddListener(OnClick_LinkWithGoogle);
+    }
+
+
+    /// <summary>
+    /// 익명 계정을 구글 가입 계정으로 전환
+    /// </summary>
+    public void OnClick_LinkWithGoogle()
+    {
+        // 계정 전환 가능 여부 체크
+        FirebaseUser user = CYH_FirebaseManager.Auth.CurrentUser;
+
+        if (user == null || !user.IsAnonymous)
+        {
+            PopupManager.Instance.ShowOKPopup("게스트x. 계정 전환 불가", "OK", () => PopupManager.Instance.HidePopup());
+            return;
+        }
+
+        GoogleSignIn.DefaultInstance.SignIn().ContinueWithOnMainThread(task =>
+        {
+            if (task.IsCanceled || task.IsFaulted)
+            {
+                Debug.LogError($"구글 로그인 실패 / 원인: {task.Exception}");
+
+                PopupManager.Instance.ShowOKPopup("구글 로그인 실패", "OK", () => PopupManager.Instance.HidePopup());
+                return;
+            }
+
+            GoogleSignInUser googleUser = task.Result;
+            string idToken = googleUser.IdToken;
+
+            Credential credential = GoogleAuthProvider.GetCredential(idToken, null);
+
+            CYH_FirebaseManager.Auth.CurrentUser.LinkWithCredentialAsync(credential).ContinueWithOnMainThread(async linkTask =>
+            {
+                if (linkTask.IsCanceled)
+                {
+                    PopupManager.Instance.ShowOKPopup("구글 계정으로 전환 취소", "OK", () => PopupManager.Instance.HidePopup());
+                    return;
+                }
+
+                if (linkTask.IsFaulted)
+                {
+                    PopupManager.Instance.ShowOKPopup("구글 계정으로 전환 실패", "OK", () => PopupManager.Instance.HidePopup());
+                    GoogleSignIn.DefaultInstance.SignOut();
+                    GoogleSignIn.DefaultInstance.Disconnect();
+                    return;
+                }
+
+                Firebase.Auth.AuthResult linkedUser = linkTask.Result;
+
+                string googleDisplayName = googleUser.DisplayName;
+                Debug.Log($"구글 계정 닉네임 : {googleDisplayName}");
+
+                if (CYH_FirebaseManager.Auth.CurrentUser == null)
+                {
+                    Debug.Log("현재 유저 상태: CurrentUser is null");
+                }
+                else
+                {
+                    Debug.Log("현재 유저 상태: CurrentUser");
+                }
+
+                // 구글 닉네임 변경 
+                await Utility.SetGoogleNickname(user, googleDisplayName);
+                await user.ReloadAsync();
+
+
+                Debug.Log("------유저 정보------");
+                Debug.Log($"유저 이름 : {user.DisplayName}");
+                Debug.Log($"유저 ID: {user.UserId}");
+                Debug.Log($"이메일 : {user.Email}");
+
+                PopupManager.Instance.ShowOKPopup("구글 계정으로 전환 성공\r\n 다시 로그인 해주세요.", "OK", () =>
+                {
+                    PopupManager.Instance.HidePopup();
+
+                    // SignOut
+                    Utility.SetOffline();
+
+                    // 구글 계정 로그아웃 처리 및 계정과 앱 연결 해제
+                    bool isGoogleUser = user.ProviderData.Any(provider => provider.ProviderId == "google.com");
+                    if (isGoogleUser)
+                    {
+                        GoogleSignIn.DefaultInstance.SignOut();
+                        GoogleSignIn.DefaultInstance.Disconnect();
+                    }
+
+                    CYH_FirebaseManager.Auth.SignOut();
+
+                    // 구글 계정 로그아웃 처리 및 계정과 앱 연결 해제
+                    GoogleSignIn.DefaultInstance.SignOut();
+                    GoogleSignIn.DefaultInstance.Disconnect();
+
+                    // 팝업 비활성화
+                    OnClickClosePopup?.Invoke();
+
+                    // 로그인 씬으로 전환
+                    SceneManager.LoadScene("LoginScene");
+                });
+            });
         });
     }
 
