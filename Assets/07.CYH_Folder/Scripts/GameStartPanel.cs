@@ -194,7 +194,9 @@ public class GameStartPanel : UIBase
                         GoogleSignIn.DefaultInstance.Disconnect();
                     }
 
-                    Utility.SetOffline();
+                    GoogleSignIn.DefaultInstance.SignOut();
+                    GoogleSignIn.DefaultInstance.Disconnect();
+
                     CYH_FirebaseManager.Auth.SignOut();
                 }
                 OnClickDeleteAccount?.Invoke();
