@@ -226,9 +226,9 @@ public class PlayerController_Map1 : MonoBehaviourPun, IPunObservable, IPunInsta
     // 물리적 충돌
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.layer == LayerMask.NameToLayer("Ground")) {
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Ground")) 
+        {
             _isGround = true;
-            _playerRigid.velocity = Vector2.zero;
         }
     }
 
@@ -236,7 +236,8 @@ public class PlayerController_Map1 : MonoBehaviourPun, IPunObservable, IPunInsta
     private void OnTriggerEnter2D(Collider2D collision)
     {
         // 달걀 획득
-        if (collision.gameObject.layer == LayerMask.NameToLayer("Egg")) {
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Egg")) 
+        {
             if (photonView.IsMine) {
                 SoundManager.Instance.PlaySFX(SoundManager.Sfxs.SFX_GetEgg);
                 // 게임매니저의 알 개수 증가
