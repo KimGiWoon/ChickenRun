@@ -111,7 +111,7 @@ namespace Kst
             _stopwatch.Stop();
 
             //TODO <김승태> : 데이터베이스에 저장하는 코드
-            // Database_RecordManager.Instance.SaveUserMap3Record(_data);
+            Database_RecordManager.Instance.SaveUserMapRecord(_data);
 
             //게임 종료 이벤트 호출
             OnGameEnd?.Invoke();
