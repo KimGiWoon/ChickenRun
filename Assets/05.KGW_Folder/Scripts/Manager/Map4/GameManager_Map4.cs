@@ -36,19 +36,6 @@ public class GameManager_Map4 : MonoBehaviourPunCallbacks
     public event Action OnPlayerDeath;
     public event Action OnPlayerGoal;
 
-    //// 데이터 베이스에 전달할 맵4 데이터 저장
-    //public class Map4Data
-    //{
-    //    public string MapType;
-    //    public long Record;
-    //    public int EggCount;
-
-    //    public Map4Data(string type)
-    //    {
-    //        MapType = type;
-    //    }
-    //}
-
     private void Awake()
     {
         _stopwatch = new Stopwatch();

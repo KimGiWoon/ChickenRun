@@ -19,15 +19,26 @@ public class TimeOverUIController_Map1 : MonoBehaviour
 
     private void Start()
     {
+        // 타임 오버 사운드 재생
+        SoundManager.Instance.PlaySFX(SoundManager.Sfxs.SFX_Defeat);
+        Debug.Log("타임오버 사운드 재생");
+
         // 클리어 코루틴 스타트
-        _timeOverRoitine = StartCoroutine(TimeOverPanelOpen());
+        if (_timeOverRoitine == null)
+        {
+            // 타임오버 코루틴 스타트
+            _timeOverRoitine = StartCoroutine(TimeOverPanelOpen());
+        }
+        else
+        {
+            _timeOverRoitine = null;
+        }
     }
 
     // 게임 클리어 패널 표시 코루틴
     private IEnumerator TimeOverPanelOpen()
     {
         _timeOverPanel.SetActive(true);
-        SoundManager.Instance.PlaySFX(SoundManager.Sfxs.SFX_Defeat);
 
         yield return _time;
 
@@ -38,5 +49,6 @@ public class TimeOverUIController_Map1 : MonoBehaviour
     private void OnDestroy()
     {
         StopCoroutine(_timeOverRoitine);
+        _timeOverRoitine = null;
     }
 }
