@@ -66,7 +66,6 @@ public class AccountPanel : UIBase
         // 회원탈퇴 버튼
         _deleteAccountButton.onClick.AddListener(() =>
         {
-            Utility.SetOffline();
             OnClick_DelteButton();
         });
 
@@ -223,6 +222,7 @@ public class AccountPanel : UIBase
         PopupManager.Instance.ShowOKCancelPopup("정말로 탈퇴하시겠습니까?\r\n모든 기록이 삭제될 수 있습니다.\r\n",
             "탈퇴", () =>
             {
+                Utility.SetOffline();
                 DeleteUser();
 
                 // 구글 계정 로그아웃 처리 및 계정과 앱 연결 해제
