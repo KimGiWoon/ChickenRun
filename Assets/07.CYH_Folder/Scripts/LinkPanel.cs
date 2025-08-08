@@ -156,6 +156,8 @@ public class LinkPanel : UIBase
                     // SignOut
                     Utility.SetOffline();
                     CYH_FirebaseManager.Auth.SignOut();
+                    GoogleSignIn.DefaultInstance.SignOut();     
+                    GoogleSignIn.DefaultInstance.Disconnect();  
 
                     // LoginPanel ShowUI, GameStartPanel HideUI
                     OnClickSignOut?.Invoke();
