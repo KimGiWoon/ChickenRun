@@ -34,6 +34,7 @@ public class PlayerController_Map1 : MonoBehaviourPun, IPunObservable, IPunInsta
     float _guageValue;
     public bool _isGround;
     bool _isTouch;
+    bool _canCheckPoint = false;
     public bool _isGoal = false;
     int _currentAnimatorHash;
     int _reciveAnimatorHash;
@@ -291,17 +292,22 @@ public class PlayerController_Map1 : MonoBehaviourPun, IPunObservable, IPunInsta
         }
 
         // 체크 포인트 접촉
-        if (collision.gameObject.layer == LayerMask.NameToLayer("CheckPoint")) {
+        if (collision.gameObject.layer == LayerMask.NameToLayer("CheckPoint")) 
+        {
+            if (_canCheckPoint) return;
+
             // 자신의 리스폰 위치 변경
             if (photonView.IsMine) 
             {
                 SoundManager.Instance.PlaySFX(SoundManager.Sfxs.SFX_CheckPoint);
                 _gameManager._startPos = collision.transform.position;
+                _canCheckPoint = true;
             }
         }
 
         // 결승점 도착
-        if (collision.gameObject.layer == LayerMask.NameToLayer("Goal")) {
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Goal")) 
+        {
             // 골을 했으면 넘어가기
             if (_isGoal) return;
 
