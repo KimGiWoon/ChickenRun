@@ -6419,6 +6419,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _loginButton: {fileID: 1121620500}
   _signupButton: {fileID: 1907427290}
+  _maxOnlineUser: 1
 --- !u!114 &713239657
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14232,6 +14233,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _loginButton: {fileID: 2128643558}
   _signupButton: {fileID: 896720086}
+  _maxOnlineUser: 2
 --- !u!114 &1628973895
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1,7 +1,6 @@
-using Firebase.Auth;
-using Firebase.Extensions;
-using Photon.Pun.Demo.Cockpit;
+using Firebase.Database;
 using System;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -15,7 +14,6 @@ public class LoginPanel : UIBase
 
     public Action OnClickSignup { get; set; }
     public Action OnClickLogin { get; set; }
-
 
     private void Start()
     {

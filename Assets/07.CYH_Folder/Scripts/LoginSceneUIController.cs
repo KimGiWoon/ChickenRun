@@ -77,7 +77,6 @@ public class LoginSceneUIManager : MonoBehaviour
                 // 로그인 버튼
                 loginPanel.OnClickLogin = () => ShowUI(LoginUIType.LoginOptionPanel);
                 loginPanel.OnClickSignup = () => ShowUI(LoginUIType.SignUpPanel);
-                //loginPanel.OnClickSocialLogin = () => ShowUI(LoginUIType.LoginOptionPanel);
             }
 
             else if (ui is LoginOptionPanel loginOptionPanel)
@@ -157,6 +156,13 @@ public class LoginSceneUIManager : MonoBehaviour
                     HideUI(LoginUIType.GameStartPanel);
                     ShowUI(LoginUIType.LoginPanel);
                     PopupManager.Instance.ShowOKPopup("회원 탈퇴 성공", "OK", () => PopupManager.Instance.HidePopup());
+                };
+
+                // 중복 로그인
+                gameStartPanel.IsUserOnline = () =>
+                {
+                    HideUI(LoginUIType.GameStartPanel);
+                    ShowUI(LoginUIType.LoginPanel);
                 };
             }
         }
