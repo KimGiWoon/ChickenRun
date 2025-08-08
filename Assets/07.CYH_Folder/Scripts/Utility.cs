@@ -357,5 +357,4 @@ static partial class Utility
         await userRef.SetValueAsync(false);
         Debug.Log($"로그아웃  / 유저 UID : {uid} IsOnline: false");
     }
-
 }
