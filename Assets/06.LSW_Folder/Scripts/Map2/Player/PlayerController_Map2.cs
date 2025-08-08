@@ -61,7 +61,10 @@ public class PlayerController_Map2 : MonoBehaviourPun, IPunObservable, IPunInsta
         if (photonView.IsMine)
         {
             Camera.main.GetComponent<CameraController_Map2>().SetTarget(this);
-            GameManager_Map2.Instance.OnReadyGame += () => SetJoint();
+            GameManager_Map2.Instance.OnReadyGame += () =>
+            {
+                SetJoint();
+            };
             GameManager_Map2.Instance.SetPlayer(transform);
             GameManager_Map2.Instance.OnPanelOpened += SetInputBlocked;
             GameManager_Map2.Instance.OnReachGoal += ChangeCamera;
@@ -79,7 +82,7 @@ public class PlayerController_Map2 : MonoBehaviourPun, IPunObservable, IPunInsta
     {
         if (photonView.IsMine)
         {
-            if (!_isInputBlocked)
+            if (!_isInputBlocked && GameManager_Map2.Instance.IsStart)
             {
 #if UNITY_EDITOR
                 TouchInput_Test();
@@ -88,13 +91,9 @@ public class PlayerController_Map2 : MonoBehaviourPun, IPunObservable, IPunInsta
             }
             if (_isBounce && _partner !=null)
             {
-                float dist = Vector2.Distance(transform.position, _partner.transform.position);
-                if (dist >= _joint.distance - 0.1f)
-                {
-                    Vector2 dir = transform.position - _partner.transform.position;
-                    _partner.GetComponent<Rigidbody2D>().velocity = dir * _rigid.velocity.magnitude;
-                    _partner.GetComponent<Rigidbody2D>().mass = 0.01f;
-                }
+                Vector2 dir = Vector2.up + Vector2.right * (transform.position.x - _partner.transform.position.x);
+                _partner.GetComponent<Rigidbody2D>().velocity = dir * _rigid.velocity.magnitude;
+                _partner.GetComponent<Rigidbody2D>().mass = 0.01f;
             }
             PlayerStateUpdate();
             if(_partner != null)
@@ -217,7 +216,6 @@ public class PlayerController_Map2 : MonoBehaviourPun, IPunObservable, IPunInsta
     private void SetJoint()
     {
         if (_isLinked) return;
-        
         // 네트워크에 저장된 커스텀 프로퍼티의 내 팀
         string myTeam = PhotonNetwork.LocalPlayer.CustomProperties["Color"] as string;
         
@@ -267,7 +265,7 @@ public class PlayerController_Map2 : MonoBehaviourPun, IPunObservable, IPunInsta
         if (_rigid.velocity.y <= 0)
         {
             _isBounce = false;
-            if (_partner?.GetComponent<Rigidbody2D>().mass < 0.5f)
+            if (_partner != null && _partner?.GetComponent<Rigidbody2D>().mass < 0.5f)
             {
                 _partner.GetComponent<Rigidbody2D>().mass = 1f;
             }
