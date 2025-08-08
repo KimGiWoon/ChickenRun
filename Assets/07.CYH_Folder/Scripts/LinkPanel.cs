@@ -4,6 +4,7 @@ using Firebase.Extensions;
 using Google;
 using System;
 using System.Collections;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -120,6 +121,8 @@ public class LinkPanel : UIBase
                 if (linkTask.IsFaulted)
                 {
                     PopupManager.Instance.ShowOKPopup("구글 계정으로 전환 실패", "OK", () => PopupManager.Instance.HidePopup());
+                    GoogleSignIn.DefaultInstance.SignOut();
+                    GoogleSignIn.DefaultInstance.Disconnect();
                     return;
                 }
 
@@ -155,9 +158,20 @@ public class LinkPanel : UIBase
 
                     // SignOut
                     Utility.SetOffline();
+
+                    // 구글 계정 로그아웃 처리 및 계정과 앱 연결 해제
+                    bool isGoogleUser = user.ProviderData.Any(provider => provider.ProviderId == "google.com");
+                    if (isGoogleUser)
+                    {
+                        GoogleSignIn.DefaultInstance.SignOut();
+                        GoogleSignIn.DefaultInstance.Disconnect();
+                    }
+
                     CYH_FirebaseManager.Auth.SignOut();
-                    GoogleSignIn.DefaultInstance.SignOut();     
-                    GoogleSignIn.DefaultInstance.Disconnect();  
+
+                    // 구글 계정 로그아웃 처리 및 계정과 앱 연결 해제
+                    GoogleSignIn.DefaultInstance.SignOut();
+                    GoogleSignIn.DefaultInstance.Disconnect();
 
                     // LoginPanel ShowUI, GameStartPanel HideUI
                     OnClickSignOut?.Invoke();

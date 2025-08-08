@@ -27,12 +27,6 @@ public class GoogleLogin : MonoBehaviour
     public void OnGoolgeSignInClicked()
     {
         Debug.Log("구글 로그인 버튼 입력");
-
-        GoogleSignIn.Configuration = CYH_FirebaseManager.Instance.Configuration;
-        GoogleSignIn.Configuration.UseGameSignIn = false;
-        GoogleSignIn.Configuration.RequestIdToken = true;
-        GoogleSignIn.Configuration.RequestEmail = true;
-
         GoogleSignIn.DefaultInstance.SignIn().ContinueWithOnMainThread(OnGoogleAuthenticatedFinished);
     }
 

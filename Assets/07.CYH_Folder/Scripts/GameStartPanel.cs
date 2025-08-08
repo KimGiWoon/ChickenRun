@@ -1,7 +1,9 @@
 using Firebase.Auth;
 using Firebase.Database;
 using Firebase.Extensions;
+using Google;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
@@ -37,6 +39,7 @@ public class GameStartPanel : UIBase
             SoundManager.Instance.StopBGM();
         });
 
+        // 로그아웃 버튼 클릭
         _signOutButton.onClick.AddListener(() =>
         {
             // Online -> Offline
@@ -47,7 +50,15 @@ public class GameStartPanel : UIBase
             {
                 DeleteUser();
             }
-            
+
+            // 구글 계정 로그아웃 처리 및 계정과 앱 연결 해제
+            bool isGoogleUser = CYH_FirebaseManager.Auth.CurrentUser.ProviderData.Any(provider => provider.ProviderId == "google.com");
+            if (isGoogleUser)
+            {
+                GoogleSignIn.DefaultInstance.SignOut();
+                GoogleSignIn.DefaultInstance.Disconnect();
+            }
+
             CYH_FirebaseManager.Auth.SignOut();
             OnClickSignOut?.Invoke();
         });
@@ -174,6 +185,15 @@ public class GameStartPanel : UIBase
                 // 현재 로그인된 유저가 있으면 로그아웃
                 if (currentUser != null)
                 {
+                    // 구글 계정 로그아웃 처리 및 계정과 앱 연결 해제
+                    bool isGoogleUser = currentUser.ProviderData.Any(provider => provider.ProviderId == "google.com");
+
+                    if (isGoogleUser)
+                    {
+                        GoogleSignIn.DefaultInstance.SignOut();
+                        GoogleSignIn.DefaultInstance.Disconnect();
+                    }
+
                     Utility.SetOffline();
                     CYH_FirebaseManager.Auth.SignOut();
                 }
@@ -211,8 +231,17 @@ public class GameStartPanel : UIBase
             {
                 PopupManager.Instance.HidePopup();
 
-                //로그아웃 처리 및 mainPanel로 이동 이벤트
+                //로그아웃 처리 및 mainPanel 전환
                 Utility.SetOffline();
+
+                // 구글 계정 로그아웃 처리 및 계정과 앱 연결 해제
+                bool isGoogleUser = CYH_FirebaseManager.Auth.CurrentUser.ProviderData.Any(provider => provider.ProviderId == "google.com");
+                if (isGoogleUser)
+                {
+                    GoogleSignIn.DefaultInstance.SignOut();
+                    GoogleSignIn.DefaultInstance.Disconnect();
+                }
+
                 auth.SignOut();
                 IsUserOnline?.Invoke();
             });
@@ -225,14 +254,12 @@ public class GameStartPanel : UIBase
         await userRef.SetValueAsync(true);
         Debug.Log($"로그인 / 유저 UID : {uid} IsOnline: {snapshot.Value}");
 
-
         if(CYH_FirebaseManager.Auth.CurrentUser.IsAnonymous)
         {
             return false;
         }
 
         await userRef.OnDisconnect().SetValue(false);
-
         return true;
     }
 }

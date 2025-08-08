@@ -1,7 +1,9 @@
 using Firebase.Auth;
 using Firebase.Database;
 using Firebase.Extensions;
+using Google;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
@@ -82,6 +84,19 @@ public class AccountPanel : UIBase
                         DeleteUser();
                     }
 
+                    // 구글 계정 로그아웃 처리 및 계정과 앱 연결 해제
+                    bool isGoogleUser = user.ProviderData.Any(provider => provider.ProviderId == "google.com");
+                    if (isGoogleUser)
+                    {
+                        Debug.Log("구글 계정 로그아웃 처리 및 계정과 앱 연결 해제 : isGoogleUser ");
+                        GoogleSignIn.DefaultInstance.SignOut();
+                        GoogleSignIn.DefaultInstance.Disconnect();
+                    }
+
+                    Debug.Log("구글 계정 로그아웃 처리 및 계정과 앱 연결 해제");
+                    GoogleSignIn.DefaultInstance.SignOut();
+                    GoogleSignIn.DefaultInstance.Disconnect();
+
                     CYH_FirebaseManager.Auth.SignOut();
                     OnClickSignOut?.Invoke();
                     SceneManager.LoadScene("LoginScene");
@@ -104,6 +119,14 @@ public class AccountPanel : UIBase
             "탈퇴", () =>
             {
                 DeleteUser();
+
+                // 구글 계정 로그아웃 처리 및 계정과 앱 연결 해제
+                bool isGoogleUser = CYH_FirebaseManager.Auth.CurrentUser.ProviderData.Any(provider => provider.ProviderId == "google.com");
+                if (isGoogleUser)
+                {
+                    GoogleSignIn.DefaultInstance.SignOut();
+                    GoogleSignIn.DefaultInstance.Disconnect();
+                }
 
                 CYH_FirebaseManager.Auth.SignOut();
                 PopupManager.Instance.HidePopup();
@@ -137,38 +160,20 @@ public class AccountPanel : UIBase
                 // 현재 로그인된 유저가 있으면 로그아웃
                 if (currentUser != null)
                 {
+                    // 구글 계정 로그아웃 처리 및 계정과 앱 연결 해제
+                    bool isGoogleUser = currentUser.ProviderData.Any(provider => provider.ProviderId == "google.com");
+                    if (isGoogleUser)
+                    {
+                        GoogleSignIn.DefaultInstance.SignOut();
+                        GoogleSignIn.DefaultInstance.Disconnect();
+                    }
+
                     CYH_FirebaseManager.Auth.SignOut();
                 }
 
                 // LoginScene으로 씬 전환
                 OnClickDeleteAccount?.Invoke();
             });
-    }
-
-    #endregion
-
-    #region setOffline
-
-    /// <summary>
-    /// 로그인한 유저의 로그인 상태 IsOnline = false 로 전환하는 메서드
-    /// </summary>
-    public async void SetOffline()
-    {
-        await IsSetOffline();
-    }
-
-    /// <summary>
-    /// 현재 유저의 온라인 상태를 false로 설정하고 로그아웃 처리하는 메서드
-    /// IsOnline = false
-    /// </summary>
-    public static async Task IsSetOffline()
-    {
-        Debug.Log("IsSetOffline 호출 완료");
-        string uid = CYH_FirebaseManager.Auth.CurrentUser.UserId;
-        DatabaseReference userRef = CYH_FirebaseManager.DataReference.Child("UserData").Child(uid).Child("IsOnline");
-
-        await userRef.SetValueAsync(false);
-        Debug.Log($"로그아웃  / 유저 UID : {uid} IsOnline: false");
     }
     #endregion
 }
