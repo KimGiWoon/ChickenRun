@@ -417,7 +417,7 @@ public class PlayerController_Map2 : MonoBehaviourPun, IPunObservable, IPunInsta
     // Bounce Tile을 밟았을 때 호출되는 메서드
     public void Bounce(float power)
     {
-        if (_rigid.velocity.y <= 1)
+        if (_rigid.velocity.y <= 0.5)
         {
             _rigid.AddForce(Vector2.up * power, ForceMode2D.Impulse);
             _isBounce = true;
