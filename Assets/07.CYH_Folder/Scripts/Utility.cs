@@ -9,7 +9,7 @@ using UnityEngine;
 static partial class Utility
 {
 
-    #region Save/Delete Nickname
+    #region Save/Delete/Load Nickname
 
     /// <summary>
     ///  RankData/UserData 경로에 CurrentUser.DisplayName을 저장하는 메서드
@@ -88,7 +88,6 @@ static partial class Utility
     /// </summary>
     public static void DeleteUserUID()
     {
-        //string uid = CYH_FirebaseManager.User.UserId;
         string uid = CYH_FirebaseManager.Auth.CurrentUser.UserId;
 
         Debug.Log($" (DB Delete) 현재 로그인된 유저 uid : {uid}");

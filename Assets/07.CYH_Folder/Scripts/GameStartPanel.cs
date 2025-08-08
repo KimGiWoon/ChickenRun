@@ -41,6 +41,13 @@ public class GameStartPanel : UIBase
         {
             // Online -> Offline
             SetOffline();
+            
+            // 익명 계정 -> 로그아웃 시 계정 삭제
+            if (CYH_FirebaseManager.Auth.CurrentUser.IsAnonymous)
+            {
+                DeleteUser();
+            }
+            
             CYH_FirebaseManager.Auth.SignOut();
             OnClickSignOut?.Invoke();
         });
@@ -70,7 +77,7 @@ public class GameStartPanel : UIBase
 
 
     /// <summary>
-    /// 로그인한 유저의 로그인 상태 IsOnline = true 로 
+    /// 로그인한 유저의 로그인 상태 IsOnline = true 로 전환하는 메서드
     /// </summary>
     public async void CheckIsOnline()
     {
@@ -78,7 +85,7 @@ public class GameStartPanel : UIBase
     }
 
     /// <summary>
-    /// 로그인한 유저의 로그인 상태 IsOnline = false 로 
+    /// 로그인한 유저의 로그인 상태 IsOnline = false 로 전환하는 메서드
     /// </summary>
     public async void SetOffline()
     {
@@ -223,6 +230,12 @@ public class GameStartPanel : UIBase
         // disconnect -> 자동 IsOnline = false
         await userRef.SetValueAsync(true);
         Debug.Log($"로그인 / 유저 UID : {uid} IsOnline: {snapshot.Value}");
+
+
+        if(CYH_FirebaseManager.Auth.CurrentUser.IsAnonymous)
+        {
+            return false;
+        }
 
         await userRef.OnDisconnect().SetValue(false);
 

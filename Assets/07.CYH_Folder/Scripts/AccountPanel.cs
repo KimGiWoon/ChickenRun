@@ -1,6 +1,8 @@
 using Firebase.Auth;
+using Firebase.Database;
 using Firebase.Extensions;
 using System;
+using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -61,6 +63,7 @@ public class AccountPanel : UIBase
         // 회원탈퇴 버튼
         _deleteAccountButton.onClick.AddListener(() =>
         {
+            SetOffline();
             OnClick_DelteButton();
         });
 
@@ -70,6 +73,15 @@ public class AccountPanel : UIBase
             PopupManager.Instance.ShowOKCancelPopup("로그아웃하시겠습니까?",
                 "네", () =>
                 {
+                   
+                    SetOffline();
+                    
+                    // 익명 계정 -> 로그아웃 시 계정 삭제
+                    if (user.IsAnonymous)
+                    {
+                        DeleteUser();
+                    }
+
                     CYH_FirebaseManager.Auth.SignOut();
                     OnClickSignOut?.Invoke();
                     SceneManager.LoadScene("LoginScene");
@@ -135,4 +147,28 @@ public class AccountPanel : UIBase
 
     #endregion
 
+    #region setOffline
+
+    /// <summary>
+    /// 로그인한 유저의 로그인 상태 IsOnline = false 로 전환하는 메서드
+    /// </summary>
+    public async void SetOffline()
+    {
+        await IsSetOffline();
+    }
+
+    /// <summary>
+    /// 현재 유저의 온라인 상태를 false로 설정하고 로그아웃 처리하는 메서드
+    /// IsOnline = false
+    /// </summary>
+    public static async Task IsSetOffline()
+    {
+        Debug.Log("IsSetOffline 호출 완료");
+        string uid = CYH_FirebaseManager.Auth.CurrentUser.UserId;
+        DatabaseReference userRef = CYH_FirebaseManager.DataReference.Child("UserData").Child(uid).Child("IsOnline");
+
+        await userRef.SetValueAsync(false);
+        Debug.Log($"로그아웃  / 유저 UID : {uid} IsOnline: false");
+    }
+    #endregion
 }
