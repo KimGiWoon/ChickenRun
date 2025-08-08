@@ -19,15 +19,25 @@ public class ClearUIController_Map1 : MonoBehaviour
 
     private void Start()
     {
-        // 클리어 코루틴 스타트
-        _clearRoitine = StartCoroutine(ClearPanelOpen());
+        // 성공 사운드 재생
+        SoundManager.Instance.PlaySFX(SoundManager.Sfxs.SFX_Clear);
+        Debug.Log("성공 사운드 재생");
+
+        if (_clearRoitine == null)
+        {
+            // 클리어 코루틴 스타트
+            _clearRoitine = StartCoroutine(ClearPanelOpen());
+        }
+        else
+        {
+            _clearRoitine = null;
+        }
     }
 
     // 게임 클리어 패널 표시 코루틴
     private IEnumerator ClearPanelOpen()
     {
         _clearPanel.SetActive(true);
-        SoundManager.Instance.PlaySFX(SoundManager.Sfxs.SFX_Clear);
 
         yield return _time;
 
@@ -38,5 +48,6 @@ public class ClearUIController_Map1 : MonoBehaviour
     private void OnDestroy()
     {
         StopCoroutine(_clearRoitine);
+        _clearRoitine = null;
     }
 }

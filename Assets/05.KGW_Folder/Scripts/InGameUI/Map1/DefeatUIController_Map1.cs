@@ -15,10 +15,17 @@ public class DefeatUIController_Map1 : MonoBehaviour
 
     private void OnEnable()
     {
-        _time = new WaitForSeconds(_openTime);
+        _time = new WaitForSeconds(_openTime);        
+    }
 
+    private void Start()
+    {
         if (_defeatRoitine == null)
         {
+            // 실패 사운드 재생
+            SoundManager.Instance.PlaySFX(SoundManager.Sfxs.SFX_Defeat);
+            Debug.Log("실패 사운드 재생");
+
             if (_UIManager._isExit)
             {
                 // 탈주 코루틴 스타트
@@ -40,7 +47,6 @@ public class DefeatUIController_Map1 : MonoBehaviour
     private IEnumerator DefeatPanelOpen()
     {
         _defeatPanel.SetActive(true);
-        SoundManager.Instance.PlaySFX(SoundManager.Sfxs.SFX_Defeat);
 
         yield return _time;
 
@@ -52,7 +58,6 @@ public class DefeatUIController_Map1 : MonoBehaviour
     private IEnumerator ExitDefeatPanelOpen()
     {
         _defeatPanel.SetActive(true);
-        SoundManager.Instance.PlaySFX(SoundManager.Sfxs.SFX_Defeat);
 
         yield return _time;
 
@@ -63,5 +68,6 @@ public class DefeatUIController_Map1 : MonoBehaviour
     private void OnDestroy()
     {
         StopCoroutine(_defeatRoitine);
+        _defeatRoitine = null;
     }
 }
