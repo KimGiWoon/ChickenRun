@@ -3,7 +3,14 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - BounceTile1
+  - BounceTile2
+  - BounceTile3
+  - BounceTile4
+  - BounceTile5
+  - Goal
+  - Wall
   layers:
   - Default
   - TransparentFX
@@ -11,15 +18,15 @@ TagManager:
   - 
   - Water
   - UI
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Player
+  - Ground
+  - Egg
+  - RemotePlayer
+  - Goal
+  - CheckPoint
+  - Drill
+  - Wall
+  - Item
   - 
   - 
   - 
@@ -40,4 +47,10 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: BackGround
+    uniqueID: 2271203227
+    locked: 0
+  - name: UI
+    uniqueID: 514166003
     locked: 0

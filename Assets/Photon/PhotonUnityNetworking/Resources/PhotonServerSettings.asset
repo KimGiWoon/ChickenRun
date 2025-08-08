@@ -19,7 +19,7 @@ MonoBehaviour:
     AppIdVoice: 
     AppVersion: 
     UseNameServer: 1
-    FixedRegion: 
+    FixedRegion: kr
     Server: 
     Port: 0
     ProxyServer: 
@@ -28,17 +28,41 @@ MonoBehaviour:
     AuthMode: 0
     EnableLobbyStatistics: 0
     NetworkLogging: 1
-  DevRegion: 
+  DevRegion: hk
   PunLogging: 0
   EnableSupportLogger: 0
   RunInBackground: 1
   StartInOfflineMode: 0
   RpcList:
+  - AddScore
+  - ArrivePlayer
   - ClickRpc
+  - DelayedPlayer
   - DestroyRpc
   - DestroySpaceship
+  - EmoticonPlay
+  - ExitPlayer
+  - ExitPlayerCheck
   - Fire
+  - GameClearLeaveRoom
+  - GameDefeatLeaveRoom
+  - GiveEgg
+  - LoseGame
+  - MinusScore
+  - NotifyPlayer
+  - PlateSpawn
+  - ReadyGame
+  - RequestReturn
   - RespawnSpaceship
+  - RPC_ReceiveKickByUID
+  - RPC_ShootBullet
+  - StartGame
+  - StartGameRoutine
+  - RPCJump
+  - EndTimer
+  - FirstReach
+  - SendCurrentGameState
+  - GameTimeOverLeaveRoom
   DisableAutoOpenWizard: 1
-  ShowSettings: 0
-  DevRegionSetOnce: 0
+  ShowSettings: 1
+  DevRegionSetOnce: 1
