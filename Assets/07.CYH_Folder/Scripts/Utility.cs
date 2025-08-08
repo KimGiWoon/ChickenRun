@@ -9,7 +9,7 @@ using UnityEngine;
 static partial class Utility
 {
 
-    #region Save/Delete Nickname
+    #region Save/Delete/Load Nickname
 
     /// <summary>
     ///  RankData/UserData 경로에 CurrentUser.DisplayName을 저장하는 메서드
@@ -88,7 +88,6 @@ static partial class Utility
     /// </summary>
     public static void DeleteUserUID()
     {
-        //string uid = CYH_FirebaseManager.User.UserId;
         string uid = CYH_FirebaseManager.Auth.CurrentUser.UserId;
 
         Debug.Log($" (DB Delete) 현재 로그인된 유저 uid : {uid}");
@@ -331,4 +330,28 @@ static partial class Utility
     }
 
     #endregion
+
+
+    /// <summary>
+    /// 로그인한 유저의 로그인 상태 IsOnline = false 로 전환하는 메서드
+    /// </summary>
+    public static async void SetOffline()
+    {
+        await IsSetOffline();
+    }
+
+    /// <summary>
+    /// 현재 유저의 온라인 상태를 false로 설정하고 로그아웃 처리하는 메서드
+    /// IsOnline = false
+    /// </summary>
+    private static async Task IsSetOffline()
+    {
+        Debug.Log("IsSetOffline 호출 완료");
+        string uid = CYH_FirebaseManager.Auth.CurrentUser.UserId;
+        DatabaseReference userRef = CYH_FirebaseManager.DataReference.Child("UserData").Child(uid).Child("IsOnline");
+
+        await userRef.SetValueAsync(false);
+        Debug.Log($"로그아웃  / 유저 UID : {uid} IsOnline: false");
+    }
+
 }

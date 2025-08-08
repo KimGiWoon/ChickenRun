@@ -1,9 +1,13 @@
 using Firebase.Auth;
+using Firebase.Database;
+using Firebase.Extensions;
 using System;
+using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+
 
 
 public class NicknameChangePanel : UIBase
@@ -17,6 +21,7 @@ public class NicknameChangePanel : UIBase
 
     public Action OnClickClosePopup;
     public Action OnClickNicknameChange;
+    public Action OnClickNicknameChange_Success;
 
     private void Start()
     {
@@ -48,9 +53,9 @@ public class NicknameChangePanel : UIBase
         PopupManager.Instance.ShowOKPopup(message, "OK", () => PopupManager.Instance.HidePopup());
     }
 
-    private void ChanegeNickname()
+    private async void ChanegeNickname()
     {
-        if (string.IsNullOrEmpty(_nicknameField.text))
+        if (string.IsNullOrEmpty(_nicknameField.text.Trim()))
         {
             ShowPopup("닉네임을 입력해주세요.");
             return;
@@ -71,22 +76,97 @@ public class NicknameChangePanel : UIBase
             return;
         }
 
+        // 닉네임 DB와 중복 체크
+        bool available = await IsNicknameAvailableAsync();
+        if (!available)
+        {
+            ShowPopup("중복된 닉네임입니다.");
+            return;
+        }
+
+        //NicknameCheck();
+
         // 닉네임 재설정 및 데이터베이스에 저장
-        //SetNickname();
         Utility.SetNickname(_nicknameField.text);
 
-        PopupManager.Instance.ShowOKPopup("닉네임 변경 성공.\r\n다시 로그인해 주세요.", "OK", () =>
+        ShowPopup("닉네임 변경 성공");
+
+
+        PopupManager.Instance.ShowOKPopup("닉네임 변경 성공", "OK", () =>
         {
             PopupManager.Instance.HidePopup();
-
-            // 닉네임 패널 비활성화
-            OnClickNicknameChange?.Invoke();
-
-            // 강제 로그아웃
-            CYH_FirebaseManager.Auth.SignOut();
-
-            // 로그인 씬 전환
-            SceneManager.LoadScene("LoginScene");
+            
+            // 닉네임 변경 패널 비활성화
+            OnClickNicknameChange_Success?.Invoke();
         });
+
+        //PopupManager.Instance.ShowOKPopup("닉네임 변경 성공.\r\n다시 로그인해 주세요.", "OK", () =>
+        //{
+        //    PopupManager.Instance.HidePopup();
+
+        //    // 닉네임 패널 비활성화
+        //    OnClickNicknameChange?.Invoke();
+
+        //    // 강제 로그아웃
+        //    Utility.SetOffline();
+        //    CYH_FirebaseManager.Auth.SignOut();
+
+        //    // 로그인 씬 전환
+        //    SceneManager.LoadScene("LoginScene");
+        //});
+    }
+
+    /// <summary>
+    /// 회원가입 시 유저 닉네임을 중복 체크하는 메서드
+    /// </summary>
+    private void NicknameCheck()
+    {
+        DatabaseReference userData = CYH_FirebaseManager.Database.RootReference.Child("UserData");
+
+        userData.OrderByChild("Nickname").EqualTo(_nicknameField.text).GetValueAsync().ContinueWithOnMainThread(task =>
+        {
+            if (task.IsFaulted)
+            {
+                Debug.Log("실패: " + task.Exception);
+                ShowPopup("DB 접근 실패");
+                return;
+            }
+
+            DataSnapshot snapshot = task.Result;
+
+            if (!snapshot.Exists || snapshot.ChildrenCount == 0)
+            {
+                Debug.Log("사용 가능한 닉네임");
+            }
+
+            foreach (DataSnapshot user in snapshot.Children)
+            {
+                string uid = user.Key;
+                string nickname = user.Child("Nickname").Value?.ToString();
+                Debug.Log($"중복된 닉네임: {nickname}, uid: {uid}");
+
+                // 팝업 (중복된 닉네임)
+                ShowPopup("중복된 닉네임입니다.");
+                return;
+            }
+        });
+    }
+
+    /// <summary>
+    /// 회원가입 시 유저 닉네임을 중복 체크하는 메서드
+    /// </summary>
+    private async Task<bool> IsNicknameAvailableAsync()
+    {
+        var userData = CYH_FirebaseManager.Database.RootReference.Child("UserData");
+        var snapshot = await userData.OrderByChild("Nickname").EqualTo(_nicknameField.text).GetValueAsync();
+
+        if (!snapshot.Exists || snapshot.ChildrenCount == 0) return true;
+
+        string uid = CYH_FirebaseManager.Auth.CurrentUser.UserId;
+        foreach (var user in snapshot.Children)
+        {
+            if (user.Key != uid) return false;
+        }
+        return true;
     }
 }

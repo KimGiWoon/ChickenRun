@@ -194,6 +194,7 @@ public class UserSettingPanel : UIBase
                 }
 
                 Debug.Log("유저 삭제 성공");
+                Utility.SetOffline();
                 CYH_FirebaseManager.Auth.SignOut();
                 PopupManager.Instance.ShowOKPopup("계정 삭제 완료", "OK", () => PopupManager.Instance.HidePopup());
             });

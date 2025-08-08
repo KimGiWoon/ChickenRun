@@ -55,6 +55,13 @@ public class AccountUIController : MonoBehaviour
 
                 // 닉네임 변경 버튼
                 nicknameChangePanel.OnClickNicknameChange =() => HideUI(AccountUIType.NicknameChangePanel);
+
+                // 닉네임 변경 버튼
+                nicknameChangePanel.OnClickNicknameChange_Success = () =>
+                { 
+                    HideUI(AccountUIType.NicknameChangePanel); 
+                    HideUI(AccountUIType.AccountPanel); 
+                };
             }
             else if (ui is PasswordChangePanel passwordChangePanel)
             {
