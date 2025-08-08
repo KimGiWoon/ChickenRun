@@ -52,7 +52,7 @@ public class SettingManager : Singleton<SettingManager>
     private void LoadSettings()
     {
         BGM.Value = PlayerPrefs.HasKey("BGMVolume") ? PlayerPrefs.GetFloat("BGMVolume") : 0.5f;
-        BGM.Value = PlayerPrefs.HasKey("SFXVolume") ? PlayerPrefs.GetFloat("SFXVolume") : 0.5f;
-        BGM.Value = PlayerPrefs.HasKey("IsFixedCam") ? PlayerPrefs.GetFloat("IsFixedCam") : 0.5f;
+        SFX.Value = PlayerPrefs.HasKey("SFXVolume") ? PlayerPrefs.GetFloat("SFXVolume") : 0.5f;
+        CamMode.Value = PlayerPrefs.HasKey("IsFixedCam") && PlayerPrefs.GetInt("IsFixedCam") == 1;
     }
 }

@@ -29,6 +29,11 @@ public class MainSceneOptionPanel : UIBase
         });
         _musicSlider.onValueChanged.AddListener((volume) => SettingManager.Instance.SetBGM(volume));
         _effectSlider.onValueChanged.AddListener((volume) => SettingManager.Instance.SetSFX(volume));
+        SettingManager.Instance.BGM.OnChanged += (value) => _musicSlider.value = value;
+        SettingManager.Instance.SFX.OnChanged += (value) => _effectSlider.value = value;
+
+        _musicSlider.value = SettingManager.Instance.BGM.Value;
+        _effectSlider.value = SettingManager.Instance.SFX.Value;
     }
 
     #endregion // mono funcs
