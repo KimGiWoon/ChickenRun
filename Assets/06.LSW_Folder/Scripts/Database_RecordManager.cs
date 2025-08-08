@@ -385,7 +385,6 @@ public class Database_RecordManager : Singleton<Database_RecordManager>
                 {
                     GameObject go = boardList.GetPool();
                     string nickname = player.Child("Nickname").Value?.ToString() ?? "알 수 없음";
-                    Debug.Log(nickname);
                     go.GetComponent<OnlinePlayer>().SetText(nickname);
                 }
             }
