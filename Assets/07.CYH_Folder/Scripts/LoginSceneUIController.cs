@@ -52,9 +52,9 @@ public class LoginSceneUIManager : MonoBehaviour
         {
             if (ui is MainPanel_LoginScene mainPanel)
             {
-                mainPanel.OnClickTouch = () =>
+                mainPanel.OnClickTouch = async() =>
                 {
-                    if (CYH_FirebaseManager.Instance.IsLoggedIn())
+                    if (await CYH_FirebaseManager.Instance.IsLoggedIn())
                     {
                         Debug.Log($"IsLoggedIn : {CYH_FirebaseManager.Instance.IsLoggedIn()}");
                         ShowUI(LoginUIType.GameStartPanel);

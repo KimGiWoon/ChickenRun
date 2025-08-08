@@ -135,7 +135,7 @@ public class CYH_FirebaseManager : Singleton<CYH_FirebaseManager>
     /// true: 로그인된 유저가 있음 (자동 로그인 상태) -> GameStartPanel
     /// false: 로그인된 유저가 없음 (로그인 필요) -> LoginPanel
     /// </summary>
-    public bool IsLoggedIn()
+    public async Task<bool> IsLoggedIn()
     {
         Debug.Log($"IsLoggedIn 실행");
         if (auth != null && auth.CurrentUser != null)
@@ -144,10 +144,9 @@ public class CYH_FirebaseManager : Singleton<CYH_FirebaseManager>
             {
                 Utility.DeleteUserUID();
                 // 게스트 계정 -> 앱 재실행 시 자동 삭제
-                auth.CurrentUser.DeleteAsync().ContinueWithOnMainThread(task =>
-                {
-                    Debug.Log("앱 재실행 / 게스트 계정 삭제됨");
-                });
+                await auth.CurrentUser.DeleteAsync();
+                Debug.Log("앱 재실행 / 게스트 계정 삭제됨");
+                auth.SignOut();
                 return false;
             }
             return true;

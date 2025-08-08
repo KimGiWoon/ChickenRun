@@ -102,14 +102,16 @@ public class GameStartPanel : UIBase
     {
         FirebaseUser user = CYH_FirebaseManager.Auth.CurrentUser;
         Debug.Log("GameStartPanel nicknamefield");
+        user.ReloadAsync();
+
 
         if (user != null)
         {
-            _nicknameText.text = $"{user.DisplayName}";
+            _nicknameText.text = $"{user.DisplayName} 님";
 
             if (user.IsAnonymous)
             {
-                _nicknameText.text = $"게스트 님";
+                _nicknameText.text = $"{user.DisplayName} 님";
                 Debug.Log("nicknamefield : 게스트");
             }
             else if (user.ProviderId == "google.com")
