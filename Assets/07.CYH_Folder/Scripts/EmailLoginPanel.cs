@@ -86,6 +86,7 @@ public class EmailLoginPanel : UIBase
 
                         // 강제 로그아웃
                         CYH_FirebaseManager.Auth.SignOut();
+                        Utility.SetOffline();
                         Debug.Log("로그아웃");
                         return;
                     }
