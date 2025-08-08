@@ -213,6 +213,9 @@ static partial class Utility
 
                 // Firebase DB에 닉네임 저장
                 SaveNickname();
+                
+                PhotonManager.Instance.SetUserUIDToPhoton();
+                
                 OnChangedNickname?.Invoke();
                 Debug.Log("닉네임 설정 성공");
                 Debug.Log($"변경된 유저 닉네임 : {currentUser.DisplayName}");
@@ -289,31 +292,17 @@ static partial class Utility
         profile.DisplayName = googleDisplayName;
         Debug.Log($"SetGoogleNickname : googleDisplayName = {googleDisplayName}" );
 
-        currentUser.UpdateUserProfileAsync(profile)
-            .ContinueWithOnMainThread(async task =>
-            {
-                if (task.IsCanceled)
-                {
-                    Debug.LogError("닉네임 설정 취소");
-                    return;
-                }
+        await currentUser.UpdateUserProfileAsync(profile);
+   
+        // 초기화
+        await currentUser.ReloadAsync();
 
-                if (task.IsFaulted)
-                {
-                    Debug.LogError("닉네임 설정 실패");
-                    return;
-                }
+        // Firebase DB에 닉네임 저장
+        await SaveNicknameAsync();
+        await currentUser.ReloadAsync();
 
-                // 초기화
-                //currentUser.ReloadAsync();
-
-                // Firebase DB에 닉네임 저장
-                await SaveNicknameAsync();
-                await currentUser.ReloadAsync();
-
-                Debug.Log("닉네임 설정 성공");
-                Debug.Log($"변경된 유저 닉네임 : {currentUser.DisplayName}");
-            });
+        Debug.Log("닉네임 설정 성공");
+        Debug.Log($"변경된 유저 닉네임 : {currentUser.DisplayName}");
     }
 
     #endregion

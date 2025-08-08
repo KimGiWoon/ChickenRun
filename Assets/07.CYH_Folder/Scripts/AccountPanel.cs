@@ -55,7 +55,8 @@ public class AccountPanel : UIBase
 
         // 패스워드 변경 버튼
         _passwordChangeButton.onClick.AddListener(() => {
-            if(!(user.ProviderId == "password"))
+            bool isPasswordUser = user.ProviderData.Any(provider => provider.ProviderId == "password");
+            if (!(isPasswordUser))  
             {
                 PopupManager.Instance.ShowOKPopup("패스워드를 설정할 수 없는 계정입니다.", "OK", () => PopupManager.Instance.HidePopup());
                 return;
@@ -66,7 +67,7 @@ public class AccountPanel : UIBase
         // 회원탈퇴 버튼
         _deleteAccountButton.onClick.AddListener(() =>
         {
-            OnClick_DelteButton();
+            OnClick_DeleteButton();
         });
 
         // 로그아웃 버튼
@@ -217,12 +218,12 @@ public class AccountPanel : UIBase
 
     #region deleteAccount
 
-    private void OnClick_DelteButton()
+    private void OnClick_DeleteButton()
     {
         PopupManager.Instance.ShowOKCancelPopup("정말로 탈퇴하시겠습니까?\r\n모든 기록이 삭제될 수 있습니다.\r\n",
             "탈퇴", () =>
             {
-                Utility.SetOffline();
+                //Utility.SetOffline();
                 DeleteUser();
 
                 // 구글 계정 로그아웃 처리 및 계정과 앱 연결 해제
@@ -233,12 +234,13 @@ public class AccountPanel : UIBase
                     GoogleSignIn.DefaultInstance.Disconnect();
                 }
 
+                
                 CYH_FirebaseManager.Auth.SignOut();
                 PopupManager.Instance.HidePopup();
                 SceneManager.LoadScene("LoginScene");
             },
             "취소", () => PopupManager.Instance.HidePopup()
-           );
+            );
     }
 
     private void DeleteUser()
@@ -255,7 +257,7 @@ public class AccountPanel : UIBase
                 {
                     Debug.LogError("유저 삭제 취소");
                 }
-                if (task.IsCanceled)
+                if (task.IsFaulted)
                 {
                     Debug.LogError("유저 삭제 실패");
                 }

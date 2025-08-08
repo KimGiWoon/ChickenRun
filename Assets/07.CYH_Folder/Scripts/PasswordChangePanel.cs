@@ -133,6 +133,9 @@ public class PasswordChangePanel : UIBase
                         GoogleSignIn.DefaultInstance.SignOut();
                         GoogleSignIn.DefaultInstance.Disconnect();
                     }
+                    
+                    GoogleSignIn.DefaultInstance.SignOut();
+                    GoogleSignIn.DefaultInstance.Disconnect();
 
                     CYH_FirebaseManager.Auth.SignOut();
                     Debug.Log("로그아웃");
