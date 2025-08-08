@@ -161,7 +161,8 @@ public class PlayerController_Map2 : MonoBehaviourPun, IPunObservable, IPunInsta
             if(photonView.IsMine)
             {
                 _isGoalIn = true;
-                GameManager_Map2.Instance.ReachGoalPoint();
+                string team = PhotonNetwork.LocalPlayer.CustomProperties["Color"] as string;
+                GameManager_Map2.Instance.ReachGoalPoint(team);
             }
             GameManager_Map2.Instance.GoalInPlayer(this);
         }

@@ -130,7 +130,7 @@ public class GameManager_Map2 : MonoBehaviourPun
     }
     
     // 결승점 도착
-    public void ReachGoalPoint()
+    public void ReachGoalPoint(string team)
     {
         _data.Record = _stopwatch.ElapsedMilliseconds;
         _isEnd = true;
@@ -141,7 +141,7 @@ public class GameManager_Map2 : MonoBehaviourPun
             photonView.RPC(nameof(FirstReach), RpcTarget.All);
             
             if (_isLose) return;
-            photonView.RPC(nameof(LoseGame), RpcTarget.Others);
+            photonView.RPC(nameof(LoseGame), RpcTarget.Others, team);
             _gamePlayTime = _totalPlayTime;
             _data.IsWin = true;
         }
@@ -189,9 +189,14 @@ public class GameManager_Map2 : MonoBehaviourPun
     }
 
     [PunRPC]
-    public void LoseGame()
+    public void LoseGame(string team)
     {
         _isLose = true;
+
+        if (PhotonNetwork.LocalPlayer.CustomProperties.TryGetValue("Color", out var myTeam) && myTeam.ToString() == team)
+        {
+            _data.IsWin = true;
+        }
     }
     
     [PunRPC]
