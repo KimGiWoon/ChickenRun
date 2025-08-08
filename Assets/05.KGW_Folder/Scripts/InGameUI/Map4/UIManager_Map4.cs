@@ -226,6 +226,13 @@ public class UIManager_Map4 : MonoBehaviourPun
     // 나가기 버튼 클릭
     private void OnExitPlayGame()
     {
+        // 효과음이 재생중이면
+        if(SoundManager.Instance._sfxAudioSource.isPlaying)
+        {
+            // 효과음 정지
+            SoundManager.Instance.StopSFX();
+        }
+
         string exitPlayer = _playerEmoticonController._nickname;
 
         _isExit = true;
