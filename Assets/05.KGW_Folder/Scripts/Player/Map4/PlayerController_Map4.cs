@@ -261,8 +261,12 @@ public class PlayerController_Map4 : MonoBehaviourPun, IPunObservable, IPunInsta
             SoundManager.Instance.PlaySFX(SoundManager.Sfxs.SFX_Death);
             string playerNickname = _playerEmoticonController._nickname;
 
+            if (photonView.IsMine)
+            {
+                _gameManager.StopStopWatch();
+            }
+
             gameObject.SetActive(false);
-            _gameManager.StopStopWatch();
             _gameManager.PlayerDeath(playerNickname);
         }
     }
