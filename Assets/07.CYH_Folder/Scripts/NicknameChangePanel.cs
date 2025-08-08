@@ -50,7 +50,7 @@ public class NicknameChangePanel : UIBase
 
     private void ChanegeNickname()
     {
-        if (string.IsNullOrEmpty(_nicknameField.text))
+        if (string.IsNullOrEmpty(_nicknameField.text.Trim()))
         {
             ShowPopup("닉네임을 입력해주세요.");
             return;

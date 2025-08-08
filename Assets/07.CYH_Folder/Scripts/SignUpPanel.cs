@@ -78,7 +78,7 @@ public class SignUpPanel : UIBase
     public void OnClick_SignUp()
     {
         // 닉네임 미입력
-        if (string.IsNullOrEmpty(_nicknameField.text))
+        if (string.IsNullOrEmpty(_nicknameField.text.Trim()))
         {
             ShowPopup("닉네임을 입력해 주세요.");
             return;
@@ -252,7 +252,7 @@ public class SignUpPanel : UIBase
     /// </summary>
     private void NicknameCheck()
     {
-        if (string.IsNullOrEmpty(_nicknameField.text))
+        if (string.IsNullOrEmpty(_nicknameField.text.Trim()))
         {
             ShowPopup("닉네임을 입력해주세요.");
             return;
