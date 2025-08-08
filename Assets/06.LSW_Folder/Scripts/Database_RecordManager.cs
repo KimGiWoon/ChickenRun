@@ -75,7 +75,13 @@ public class Database_RecordManager : Singleton<Database_RecordManager>
         recordRef.RunTransaction(mutableData =>
         {
             long currentRecord = mutableData.Value == null ? long.MaxValue : (long)mutableData.Value;
-            if (data.Record < currentRecord)
+            
+            if (data.Record < currentRecord && key != "Map3Record")
+            {
+                mutableData.Value = data.Record;
+            }
+            
+            if (data.Record > currentRecord && key == "Map3Record")
             {
                 mutableData.Value = data.Record;
             }
