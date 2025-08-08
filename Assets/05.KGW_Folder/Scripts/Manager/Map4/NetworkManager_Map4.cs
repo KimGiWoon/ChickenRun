@@ -30,33 +30,13 @@ public class NetworkManager_Map4 : MonoBehaviourPunCallbacks
             SoundManager.Instance.StopBGM();
 
             // 씬이동 관련 동기화 해제
-            PhotonNetwork.AutomaticallySyncScene = false;
+            //PhotonNetwork.AutomaticallySyncScene = false;
 
             // 방에 들어온 플레이어 체크
             if (PhotonNetwork.IsMasterClient)
             {
                 CheckRoomPlayer();
             }
-        }
-    }
-
-    // 마스터 서버 접속
-    public override void OnConnectedToMaster()
-    {
-        PhotonNetwork.JoinRandomOrCreateRoom();
-    }
-
-    // 방 입장
-    public override void OnJoinedRoom()
-    {
-        UnityEngine.Debug.Log("입장 완료");
-
-        PlayerSpawn();
-
-        // 방에 들어온 플레이어 체크
-        if (PhotonNetwork.IsMasterClient)
-        {
-            CheckRoomPlayer();
         }
     }
 
@@ -90,7 +70,7 @@ public class NetworkManager_Map4 : MonoBehaviourPunCallbacks
         }
 
         // 방에 입장한 플레이어
-        int currentPlayer = PhotonNetwork.CurrentRoom.PlayerCount; 
+        int currentPlayer = PhotonNetwork.CurrentRoom.PlayerCount;
 
         // 현재 인원 전달
         if (PhotonNetwork.IsMasterClient)

@@ -61,6 +61,8 @@ MonoBehaviour:
   - RPCJump
   - EndTimer
   - FirstReach
+  - SendCurrentGameState
+  - GameTimeOverLeaveRoom
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

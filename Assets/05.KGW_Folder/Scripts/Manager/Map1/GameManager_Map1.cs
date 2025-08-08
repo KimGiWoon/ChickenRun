@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using Photon.Pun;
 using Photon.Pun.Demo.PunBasics;
+using Unity.Burst.CompilerServices;
 using UnityEngine;
 
 public class GameManager_Map1 : MonoBehaviourPunCallbacks
@@ -16,6 +17,7 @@ public class GameManager_Map1 : MonoBehaviourPunCallbacks
     [SerializeField] public float _GamePlayTime;
     [SerializeField] ClearUIController_Map1 _clearUIController;
     [SerializeField] DefeatUIController_Map1 _defeatUIController;
+    [SerializeField] TimeOverUIController_Map1 _timeOverUIController;
     [SerializeField] public CameraController_Map1 _cameraController;
 
     int _totalEggCount = 0;
@@ -123,6 +125,9 @@ public class GameManager_Map1 : MonoBehaviourPunCallbacks
                 // 랭킹 데이터 저장
                 _data.EggCount = _totalEggCount;
                 _data.Record = _stopwatch.ElapsedMilliseconds;
+
+                // 점수, 달걀, 시간 저장
+                Database_RecordManager.Instance.SaveUserMapRecord(_data);
             }
         }       
 
@@ -130,12 +135,28 @@ public class GameManager_Map1 : MonoBehaviourPunCallbacks
         {
             _goalPlayerCount++;
 
-            // 결승점 도착
-            if (_exitPlayerCount + _goalPlayerCount >= _totalPlayerCount)
-            {
-                photonView.RPC(nameof(GameClearLeaveRoom), RpcTarget.AllViaServer);
-            }
+            CheckGameEndCondition();
         }       
+    }
+
+    // 게임 종료 조건 체크
+    public void CheckGameEndCondition()
+    {
+        int currentPlayerCount = _totalPlayerCount - _exitPlayerCount;
+
+        // 플레이어 상태 체크
+        if (_goalPlayerCount >= currentPlayerCount)
+        {
+            // 게임 클리어를 진행한 플레이어가 없으면
+            if (_goalPlayerCount <= 0)
+            {
+                photonView.RPC(nameof(GameDefeatLeaveRoom), RpcTarget.All);
+            }
+            else    // 게임 클리어를 진행한 플레이어가 있으면
+            {
+                photonView.RPC(nameof(GameClearLeaveRoom), RpcTarget.All);
+            }
+        }
     }
 
     // 게임 플레이 시간 오버 체크
@@ -154,7 +175,7 @@ public class GameManager_Map1 : MonoBehaviourPunCallbacks
     public void GamePlayTimeOver()
     {
         _stopwatch.Stop();
-        photonView.RPC(nameof(GameDefeatLeaveRoom), RpcTarget.AllViaServer);
+        photonView.RPC(nameof(GameTimeOverLeaveRoom), RpcTarget.AllViaServer);
     }
 
     // 클리어 후 현재의 방을 나가기
@@ -166,10 +187,7 @@ public class GameManager_Map1 : MonoBehaviourPunCallbacks
 
         _networkManager._isStart = false;
         _gameUIManager.ClearPlayerReference();
-
-        // 점수, 달걀, 시간 저장
-        Database_RecordManager.Instance.SaveUserMapRecord(_data);
-
+        
         // 클리어 UI 활성화
         _clearUIController.gameObject.SetActive(true);
     }
@@ -186,6 +204,20 @@ public class GameManager_Map1 : MonoBehaviourPunCallbacks
 
         // 실패 UI 활성화
         _defeatUIController.gameObject.SetActive(true);
+    }
+
+    // 타임오버 후 현재의 방을 나가기
+    [PunRPC]
+    public void GameTimeOverLeaveRoom()
+    {
+        SoundManager.Instance.StopBGM();
+        SoundManager.Instance.StopSFX();
+
+        _networkManager._isStart = false;
+        _gameUIManager.ClearPlayerReference();
+
+        // 클리어 UI 활성화
+        _timeOverUIController.gameObject.SetActive(true);
     }
 }
 

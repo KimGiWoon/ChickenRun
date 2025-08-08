@@ -7,6 +7,7 @@ public class SettingManager : Singleton<SettingManager>
     public Property<float> BGM;
     public Property<float> SFX;
     public Property<bool> CamMode;
+   
 
     protected override void Awake()
     {
@@ -50,8 +51,8 @@ public class SettingManager : Singleton<SettingManager>
 
     private void LoadSettings()
     {
-        BGM.Value = PlayerPrefs.GetFloat("BGMVolume");
-        SFX.Value = PlayerPrefs.GetFloat("SFXVolume");
-        CamMode.Value = PlayerPrefs.GetInt("IsFixedCam") == 1;
+        BGM.Value = PlayerPrefs.HasKey("BGMVolume") ? PlayerPrefs.GetFloat("BGMVolume") : 0.5f;
+        BGM.Value = PlayerPrefs.HasKey("SFXVolume") ? PlayerPrefs.GetFloat("SFXVolume") : 0.5f;
+        BGM.Value = PlayerPrefs.HasKey("IsFixedCam") ? PlayerPrefs.GetFloat("IsFixedCam") : 0.5f;
     }
 }

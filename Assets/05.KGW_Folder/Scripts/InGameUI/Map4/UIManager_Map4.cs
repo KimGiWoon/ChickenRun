@@ -231,8 +231,8 @@ public class UIManager_Map4 : MonoBehaviourPun
         _isExit = true;
         _gameManager.StopStopWatch();
 
-        photonView.RPC(nameof(ExitPlayerCheck), RpcTarget.MasterClient, exitPlayer);
         _gameManager.GameDefeatLeaveRoom();
+        photonView.RPC(nameof(ExitPlayerCheck), RpcTarget.MasterClient, exitPlayer);
     }
 
     // 나간 플레이어 알림
@@ -243,6 +243,26 @@ public class UIManager_Map4 : MonoBehaviourPun
         {
             _gameManager._exitPlayerCount++;
             Debug.Log($"나간 플레이어 : {exitPlayer}");
+        }
+
+        // 모든 플레이어에게 최신 인원 정보 전달
+        photonView.RPC(nameof(SendCurrentGameState), RpcTarget.All, _gameManager._totalPlayerCount, _gameManager._goalPlayerCount, _gameManager._exitPlayerCount);
+    }
+
+    // 인원 정보 전달
+    [PunRPC]
+    public void SendCurrentGameState(int totalCount, int goalCount, int exitCount)
+    {
+        _gameManager._totalPlayerCount = totalCount;
+        _gameManager._goalPlayerCount = goalCount;
+        _gameManager._exitPlayerCount = exitCount;
+
+        Debug.Log($"플레이 인원 : {totalCount}, 골인 인원 : {goalCount}, 탈주 인원 : {exitCount}");
+
+        // 방장일 경우 게임 종료 조건도 다시 검사
+        if (PhotonNetwork.IsMasterClient)
+        {
+            _gameManager.CheckGameEndCondition();
         }
     }
 

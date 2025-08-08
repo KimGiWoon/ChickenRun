@@ -36,23 +36,24 @@ public class GameManager_Map4 : MonoBehaviourPunCallbacks
     public event Action OnPlayerDeath;
     public event Action OnPlayerGoal;
 
-    // 데이터 베이스에 전달할 맵1 데이터 저장
-    public class Map4Data
-    {
-        public string MapType;
-        public long Record;
-        public int EggCount;
+    //// 데이터 베이스에 전달할 맵4 데이터 저장
+    //public class Map4Data
+    //{
+    //    public string MapType;
+    //    public long Record;
+    //    public int EggCount;
 
-        public Map4Data(string type)
-        {
-            MapType = type;
-        }
-    }
+    //    public Map4Data(string type)
+    //    {
+    //        MapType = type;
+    //    }
+    //}
 
     private void Awake()
     {
         _stopwatch = new Stopwatch();
         _data = new MapData("Map4Record");
+        PhotonNetwork.RunRpcCoroutines = true;
     }
 
     // 스탑워치 시작
@@ -112,21 +113,7 @@ public class GameManager_Map4 : MonoBehaviourPunCallbacks
         {
             _deathPlayerCount++;
 
-            // 모든 플레이어가 죽음
-            if (_exitPlayerCount + _goalPlayerCount + _deathPlayerCount >= _totalPlayerCount)
-            {
-                // 게임 클리어를 진행한 플레이어가 없으면
-                if (_goalPlayerCount <= 0)
-                {
-                    photonView.RPC(nameof(GameDefeatLeaveRoom), RpcTarget.AllViaServer);
-                }
-
-                // 게임 클리어를 진행한 플레이어가 있으면
-                if (_goalPlayerCount > 0)
-                {
-                    photonView.RPC(nameof(GameClearLeaveRoom), RpcTarget.AllViaServer);
-                }
-            }
+            CheckGameEndCondition();
         }
     }
 
@@ -147,6 +134,9 @@ public class GameManager_Map4 : MonoBehaviourPunCallbacks
                 // 랭킹 데이터 저장
                 _data.EggCount = _totalEggCount;
                 _data.Record = _stopwatch.ElapsedMilliseconds;
+
+                // 점수, 달걀, 시간 저장
+                Database_RecordManager.Instance.SaveUserMapRecord(_data);
             }
         }
 
@@ -154,10 +144,26 @@ public class GameManager_Map4 : MonoBehaviourPunCallbacks
         {
             _goalPlayerCount++;
 
-            // 결승점 도착
-            if (_exitPlayerCount + _goalPlayerCount + _deathPlayerCount >= _totalPlayerCount)
+            CheckGameEndCondition();
+        }
+    }
+
+    // 게임 종료 조건 체크
+    public void CheckGameEndCondition()
+    {
+        int currentPlayerCount = _totalPlayerCount - _exitPlayerCount;
+
+        // 플레이어 상태 체크
+        if (_goalPlayerCount + _deathPlayerCount >= currentPlayerCount)
+        {
+            // 게임 클리어를 진행한 플레이어가 없으면
+            if (_goalPlayerCount <= 0)
             {
-                photonView.RPC(nameof(GameClearLeaveRoom), RpcTarget.AllViaServer);
+                photonView.RPC(nameof(GameDefeatLeaveRoom), RpcTarget.All);
+            }
+            else    // 게임 클리어를 진행한 플레이어가 있으면
+            {
+                photonView.RPC(nameof(GameClearLeaveRoom), RpcTarget.All);
             }
         }
     }
@@ -171,10 +177,7 @@ public class GameManager_Map4 : MonoBehaviourPunCallbacks
 
         _networkManager._isStart = false;
         _gameUIManager.ClearPlayerReference();
-
-        // 점수, 달걀, 시간 저장
-        //Database_RecordManager.Instance.SaveUserMap4Record(_data);
-
+        
         // 클리어 UI 활성화
         _clearUIController.gameObject.SetActive(true);
     }

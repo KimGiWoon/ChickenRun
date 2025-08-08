@@ -8,12 +8,17 @@ public class CameraController_Map2 : MonoBehaviour
     [SerializeField] private float _followSpeed;
     [SerializeField] private bool _isDelayMove;
 
-    private Transform _followTarget;
+    private PlayerController_Map2 _followTarget;
     private readonly Vector3 _offset = new Vector3(0, 0, -10f);
-    private List<PlayerController_Map1> _observePlayers = new();
+    private List<PlayerController_Map2> _observePlayers = new();
     private int _index;
     private bool _isViewing;
 
+    private void Start()
+    {
+        GameManager_Map2.Instance.OnGoalIn += UpdateList;
+    }
+    
     // 플레이어가 움직이고 난 후 카메라 이동
     private void LateUpdate()
     {
@@ -30,12 +35,13 @@ public class CameraController_Map2 : MonoBehaviour
 
             // 0번 인덱스에 있는 플레이어 부터 순회하면서 카메라 전환
             _index = (_index + 1) % _observePlayers.Count;
-            SetTarget(_observePlayers[_index].transform);
+            Debug.Log(_index);
+            SetTarget(_observePlayers[_index]);
         }
     }
     
     // 타겟 설정
-    public void SetTarget(Transform target)
+    public void SetTarget(PlayerController_Map2 target)
     {
         _followTarget = target;
     }
@@ -48,7 +54,7 @@ public class CameraController_Map2 : MonoBehaviour
         }
 
         // 카메라 위치 세팅
-        Vector3 camPos = _followTarget.position + _offset;
+        Vector3 camPos = _followTarget.transform.position + _offset;
         // 카메라 위치 이동, 딜레이 이동 모드 On
         if (_isDelayMove)
         {
@@ -60,25 +66,24 @@ public class CameraController_Map2 : MonoBehaviour
             transform.position = camPos;
         }
     }
+
+    private void UpdateList()
+    {
+        if (!GameManager_Map2.Instance.Players.Contains(_followTarget))
+        {
+            _index = 0;
+        }
+        _observePlayers = GameManager_Map2.Instance.Players;
+    }
     
     public void OnViewingMode()
     {
-        _observePlayers.Clear();
+        UpdateList();
         _index = 0;
-
-        // 살아 있는 플레이어 순회
-        foreach(var player in FindObjectsOfType<PlayerController_Map1>())
-        {
-            // 결승점에 들어가지 않은 플레이거가 있으면 관찰리스트에 추가
-            if (!player._isGoal)
-            {
-                _observePlayers.Add(player);
-            }
-        }
-
         if(_observePlayers.Count > 0)
         {
-            SetTarget(_observePlayers[_index].transform);
+            Debug.Log(_observePlayers.Count);
+            SetTarget(_observePlayers[_index]);
             _isViewing = true;
         }
     }

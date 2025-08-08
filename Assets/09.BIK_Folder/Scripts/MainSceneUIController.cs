@@ -12,12 +12,14 @@ public class MainSceneUIController : MonoBehaviour
     [Header("Top UI")]
     [SerializeField] private TMP_Text _nicknameText;
     [SerializeField] private Button _settingButton;
+    [SerializeField] private Button _onlinePlayerButton;
 
     [Header("Main UI")]
     [SerializeField] private List<UIBase> _uiList;
 
     [Header("Popup")]
     [SerializeField] private MainSceneOptionPanel _optionPanel;
+    [SerializeField] private PlayerListPanel _PlayerListPanel;
 
     #endregion // Serialized fields
 
@@ -67,6 +69,7 @@ public class MainSceneUIController : MonoBehaviour
         }
 
         _settingButton.onClick.AddListener(OpenSettingPopup);
+        _onlinePlayerButton.onClick.AddListener(OpenOnlinePlayerPanel);
 
         _nicknameText.text = CYH_FirebaseManager.CurrentUserNickname;
 
@@ -221,6 +224,18 @@ public class MainSceneUIController : MonoBehaviour
     private void OpenSettingPopup()
     {
         _optionPanel.SetShow();
+    }
+
+    private void OpenOnlinePlayerPanel()
+    {
+        if (_PlayerListPanel.gameObject.activeSelf)
+        {
+            _PlayerListPanel.SetHide();
+        }
+        else
+        {
+            _PlayerListPanel.SetShow();
+        }
     }
 
     #endregion // private funcs
