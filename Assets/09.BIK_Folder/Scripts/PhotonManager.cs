@@ -261,7 +261,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks
 
     #region private funcs
 
-    private void SetUserUIDToPhoton()
+    public void SetUserUIDToPhoton()
     {
         if (CYH_FirebaseManager.User != null) {
             string uid = CYH_FirebaseManager.User.UserId;

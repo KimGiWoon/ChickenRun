@@ -145,7 +145,7 @@ public class LinkPanel : UIBase
                 await user.ReloadAsync();
 
                 //GameStartPanel 닉네임 text 변경 이벤트 호출
-                _gameStartPanel.OnSetNicknameField?.Invoke(googleDisplayName);
+                _gameStartPanel.OnSetNicknameField?.Invoke(user.DisplayName);
 
                 Debug.Log("------유저 정보------");
                 Debug.Log($"유저 이름 : {user.DisplayName}");

@@ -57,7 +57,7 @@ public class GuestLogin : MonoBehaviour
 
             Debug.Log("게스트 생성 완료");
 
-            user.ReloadAsync();
+            await user.ReloadAsync();
 
             // 게스트 닉네임 변경 
             await Utility.SetGuestNickname(user);

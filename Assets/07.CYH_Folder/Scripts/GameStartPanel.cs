@@ -73,12 +73,12 @@ public class GameStartPanel : UIBase
         Debug.Log($"이메일 : {CYH_FirebaseManager.Auth.CurrentUser.Email}");
     }
 
-    private void OnEnable()
+    private async void OnEnable()
     {
         SetNicknameField();
 
         // 유저 온라인 체크
-        CheckIsOnline();
+        await CheckIsOnline();
     }
 
     private void OnDisable()
@@ -90,7 +90,7 @@ public class GameStartPanel : UIBase
     /// <summary>
     /// 로그인한 유저의 로그인 상태 IsOnline = true 로 전환하는 메서드
     /// </summary>
-    public async void CheckIsOnline()
+    private async Task CheckIsOnline()
     {
         await IsOnline();
     }
@@ -117,7 +117,6 @@ public class GameStartPanel : UIBase
             else if (user.ProviderId == "google.com")
             {
                 SetNicknameField_google(user.DisplayName);
-                //_nicknameText.text = $"게스트 님";
                 Debug.Log("nicknamefield : 구글");
             }
             else if (user.ProviderId == "password")
@@ -176,7 +175,7 @@ public class GameStartPanel : UIBase
                 {
                     Debug.LogError("유저 삭제 취소");
                 }
-                if (task.IsCanceled)
+                if (task.IsFaulted)
                 {
                     Debug.LogError("유저 삭제 실패");
                 }
@@ -189,16 +188,13 @@ public class GameStartPanel : UIBase
                 {
                     // 구글 계정 로그아웃 처리 및 계정과 앱 연결 해제
                     bool isGoogleUser = currentUser.ProviderData.Any(provider => provider.ProviderId == "google.com");
-
                     if (isGoogleUser)
                     {
                         GoogleSignIn.DefaultInstance.SignOut();
                         GoogleSignIn.DefaultInstance.Disconnect();
                     }
-
                     GoogleSignIn.DefaultInstance.SignOut();
                     GoogleSignIn.DefaultInstance.Disconnect();
-
                     CYH_FirebaseManager.Auth.SignOut();
                 }
                 OnClickDeleteAccount?.Invoke();
@@ -209,7 +205,7 @@ public class GameStartPanel : UIBase
     /// 계정 동시 접속을 제한하는 메서드
     /// 현재 유저의 온라인 상태를 확인하고 이미 접속 중이라면 로그인 제한
     /// </summary>
-    public async Task<bool> IsOnline()
+    private async Task IsOnline()
     {
         FirebaseAuth auth = CYH_FirebaseManager.Auth;
         string uid = CYH_FirebaseManager.Auth.CurrentUser.UserId;
@@ -249,21 +245,15 @@ public class GameStartPanel : UIBase
                 auth.SignOut();
                 IsUserOnline?.Invoke();
             });
-
-            return false;
         }
 
         // 로그인 -> IsOnline = true로 설정
         // disconnect -> 자동 IsOnline = false
         await userRef.SetValueAsync(true);
         Debug.Log($"로그인 / 유저 UID : {uid} IsOnline: {snapshot.Value}");
-
-        if(CYH_FirebaseManager.Auth.CurrentUser.IsAnonymous)
-        {
-            return false;
-        }
-
+        
         await userRef.OnDisconnect().SetValue(false);
-        return true;
+       
+        Application.quitting += () => userRef.SetValueAsync(false);
     }
 }

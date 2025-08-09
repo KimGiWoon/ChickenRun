@@ -88,9 +88,8 @@ public class NicknameChangePanel : UIBase
 
         // 닉네임 재설정 및 데이터베이스에 저장
         Utility.SetNickname(_nicknameField.text);
-
+        
         ShowPopup("닉네임 변경 성공");
-
 
         PopupManager.Instance.ShowOKPopup("닉네임 변경 성공", "OK", () =>
         {

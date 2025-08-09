@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using Photon.Pun;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
@@ -35,6 +34,9 @@ public class GameManager_Map2 : MonoBehaviourPun
     private bool _isWin;
     private bool _isLose;
     private bool _isReach;
+    private bool _isStart;
+    public bool IsStart => _isStart;
+    
     public bool IsLose
     {
         get { return _isLose; }
@@ -127,6 +129,7 @@ public class GameManager_Map2 : MonoBehaviourPun
     public void StartGame()
     {
         _stopwatch.Start();
+        _isStart = true;
     }
     
     // 결승점 도착
