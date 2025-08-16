@@ -74,18 +74,23 @@ public class Database_RecordManager : Singleton<Database_RecordManager>
         // 맵 기록 저장/갱신 Transaction
         recordRef.RunTransaction(mutableData =>
         {
-            long currentRecord = mutableData.Value == null ? long.MaxValue : (long)mutableData.Value;
-            
-            if (data.Record < currentRecord && key != "Map3Record")
+            if (key != "Map3Record")
             {
-                mutableData.Value = data.Record;
+                long currentRecord = mutableData.Value == null ? long.MaxValue : (long)mutableData.Value;
+                if (data.Record < currentRecord)
+                {
+                    mutableData.Value = data.Record;
+                }
+            }
+            else
+            {
+                long currentRecord = mutableData.Value == null ? 0 : (long)mutableData.Value;
+                if (data.Record > currentRecord)
+                {
+                    mutableData.Value = data.Record;
+                }
             }
             
-            if (data.Record > currentRecord && key == "Map3Record")
-            {
-                mutableData.Value = data.Record;
-            }
-
             return TransactionResult.Success(mutableData);
         });
         
@@ -173,7 +178,7 @@ public class Database_RecordManager : Singleton<Database_RecordManager>
         if (record != "Map3Record")
         {
             _reference.Child("RankData")
-            .StartAt(1) // 기록이 없는 사람 예외처리
+            .StartAt(1) 
             .OrderByChild(record)
             .LimitToFirst(20)
             .GetValueAsync()
@@ -200,7 +205,8 @@ public class Database_RecordManager : Singleton<Database_RecordManager>
                     }
                     if (recordValue != 0) {
                         GameObject board = boardPool.GetPool();
-                        board.GetComponent<UserPersonalRecord>().SetRecordText(rank, rankData.Nickname, FormatData((int)recordValue), snapshot.Key);
+                        board.GetComponent<UserPersonalRecord>()
+                            .SetRecordText(rank, rankData.Nickname, FormatData((int)recordValue), snapshot.Key);
                         rank++;  
                     }
                 }
