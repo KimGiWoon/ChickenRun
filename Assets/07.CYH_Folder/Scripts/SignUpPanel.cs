@@ -186,7 +186,7 @@ public class SignUpPanel : UIBase
                      return;
                  }
 
-                 else if (task.IsFaulted)
+                 if (task.IsFaulted)
                  {
                      Debug.LogError($"이메일 중복 체크 실패 / 원인 : {task.Exception}");
 
@@ -195,7 +195,7 @@ public class SignUpPanel : UIBase
                      return;
                  }
 
-                 else if (task.IsCompletedSuccessfully)
+                 if (task.IsCompletedSuccessfully)
                  {
                      var providers = task.Result;
 

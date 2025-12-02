@@ -410,8 +410,8 @@ public class Database_RecordManager : Singleton<Database_RecordManager>
 
             foreach (var player in snapshots.Children)
             {
-                var isOnliveValue = player.Child("IsOnline").Value?.ToString();
-                if (bool.TryParse(isOnliveValue, out bool boolValue) && boolValue)
+                var isOnlineValue = player.Child("IsOnline").Value?.ToString();
+                if (bool.TryParse(isOnlineValue, out bool boolValue) && boolValue)
                 {
                     GameObject go = boardList.GetPool();
                     string nickname = player.Child("Nickname").Value?.ToString() ?? "알 수 없음";

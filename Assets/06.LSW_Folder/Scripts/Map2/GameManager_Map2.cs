@@ -98,15 +98,16 @@ public class GameManager_Map2 : MonoBehaviourPun
         OnPanelOpened?.Invoke(isOpen);
     }
     
-    public string PlayTimeUpdate()
+    public float PlayTimeUpdate()
     {
-        float arrivalTime = (float)_stopwatch.Elapsed.TotalSeconds;
-        int minuteTime = (int)arrivalTime / 60;
-        float secondTime = arrivalTime % 60;
+        double arrivalTime = _stopwatch.Elapsed.TotalSeconds;
+        //int minuteTime = (int)arrivalTime / 60;
+        //float secondTime = arrivalTime % 60;
         
-        _totalPlayTime = arrivalTime;
+        _totalPlayTime = (float)arrivalTime;
 
-        return string.Format($"{minuteTime:D2}:{secondTime:00.00}");
+        return _totalPlayTime;
+        //return string.Format($"{minuteTime:D2}:{secondTime:00.00}");
     }
 
     public void ReadyGame()
