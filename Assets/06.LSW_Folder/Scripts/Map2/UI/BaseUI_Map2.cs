@@ -32,6 +32,7 @@ public class BaseUI_Map2 : MonoBehaviourPun
 
     private Coroutine _endTimerRoutine;
     private readonly int _timer = 60;
+    private float _nextUpdateTime;
 
     private void Start()
     {
@@ -53,8 +54,17 @@ public class BaseUI_Map2 : MonoBehaviourPun
 
     private void Update()
     {
+        if (Time.unscaledTime >= _nextUpdateTime)
+        {
+            _nextUpdateTime = Time.unscaledTime + 0.1f; // 0.1초마다 갱신
+            
+            float t = GameManager_Map2.Instance.PlayTimeUpdate();
+            int minute = (int)t / 60;
+            float sec = (t % 60);
+            _playTimeText.SetText("{0:00}:{1:00.00}", minute, sec);
+        }
         // 플레이 타임 UI 출력
-        _playTimeText.text = GameManager_Map2.Instance.PlayTimeUpdate();
+        //_playTimeText.SetText("{0:0.0}", GameManager_Map2.Instance.PlayTimeUpdate());
     }
 
     private void OnDestroy()
