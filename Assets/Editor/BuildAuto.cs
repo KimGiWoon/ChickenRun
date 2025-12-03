@@ -2,7 +2,7 @@ using UnityEditor;
 using UnityEditor.Build.Reporting;
 using UnityEngine;
 
-public static class BuildAutomator
+public static class BuildAuto
 {
     [MenuItem("Build/Android")]
     public static void Build()
@@ -12,6 +12,9 @@ public static class BuildAutomator
         PlayerSettings.Android.keystorePass = "123456";
         PlayerSettings.Android.keyaliasName = "user";
         PlayerSettings.Android.keyaliasPass = "123456";
+        
+        //PlayerSettings.Android.bundleVersionCode++;
+        PlayerSettings.Android.bundleVersionCode = 4;
         
         BuildPlayerOptions options = new BuildPlayerOptions();
         /*options.scenes = new[]
@@ -26,7 +29,8 @@ public static class BuildAutomator
         };*/
         EditorUserBuildSettings.buildAppBundle = true;
         options.scenes = GetEnabledScenes();
-        options.locationPathName = "D:\\Build\\ChickenRun\\ChickenRun.aab";
+        //options.locationPathName = "D:\\Build\\ChickenRun\\ChickenRun.aab";
+        options.locationPathName = "Build/ChickenRun.aab";
         options.target = BuildTarget.Android;
         options.options = BuildOptions.None;
         
