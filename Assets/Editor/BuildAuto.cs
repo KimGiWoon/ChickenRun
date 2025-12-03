@@ -4,6 +4,22 @@ using UnityEngine;
 
 public static class BuildAuto
 {
+    private static void CodeSetting()
+    {
+        int code = 0;
+        if (PlayerPrefs.HasKey("Code"))
+        {
+            code = PlayerPrefs.GetInt("Code");
+            PlayerPrefs.SetInt("Code", ++code);
+        }
+        else
+        {
+            code = 5;
+            PlayerPrefs.SetInt("Code", code);
+        }
+        PlayerSettings.Android.bundleVersionCode = code;
+    }
+    
     [MenuItem("Build/Android")]
     public static void Build()
     {
@@ -13,8 +29,7 @@ public static class BuildAuto
         PlayerSettings.Android.keyaliasName = "user";
         PlayerSettings.Android.keyaliasPass = "123456";
         
-        //PlayerSettings.Android.bundleVersionCode++;
-        PlayerSettings.Android.bundleVersionCode = 4;
+        CodeSetting();
         
         BuildPlayerOptions options = new BuildPlayerOptions();
         /*options.scenes = new[]
