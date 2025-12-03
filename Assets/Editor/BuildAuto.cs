@@ -1,22 +1,24 @@
 using UnityEditor;
 using UnityEditor.Build.Reporting;
 using UnityEngine;
+using System.IO;
 
 public static class BuildAuto
 {
     private static void CodeSetting()
     {
-        int code = 0;
-        if (PlayerPrefs.HasKey("Code"))
+        string path = "Assets/Build/versionCode.txt";
+        int code = 1;
+        
+        if (File.Exists(path))
         {
-            code = PlayerPrefs.GetInt("Code");
-            PlayerPrefs.SetInt("Code", ++code);
+            string text = File.ReadAllText(path).Trim();
+            if (int.TryParse(text, out int parsed))
+                code = parsed + 1;
         }
-        else
-        {
-            code = 5;
-            PlayerPrefs.SetInt("Code", code);
-        }
+        
+        File.WriteAllText(path, code.ToString());
+        
         PlayerSettings.Android.bundleVersionCode = code;
     }
     
